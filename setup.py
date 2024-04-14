@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='x4c',  # required
-    version='2024.4.13',
+    version='2024.4.14',
     description='xarray4cesm',
     long_description=long_description,
     long_description_content_type='text/markdown',
