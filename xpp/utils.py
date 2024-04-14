@@ -71,3 +71,11 @@ def regrid_cam_se(ds, weight_file):
     # merge back any variables that didn't have the ncol dimension
     # And so were not regridded
     return xr.merge([dataset.drop_vars(regridded.variables), regridded])
+
+def annualize(ds, months=None):
+    months = list(range(1, 13)) if months is None else np.abs(months)
+    sds = ds.sel(time=ds['time.month'].isin(months))
+    anchor = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+    idx = months[-1]-1
+    ds_ann = sds.resample(time=f'YE-{anchor[idx]}').mean()
+    return ds_ann
