@@ -4,14 +4,14 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setup(
-    name='xpp',  # required
+    name='x4c',  # required
     version='2024.4.13',
-    description='Xarray++',
+    description='xarray4cesm',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Feng Zhu, Jiang Zhu',
     author_email='fengzhu@ucar.edu, jiangzhu@ucar.edu',
-    url='https://github.com/fzhu2e/xpp',
+    url='https://github.com/fzhu2e/x4c',
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
@@ -25,5 +25,6 @@ setup(
         'netCDF4',
         'xarray',
         'dask',
+        'nc-time-axis',
     ],
 )
