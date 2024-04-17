@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='x4c',  # required
-    version='2024.4.14b',
+    version='2024.4.15',
     description='xarray4cesm',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -26,5 +26,7 @@ setup(
         'xarray',
         'dask',
         'nc-time-axis',
+        'colorama',
+        'tqdm',
     ],
 )

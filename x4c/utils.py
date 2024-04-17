@@ -1,6 +1,25 @@
 import numpy as np
 import xarray as xr
 import xesmf as xe
+import colorama as ca
+import datetime
+import collections.abc
+import cartopy.util
+
+def p_header(text):
+    print(ca.Fore.CYAN + ca.Style.BRIGHT + text + ca.Style.RESET_ALL)
+
+def p_hint(text):
+    print(ca.Fore.LIGHTBLACK_EX + ca.Style.BRIGHT + text + ca.Style.RESET_ALL)
+
+def p_success(text):
+    print(ca.Fore.GREEN + ca.Style.BRIGHT + text + ca.Style.RESET_ALL)
+
+def p_fail(text):
+    print(ca.Fore.RED + ca.Style.BRIGHT + text + ca.Style.RESET_ALL)
+
+def p_warning(text):
+    print(ca.Fore.YELLOW + ca.Style.BRIGHT + text + ca.Style.RESET_ALL)
 
 def regrid_cam_se(ds, weight_file):
     """
@@ -66,7 +85,7 @@ def regrid_cam_se(ds, weight_file):
     )
 
     # Actually regrid, after renaming
-    regridded = regridder(updated.rename({"dummy": "lat", "ncol": "lon"}))
+    regridded = regridder(updated.rename({"dummy": "lat", "ncol": "lon"}), keep_attrs=True)
 
     # merge back any variables that didn't have the ncol dimension
     # And so were not regridded
@@ -115,3 +134,74 @@ def geo_mean(da, lat_min=-90, lat_max=90, lon_min=0, lon_max=360, lat_name='lat'
     wgts = np.cos(np.deg2rad(dac[lat_name]))
     m = dac.weighted(wgts).mean((lon_name, lat_name))
     return m
+
+def update_attrs(da, da_src):
+    da.attrs = dict(da_src.attrs)
+    if 'comp' in da.attrs and 'time' in da.coords:
+        da.time.attrs['long_name'] = 'Model Year'
+
+    return da
+
+def update_ds(ds, path, comp=None, grid=None, adjust_month=False):
+    if adjust_month:
+        ds['time'] = ds['time'].get_index('time') - datetime.timedelta(days=1)
+
+    ds.attrs['source'] = path
+
+    if comp is not None:
+        ds.attrs['comp'] = comp
+
+    if grid is not None:
+        ds.attrs['grid'] = grid
+
+    if 'comp' in ds.attrs:
+        grid_weight_dict = {
+            'atm': 'area',
+            'ocn': 'TAREA',
+            'ice': 'tarea',
+            'lnd': 'area',
+        }
+
+        lon_dict = {
+            'atm': 'lon',
+            'ocn': 'TLONG',
+            'ice': 'TLON',
+            'lnd': 'lon',
+        }
+
+        lat_dict = {
+            'atm': 'lat',
+            'ocn': 'TLAT',
+            'ice': 'TLAT',
+            'lnd': 'lat',
+        }
+        ds['gw'] = ds[grid_weight_dict[comp]]
+        ds['lat'] = ds[lat_dict[comp]]
+        ds['lon'] = ds[lon_dict[comp]]
+
+    return ds
+
+def infer_months_char(months):
+    char_list = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
+    out_str = ''
+    for i in months:
+        out_str += char_list[np.abs(i)-1]
+    return out_str
+
+
+def update_dict(d, u):
+    for k, v in u.items():
+        if isinstance(v, collections.abc.Mapping):
+            d[k] = update_dict(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d
+
+def add_cyclic_point(da):
+    data_wrap, lon_wrap = cartopy.util.add_cyclic_point(da.values, coord=da.lon)
+    da_new_coords = da.coords.copy()
+    da_new_coords['lon'] = lon_wrap
+    da_new_coords
+    da_wrap = xr.DataArray(data_wrap, coords=da_new_coords)
+    da_wrap.attrs = da.attrs.copy()
+    return da_wrap
