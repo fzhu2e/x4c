@@ -3,8 +3,9 @@ x4c: Xarray for CESM
 ******************************
 
 x4c (xarray4cesm) is an Xarray plugin that aims to support efficient and intuitive CESM output analysis and visualization:
-- Analysis features: regrid, various of mean calculation, annualization/seasonalization, etc.
-- Visualization features: timeseries, horizontal and vertical spatial plots, etc.
+
++ Analysis features: regrid, various of mean calculation, annualization/seasonalization, etc.
++ Visualization features: timeseries, horizontal and vertical spatial plots, etc.
 
 .. warning ::
     This package is still in its early stage and under active development, and its API could be changed frequently.
@@ -23,7 +24,7 @@ x4c (xarray4cesm) is an Xarray plugin that aims to support efficient and intuiti
 
         Installation instructions.
 
-    .. grid-item-card::  Core
+    .. grid-item-card::  Core Features
         :class-title: custom-title
         :class-body: custom-body
         :img-top: _static/setup.png
