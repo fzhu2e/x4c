@@ -5,12 +5,12 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='x4c',  # required
-    version='2024.4.15',
+    version='2024.4.16',
     description='xarray4cesm',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author='Feng Zhu, Jiang Zhu',
-    author_email='fengzhu@ucar.edu, jiangzhu@ucar.edu',
+    author='Feng Zhu',
+    author_email='fengzhu@ucar.edu',
     url='https://github.com/fzhu2e/x4c',
     packages=find_packages(),
     include_package_data=True,

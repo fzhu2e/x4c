@@ -395,7 +395,7 @@ document.write(`
   <section id="Diagnostics:-ATM">
 <h1>Diagnostics: ATM<a class="headerlink" href="#Diagnostics:-ATM" title="Link to this heading">#</a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
@@ -414,13 +414,13 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-2024.4.14b0
+2024.4.15
 </pre></div></div>
 </div>
 <section id="Load-a-postprocessed-CESM-timeseries-case">
 <h2>Load a postprocessed CESM timeseries case<a class="headerlink" href="#Load-a-postprocessed-CESM-timeseries-case" title="Link to this heading">#</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dirpath</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005&#39;</span>
@@ -496,11 +496,10 @@ document.write(`
 <section id="map:TS">
 <h3>map:TS<a class="headerlink" href="#map:TS" title="Link to this heading">#</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="k">case</span><span class="o">.</span><span class="n">clear_ds</span><span class="p">(</span><span class="s1">&#39;TS&#39;</span><span class="p">)</span>
 <span class="k">case</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="s1">&#39;map:TS:ann&#39;</span><span class="p">,</span> <span class="n">load_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;map:TS:ann&#39;</span><span class="p">)</span>
 </pre></div>
@@ -511,7 +510,8 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Regridding from [1, 13826] to [180, 360]
+<span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] already loaded; to reload, run case.clear_ds(&#34;TS&#34;) before case.load(&#34;TS&#34;)</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.diags[&#34;map:TS:ann&#34;] created</span>
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -519,8 +519,6 @@ Regridding from [1, 13826] to [180, 360]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] created</span>
-<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.diags[&#34;map:TS:ann&#34;] created</span>
 <span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;SSH&#34;] created</span>
 </pre></div></div>
 </div>
@@ -532,11 +530,11 @@ Regridding from [1, 13826] to [180, 360]
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="s1">&#39;map:TS:-12,1,2&#39;</span><span class="p">,</span> <span class="n">load_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;map:TS:-12,1,2&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;map:TS:-12,1,2&#39;</span><span class="p">,</span> <span class="n">central_longitude</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -561,19 +559,18 @@ Regridding from [1, 13826] to [180, 360]
 <section id="map:LST">
 <h3>map:LST<a class="headerlink" href="#map:LST" title="Link to this heading">#</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
-<span class="k">case</span><span class="o">.</span><span class="n">clear_ds</span><span class="p">(</span><span class="s1">&#39;TS&#39;</span><span class="p">)</span>
 <span class="k">case</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="s1">&#39;map:LST:ann&#39;</span><span class="p">,</span> <span class="n">load_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="s1">&#39;map:LST:ann&#39;</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
 <span class="p">)</span>
 <span class="n">x4c</span><span class="o">.</span><span class="n">showfig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/map_LST_ann.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/map_LST_pdf.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -582,7 +579,8 @@ Regridding from [1, 13826] to [180, 360]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Regridding from [1, 13826] to [180, 360]
+<span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] already loaded; to reload, run case.clear_ds(&#34;TS&#34;) before case.load(&#34;TS&#34;)</span>
+<span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;LANDFRAC&#34;] already loaded; to reload, run case.clear_ds(&#34;LANDFRAC&#34;) before case.load(&#34;LANDFRAC&#34;)</span>
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -590,9 +588,6 @@ Regridding from [1, 13826] to [180, 360]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] created</span>
-Regridding from [1, 13826] to [180, 360]
-<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;LANDFRAC&#34;] created</span>
 <span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.diags[&#34;map:LST:ann&#34;] created</span>
 <span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;SSH&#34;] already loaded; to reload, run case.clear_ds(&#34;SSH&#34;) before case.load(&#34;SSH&#34;)</span>
 </pre></div></div>
@@ -609,34 +604,23 @@ Regridding from [1, 13826] to [180, 360]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Figure saved at: &#34;figs/map_LST_ann.png&#34;
+Figure saved at: &#34;figs/map_LST_pdf.pdf&#34;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="s1">&#39;map:LST:6,7,8&#39;</span><span class="p">,</span> <span class="n">load_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="s1">&#39;map:LST:6,7,8&#39;</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">central_longitude</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">x4c</span><span class="o">.</span><span class="n">showfig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/map_LST_JJA.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <br/></pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/glade/u/home/fengzhu/Github/x4c/x4c/core.py:27: AccessorRegistrationWarning: registration of accessor &lt;class &#39;x4c.core.XDataset&#39;&gt; under name &#39;x&#39; for type &lt;class &#39;xarray.core.dataset.Dataset&#39;&gt; is overriding a preexisting attribute with the same name.
-  @xr.register_dataset_accessor(&#39;x&#39;)
-/glade/u/home/fengzhu/Github/x4c/x4c/core.py:108: AccessorRegistrationWarning: registration of accessor &lt;class &#39;x4c.core.XDataArray&#39;&gt; under name &#39;x&#39; for type &lt;class &#39;xarray.core.dataarray.DataArray&#39;&gt; is overriding a preexisting attribute with the same name.
-  @xr.register_dataarray_accessor(&#39;x&#39;)
-</pre></div></div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -649,33 +633,27 @@ Figure saved at: &#34;figs/map_LST_ann.png&#34;
 <span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;SSH&#34;] already loaded; to reload, run case.clear_ds(&#34;SSH&#34;) before case.load(&#34;SSH&#34;)</span>
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_12_2.png" src="../_images/notebooks_diag-atm_12_2.png" />
-</div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-Figure saved at: &#34;figs/map_LST_JJA.png&#34;
-</pre></div></div>
+<img alt="../_images/notebooks_diag-atm_12_1.png" src="../_images/notebooks_diag-atm_12_1.png" />
 </div>
+</div>
+<p>Note the blank line above. We can set <code class="docutils literal notranslate"><span class="pre">cyclic=True</span></code> to avoid it.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">calc</span><span class="p">(</span><span class="s1">&#39;map:LST:-12,1,2&#39;</span><span class="p">,</span> <span class="n">load_idx</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="s1">&#39;map:LST:-12,1,2&#39;</span><span class="p">,</span>
     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;orientation&#39;</span><span class="p">:</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;pad&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">},</span>
+    <span class="n">central_longitude</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">cyclic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">x4c</span><span class="o">.</span><span class="n">showfig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/map_LST_DJF.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 <br/></pre></div>
 </div>
 </div>
@@ -690,34 +668,18 @@ Figure saved at: &#34;figs/map_LST_JJA.png&#34;
 <span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;SSH&#34;] already loaded; to reload, run case.clear_ds(&#34;SSH&#34;) before case.load(&#34;SSH&#34;)</span>
 </pre></div></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_13_1.png" src="../_images/notebooks_diag-atm_13_1.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Figure saved at: &#34;figs/map_LST_DJF.png&#34;
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-[WARNING] yaksa: 10 leaked handle pool objects
-</pre></div></div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_diag-atm_14_1.png" src="../_images/notebooks_diag-atm_14_1.png" />
+</div>
 </div>
 </section>
 <section id="zm:LST">
 <h3>zm:LST<a class="headerlink" href="#zm:LST" title="Link to this heading">#</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
@@ -743,11 +705,11 @@ Figure saved at: &#34;figs/map_LST_DJF.png&#34;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_15_1.png" src="../_images/notebooks_diag-atm_15_1.png" />
+<img alt="../_images/notebooks_diag-atm_16_1.png" src="../_images/notebooks_diag-atm_16_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
@@ -773,11 +735,11 @@ Figure saved at: &#34;figs/map_LST_DJF.png&#34;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_16_1.png" src="../_images/notebooks_diag-atm_16_1.png" />
+<img alt="../_images/notebooks_diag-atm_17_1.png" src="../_images/notebooks_diag-atm_17_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
@@ -803,11 +765,11 @@ Figure saved at: &#34;figs/map_LST_DJF.png&#34;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_17_1.png" src="../_images/notebooks_diag-atm_17_1.png" />
+<img alt="../_images/notebooks_diag-atm_18_1.png" src="../_images/notebooks_diag-atm_18_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal_spines&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
@@ -817,7 +779,7 @@ Figure saved at: &#34;figs/map_LST_DJF.png&#34;
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;MCO (3xCO2) </span><span class="se">\n</span><span class="s1">Zonal Mean Land Surface Temperature&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower center&#39;</span><span class="p">)</span>
 <span class="n">x4c</span><span class="o">.</span><span class="n">showfig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/zm_LST_compare_seasons.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/zm_LST_compare_seasons.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -825,7 +787,7 @@ Figure saved at: &#34;figs/map_LST_DJF.png&#34;
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_18_0.png" src="../_images/notebooks_diag-atm_18_0.png" />
+<img alt="../_images/notebooks_diag-atm_19_0.png" src="../_images/notebooks_diag-atm_19_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -833,7 +795,7 @@ Figure saved at: &#34;figs/map_LST_DJF.png&#34;
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Figure saved at: &#34;figs/zm_LST_compare_seasons.png&#34;
+Figure saved at: &#34;figs/zm_LST_compare_seasons.pdf&#34;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -856,7 +818,7 @@ Figure saved at: &#34;figs/zm_LST_compare_seasons.png&#34;
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;MCO (3xCO2) </span><span class="se">\n</span><span class="s1">Zonal Mean Land Surface Temperature&#39;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower center&#39;</span><span class="p">)</span>
 <span class="n">x4c</span><span class="o">.</span><span class="n">showfig</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/zm_LST_compare_spin-ups.png&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">x4c</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;./figs/zm_LST_compare_spin-ups.pdf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -909,7 +871,7 @@ Regridding from [1, 13826] to [180, 360]
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_diag-atm_19_4.png" src="../_images/notebooks_diag-atm_19_4.png" />
+<img alt="../_images/notebooks_diag-atm_20_4.png" src="../_images/notebooks_diag-atm_20_4.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
