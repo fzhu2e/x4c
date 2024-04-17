@@ -2,15 +2,22 @@ API Reference
 =============
 
 
-Core
-----------
+Core Features
+-------------
 
 .. automodule:: x4c.core
-   :members: 
+   :members: load_dataset, open_mfdataset
+
+.. autoclass:: x4c.core.XDataset
+   :members:
+
+.. autoclass:: x4c.core.XDataArray
+   :members:
 
 
-Case
-----------
+CESM Diagnostics
+----------------
 
-.. automodule:: x4c.case
+.. autoclass:: x4c.case.Timeseries
     :members:
+

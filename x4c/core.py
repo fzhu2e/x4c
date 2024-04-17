@@ -13,6 +13,16 @@ import os
 dirpath = os.path.dirname(__file__)
 
 def load_dataset(path, adjust_month=False, comp=None, grid=None, lazyload=False, **kws):
+    ''' Load a netCDF file and form a `xarray.Dataset`
+
+    Args:
+        path (str): path to the netCDF file
+        adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
+        comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
+        grid (str): the grid tag for the CESM output (e.g., ne16, g16)
+        lazyload (bool): if True, the data will be loaded into the memory only when it is getting utilized
+
+    '''
     if not lazyload:
         ds = xr.load_dataset(path, **kws)
     else:
@@ -21,6 +31,15 @@ def load_dataset(path, adjust_month=False, comp=None, grid=None, lazyload=False,
     return ds
 
 def open_mfdataset(paths, adjust_month=False, comp=None, grid=None, **kws):
+    ''' Open multiple netCDF files and form a `xarray.Dataset` in a lazy load mode
+
+    Args:
+        path (str): path to the netCDF file
+        adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
+        comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
+        grid (str): the grid tag for the CESM output (e.g., ne16, g16)
+
+    '''
     ds = xr.open_mfdataset(paths, **kws)
     ds = utils.update_ds(ds, path=paths, comp=comp, grid=grid, adjust_month=adjust_month)
     return ds
@@ -31,6 +50,17 @@ class XDataset:
         self.ds = ds
 
     def regrid(self, dlon=1, dlat=1, weight_file=None, gs='T', method='bilinear', periodic=True):
+        ''' Regrid the CESM output to a normal lat/lon grid
+
+        Args:
+            dlon (float): longitude spacing
+            dlat (float): latitude spacing
+            weight_file (str): the path to an ESMF-generated weighting file for regridding
+            gs (str): grid style in 'T' or 'U' for ocean grid
+            method (str): regridding method for ocean grid
+            periodic (bool): the assumption of the periodicity of the data when perform the regrid method
+
+        '''
         comp = self.ds.attrs['comp']
         grid = self.ds.attrs['grid']
 
@@ -77,6 +107,13 @@ class XDataset:
         return ds_rgd
 
     def annualize(self, months=None):
+        ''' Annualize/seasonalize a `xarray.Dataset`
+
+        Args:
+            months (list of int): a list of integers to represent month combinations,
+                e.g., [7,8,9] means JJA annualization, and [-12,1,2] means DJF annualization
+
+        '''
         ds_ann = utils.annualize(self.ds, months=months)
         ds_ann.attrs = dict(self.ds.attrs)
         return ds_ann
@@ -112,12 +149,23 @@ class XDataArray:
         self.da = da
 
     def annualize(self, months=None):
+        ''' Annualize/seasonalize a `xarray.DataArray`
+
+        Args:
+            months (list of int): a list of integers to represent month combinations,
+                e.g., [7,8,9] means JJA annualization, and [-12,1,2] means DJF annualization
+
+        '''
         da = utils.annualize(self.da, months=months)
         da = utils.update_attrs(da, self.da)
         return da
 
     @property
     def gm(self):
+        ''' the global area-weighted mean '''
+        da = utils.annualize(self.da, months=months)
+        da = utils.update_attrs(da, self.da)
+        return da
         gw = self.da.attrs['gw']
         da = self.da.weighted(gw).mean(list(gw.dims))
         da = utils.update_attrs(da, self.da)
@@ -125,6 +173,7 @@ class XDataArray:
 
     @property
     def nhm(self):
+        ''' the NH area-weighted mean '''
         gw = self.da.attrs['gw']
         lat = self.da.attrs['lat']
         da = self.da.where(lat>0).weighted(gw).mean(list(gw.dims))
@@ -133,6 +182,7 @@ class XDataArray:
 
     @property
     def shm(self):
+        ''' the SH area-weighted mean '''
         gw = self.da.attrs['gw']
         lat = self.da.attrs['lat']
         da = self.da.where(lat<0).weighted(gw).mean(list(gw.dims))
@@ -141,6 +191,8 @@ class XDataArray:
 
     @property
     def zm(self):
+        ''' the zonal mean
+        '''
         if 'time' in self.da.coords:
             da = self.da.mean(('time', 'lon'))
         else:
@@ -148,8 +200,27 @@ class XDataArray:
         da = utils.update_attrs(da, self.da)
         return da
 
-    def geo_mean(self, ind=None, lat_min=-90, lat_max=90, lon_min=0, lon_max=360):
+    def geo_mean(self, ind=None, latlon_range=(-90, 90, 0, 360)):
+        ''' The lat-weighted mean given a lat/lon range or a climate index name
+
+        Args:
+            latlon_range (tuple or list): the lat/lon range for lat-weighted average 
+                in format of (lat_min, lat_max, lon_min, lon_max)
+
+            ind (str): a climate index name; supported names include:
+            
+                * 'nino3.4'
+                * 'nino1+2'
+                * 'nino3'
+                * 'nino4'
+                * 'tpi'
+                * 'wp'
+                * 'dmi'
+                * 'iobw'
+        '''
+
         if ind is None:
+            lat_min, lat_max, lon_min, lon_max = latlon_range
             da = utils.geo_mean(self.da, lat_min=lat_min, lat_max=lat_max, lon_min=lon_min, lon_max=lon_max)
         elif ind == 'nino3.4':
             da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(-170, 360), lon_max=np.mod(-120, 360))
@@ -188,6 +259,25 @@ class XDataArray:
              projection='Robinson', transform='PlateCarree', central_longitude=180, proj_args=None,
              add_gridlines=False, gridline_labels=True, gridline_style='--', ssv=None, coastline_zorder=99, coastline_width=1,
              **kws):
+        ''' The plotting functionality
+
+        Args:
+            title (str): figure title
+            figsize (tuple or list): figure size in format of (w, h)
+            ax (`matplotlib.axes`): a `matplotlib.axes`
+            latlon_range (tuple or list): lat/lon range in format of (lat_min, lat_max, lon_min, lon_max)
+            projection (str): a projection name supported by `Cartopy`
+            transform (str): a projection name supported by `Cartopy`
+            central_longitude (float): the central longitude of the map to plot
+            proj_args (dict): other keyword arguments for projection
+            add_gridlines (bool): if True, the map will be added with gridlines
+            gridline_labels (bool): if True, the lat/lon ticklabels will appear
+            gridline_style (str): the gridline style, e.g., '-', '--'
+            ssv (`xarray.DataArray`): a sea surface variable used for plotting the coastlines
+            coastline_zorder (int): the layer order for the coastlines
+            coastline_width (float): the width of the coastlines
+
+        '''
         ndim = len(self.da.dims)
         if ndim == 2 and 'lat' in self.da.coords and 'lon' in self.da.coords:
             # map
