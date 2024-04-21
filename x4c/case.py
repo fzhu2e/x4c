@@ -1,6 +1,9 @@
 import xarray as xr
 import os
 import glob
+import pandas as pd
+import gzip
+
 from . import core, utils, diags
 
 class Timeseries:
@@ -49,17 +52,45 @@ class Timeseries:
         utils.p_success(f'>>> case.vars_info created')
 
     def clear_ds(self, vn=None):
+        ''' Clear the existing `.ds` property
+        '''
         if vn is not None:
             del(self.ds[vn])
         else:
             self.ds = xr.Dataset()
 
     def load(self, vn, adjust_month=True, load_idx=-1, regrid=False):
+        ''' Load a specific variable
+        
+        Args:
+            vn (str or list): a variable name, or a list of variable names
+            adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
+            load_idx (int or slice): -1 means to load the last file
+            regrid (bool): if True, will regrid to regular lat/lon grid
+        '''
         if not isinstance(vn, (list, tuple)):
             vn = [vn]
 
         for v in vn:
-            if v in self.vars_info and v not in self.ds:
+            if v in ['KMT', 'z_t', 'z_w', 'dz', 'dzw']:
+                vn_tmp = 'SSH'
+                comp, mdl, h_str = self.vars_info[vn_tmp]
+                paths = sorted(glob.glob(
+                    os.path.join(
+                        self.root_dir,
+                        self.path_pattern \
+                            .replace('comp', comp) \
+                            .replace('casename', '*') \
+                            .replace('mdl', mdl) \
+                            .replace('h_str', h_str) \
+                            .replace('vn', vn_tmp) \
+                            .replace('timespan', '*'),
+                    )
+                ))
+                with xr.load_dataset(paths[-1], decode_cf=False) as ds:
+                    self.ds[v] = ds.x[v]
+
+            elif v in self.vars_info:
                 comp, mdl, h_str = self.vars_info[v]
                 paths = sorted(glob.glob(
                     os.path.join(
@@ -73,43 +104,49 @@ class Timeseries:
                             .replace('timespan', '*'),
                     )
                 ))
-                if load_idx is not None:
-                    ds =  core.load_dataset(paths[load_idx], adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
-                else:
-                    ds =  core.open_mfdataset(paths, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
 
-                self.ds[v] = ds.x[v] if not regrid else ds.x.regrid().x[v]
-                self.ds.attrs.update(ds.x[v].attrs)
-                utils.p_success(f'>>> case.ds["{v}"] created')
+                # remove loaded object
+                if v in self.ds:
+                    if (regrid and 'regridded' not in self.ds[v].attrs) or (not regrid and 'regridded' in self.ds[v].attrs):
+                        self.clear_ds(v)
+                        utils.p_warning(f'>>> case.ds["{v}"] already loaded but will be reloaded due to a different regrid status')
 
-            elif v in ['KMT', 'z_t', 'z_w']:
-                comp, mdl, h_str = self.vars_info['TEMP']
-                paths = sorted(glob.glob(
-                    os.path.join(
-                        self.root_dir,
-                        self.path_pattern \
-                            .replace('comp', comp) \
-                            .replace('casename', '*') \
-                            .replace('mdl', mdl) \
-                            .replace('h_str', h_str) \
-                            .replace('vn', 'TEMP') \
-                            .replace('timespan', '*'),
-                    )
-                ))
-                with xr.open_dataset(paths[-1], decode_cf=False) as ds:
-                    self.ds[v] = ds.x[v]
+                if v in self.ds:
+                    if (load_idx is not None) and (paths[load_idx] != self.ds[v].attrs['source']):
+                        self.clear_ds(v)
+                        utils.p_warning(f'>>> case.ds["{v}"] already loaded but will be reloaded due to a different `load_idx`')
                 
-            elif v not in self.vars_info:
+                # new load
+                if v not in self.ds:
+                    if load_idx is not None:
+                        ds =  core.load_dataset(paths[load_idx], adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+                    else:
+                        ds =  core.open_mfdataset(paths, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+
+                    if regrid:
+                        da_rgd = ds.x.regrid().x[v]
+                        self.ds[v] = da_rgd
+                        self.ds[v].attrs.update({'regridded': True})
+                        self.ds[v].values = da_rgd.values # somehow this step is necessary, otherwise will be all NaN; a bug of `xarray`?
+                    else:
+                        self.ds[v] = ds.x[v]
+                        self.ds[v].values = ds.x[v].values  # somehow this step is necessary, otherwise will be all NaN; a bug of `xarray`?
+
+                    self.ds.attrs.update(ds.attrs)
+                    utils.p_success(f'>>> case.ds["{v}"] created')
+
+                elif v in self.ds:
+                    utils.p_warning(f'>>> case.ds["{v}"] already loaded; to reload, run case.clear_ds("{v}") before case.load("{v}")')
+
+            else:
                 utils.p_warning(f'>>> Variable {v} not existed')
 
-            elif v in self.ds:
-                utils.p_warning(f'>>> case.ds["{v}"] already loaded; to reload, run case.clear_ds("{v}") before case.load("{v}")')
         
     def calc(self, vn, load_idx=-1, adjust_month=True, **kws):
         ''' Calculate a diagnostic variable
 
         Args:
-            vn (str): The diagnostic variable name in the format of `plot_type:diag_name:mean_method`, where
+            vn (str): The diagnostic variable name in the format of `plot_type:diag_name:ann_method`, where
                 The `plot_type` supports:
                 
                     * `ts`: timeseries plots
@@ -129,10 +166,10 @@ class Timeseries:
                     * `zm:SST`: the SST 2D map
                     * `yz:MOC`: the lat-depth MOC 2D map
 
-                The `mean_method` supports:
+                The `ann_method` supports:
                 
-                    * `ann`: annual mean
-                    * `<m>`: a number in [1, 2, ..., 12] representing a month
+                    * `ann`: calendar year annual mean
+                    * `<m>`: a number in [..., -11, -12, 1, 2, ..., 12] representing a month
                     * `<m1>,<m2>,...`: a list of months sepearted by commmas
                     
                 For example,
@@ -143,16 +180,96 @@ class Timeseries:
                     * `zm:LST:6,7,8,9`: JJAS LST zonal mean
 
         '''
-        plot_type, diag_name, mean_method = vn.split(':')
+        plot_type, diag_name, ann_method = vn.split(':')
         func_name = f'calc_{plot_type}_{diag_name}'
-        self.diags[vn] = diags.DiagCalc.__dict__[func_name](self, load_idx=load_idx, adjust_month=adjust_month, mean_method=mean_method, **kws)
+        self.diags[vn] = diags.DiagCalc.__dict__[func_name](self, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method, **kws)
         utils.p_success(f'>>> case.diags["{vn}"] created')
 
     def plot(self, vn, **kws):
         ''' Plot a diagnostic variable
 
         Args:
-            vn (str): The diagnostic variable name in the format of `plot_type:diag_name:mean_method`, see :func:`x4c.case.Timeseries.calc`
+            vn (str): The diagnostic variable name in the format of `plot_type:diag_name:ann_method`, see :func:`x4c.case.Timeseries.calc`
         '''
-        plot_type, diag_name, mean_method = vn.split(':')
-        return diags.DiagPlot.__dict__[f'plot_{plot_type}'](self, diag_name, mean_method=mean_method, **kws)
+        plot_type, diag_name, ann_method = vn.split(':')
+        return diags.DiagPlot.__dict__[f'plot_{plot_type}'](self, diag_name, ann_method=ann_method, **kws)
+
+class Logs:
+    ''' Initialize a CESM Log case
+
+    Args:
+        root_dir (str): the root directory of the CESM Timeseries output
+    '''
+    def __init__(self, dirpath, comp='ocn', load_num=None):
+        self.dirpath = dirpath
+        self.paths = sorted(glob.glob(os.path.join(dirpath, f'{comp}.log.*.gz')))
+        if load_num is not None:
+            if load_num < 0:
+                self.paths = self.paths[load_num:]
+            else:
+                self.paths = self.paths[:load_num]
+
+        utils.p_header(f'>>> Logs.dirpath: {self.dirpath}')
+        utils.p_header(f'>>> {len(self.paths)} Logs.paths:')
+        print(f'Start: {os.path.basename(self.paths[0])}')
+        print(f'End: {os.path.basename(self.paths[-1])}')
+
+    def get_vars(self, vn=[
+                    'UVEL', 'UVEL2', 'VVEL', 'VVEL2', 'TEMP', 'dTEMP_POS_2D', 'dTEMP_NEG_2D', 'SALT', 'RHO', 'RHO_VINT',
+                    'RESID_T', 'RESID_S', 'SU', 'SV', 'SSH', 'SSH2', 'SHF', 'SHF_QSW', 'SFWF', 'SFWF_WRST', 'TAUX', 'TAUX2', 'TAUY',
+                    'TAUY2', 'FW', 'TFW_T', 'TFW_S', 'EVAP_F', 'PREC_F', 'SNOW_F', 'MELT_F', 'ROFF_F', 'IOFF_F', 'SALT_F', 'SENH_F',
+                    'LWUP_F', 'LWDN_F', 'MELTH_F', 'IFRAC', 'PREC_16O_F', 'PREC_18O_F', 'PREC_HDO_F', 'EVAP_16O_F', 'EVAP_18O_F', 'EVAP_HDO_F',
+                    'MELT_16O_F', 'MELT_18O_F', 'MELT_HDO_F', 'ROFF_16O_F', 'ROFF_18O_F', 'ROFF_HDO_F', 'IOFF_16O_F', 'IOFF_18O_F', 'IOFF_HDO_F',
+                    'R18O', 'FvPER_R18O', 'FvICE_R18O', 'RHDO', 'FvPER_RHDO', 'FvICE_RHDO', 'ND143', 'ND144', 'IAGE', 'QSW_HBL', 'KVMIX', 'KVMIX_M',
+                    'TPOWER', 'VDC_T', 'VDC_S', 'VVC', 'KAPPA_ISOP', 'KAPPA_THIC', 'HOR_DIFF', 'DIA_DEPTH', 'TLT', 'INT_DEPTH', 'UISOP', 'VISOP',
+                    'WISOP', 'ADVT_ISOP', 'ADVS_ISOP', 'VNT_ISOP', 'VNS_ISOP', 'USUBM', 'VSUBM', 'WSUBM', 'HLS_SUBM', 'ADVT_SUBM', 'ADVS_SUBM',
+                    'VNT_SUBM', 'VNS_SUBM', 'HDIFT', 'HDIFS', 'WVEL', 'WVEL2', 'UET', 'VNT', 'WTT', 'UES', 'VNS', 'WTS', 'ADVT', 'ADVS', 'PV',
+                    'Q', 'PD', 'QSW_HTP', 'QFLUX', 'HMXL', 'XMXL', 'TMXL', 'HBLT', 'XBLT', 'TBLT', 'BSF',
+                    'NINO_1_PLUS_2', 'NINO_3', 'NINO_3_POINT_4', 'NINO_4',
+                ]):
+
+        if not isinstance(vn, (list, tuple)):
+            vn = [vn]
+
+        nf = len(self.paths)
+        df_list = []
+        for idx_file in range(nf):
+            vars = {}
+            with gzip.open(self.paths[idx_file], mode='rt') as fp:
+                lines = fp.readlines()
+
+                # find 1st timestamp
+                for line in lines:
+                    i = lines.index(line)
+                    if line.find('This run        started from') != -1 and lines[i+1].find('date(month-day-year):') != -1:
+                        start_date = lines[i+1].split(':')[-1].strip()
+                        break
+
+                mm, dd, yyyy = start_date.split('-')
+
+                # find variable values
+                for line in lines:
+                    for v in vn:
+                        if v not in vars:
+                            vars[v] = []
+                        elif line.strip().startswith(f'{v}:'):
+                            val = float(line.strip().split(':')[-1])
+                            vars[v].append(val)
+
+            df_tmp = pd.DataFrame(vars)
+            dates = xr.cftime_range(start=f'{yyyy}-{mm}-{dd}', freq='MS', periods=len(df_tmp), calendar='noleap')
+            years = []
+            months = []
+            for date in dates:
+                years.append(date.year)
+                months.append(date.month)
+
+            df_tmp['Year'] = years
+            df_tmp['Month'] = months
+            df_list.append(df_tmp)
+        
+        df = pd.concat(df_list, join='inner').drop_duplicates(subset=['Year', 'Month'], keep='last')
+        df = df[ ['Year', 'Month'] + [ col for col in df.columns if col not in ['Year', 'Month']]]
+        self.df = df
+        self.df_ann = self.df.groupby(self.df.Year).mean()
+        self.vn = vn

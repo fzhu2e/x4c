@@ -205,3 +205,15 @@ def add_cyclic_point(da):
     da_wrap = xr.DataArray(data_wrap, coords=da_new_coords)
     da_wrap.attrs = da.attrs.copy()
     return da_wrap
+
+def ann_modifier(da, ann_method, long_name):
+    if ann_method == 'ann':
+        da_out = da.x.annualize()
+        da_out.attrs['long_name'] = f'{long_name} (Annual)'
+    else:
+        months = [int(s) for s in ann_method.split(',')]
+        months_char = infer_months_char(months)
+        da_out = da.x.annualize(months=months)
+        da_out.attrs['long_name'] = f'{long_name} ({months_char})'
+
+    return da_out

@@ -1,9 +1,11 @@
 import xarray as xr
 xr.set_options(keep_attrs=True)
 
+import copy
 import xesmf as xe
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import BoundaryNorm, Normalize
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
@@ -12,7 +14,7 @@ from . import utils, visual
 import os
 dirpath = os.path.dirname(__file__)
 
-def load_dataset(path, adjust_month=False, comp=None, grid=None, lazyload=False, **kws):
+def load_dataset(path, adjust_month=False, comp=None, grid=None, **kws):
     ''' Load a netCDF file and form a `xarray.Dataset`
 
     Args:
@@ -20,13 +22,23 @@ def load_dataset(path, adjust_month=False, comp=None, grid=None, lazyload=False,
         adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
         comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
         grid (str): the grid tag for the CESM output (e.g., ne16, g16)
-        lazyload (bool): if True, the data will be loaded into the memory only when it is getting utilized
 
     '''
-    if not lazyload:
-        ds = xr.load_dataset(path, **kws)
-    else:
-        ds = xr.open_dataset(path, **kws)
+    ds = xr.load_dataset(path, **kws)
+    ds = utils.update_ds(ds, path=path, comp=comp, grid=grid, adjust_month=adjust_month)
+    return ds
+
+def open_dataset(path, adjust_month=False, comp=None, grid=None, **kws):
+    ''' Open a netCDF file and form a `xarray.Dataset` with a lazy load mode
+
+    Args:
+        path (str): path to the netCDF file
+        adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
+        comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
+        grid (str): the grid tag for the CESM output (e.g., ne16, g16)
+
+    '''
+    ds = xr.open_dataset(path, **kws)
     ds = utils.update_ds(ds, path=path, comp=comp, grid=grid, adjust_month=adjust_month)
     return ds
 
@@ -46,7 +58,7 @@ def open_mfdataset(paths, adjust_month=False, comp=None, grid=None, **kws):
 
 @xr.register_dataset_accessor('x')
 class XDataset:
-    def __init__(self, ds):
+    def __init__(self, ds=None):
         self.ds = ds
 
     def regrid(self, dlon=1, dlat=1, weight_file=None, gs='T', method='bilinear', periodic=True):
@@ -104,6 +116,7 @@ class XDataset:
             raise ValueError(f'grid [{grid}] is not supported; please submit an issue on Github to make a request.')
 
         ds_rgd.attrs = dict(self.ds.attrs)
+        # utils.p_success(f'Dataset regridded to regular grid: [dlon: {dlon} x dlat: {dlat}]')
         return ds_rgd
 
     def annualize(self, months=None):
@@ -111,7 +124,7 @@ class XDataset:
 
         Args:
             months (list of int): a list of integers to represent month combinations,
-                e.g., [7,8,9] means JJA annualization, and [-12,1,2] means DJF annualization
+                e.g., `None` means calendar year annualization, [7,8,9] means JJA annualization, and [-12,1,2] means DJF annualization
 
         '''
         ds_ann = utils.annualize(self.ds, months=months)
@@ -145,7 +158,7 @@ class XDataset:
 
 @xr.register_dataarray_accessor('x')
 class XDataArray:
-    def __init__(self, da):
+    def __init__(self, da=None):
         self.da = da
 
     def annualize(self, months=None):
@@ -163,9 +176,6 @@ class XDataArray:
     @property
     def gm(self):
         ''' the global area-weighted mean '''
-        da = utils.annualize(self.da, months=months)
-        da = utils.update_attrs(da, self.da)
-        return da
         gw = self.da.attrs['gw']
         da = self.da.weighted(gw).mean(list(gw.dims))
         da = utils.update_attrs(da, self.da)
@@ -257,8 +267,8 @@ class XDataArray:
 
     def plot(self, title=None, figsize=None, ax=None, latlon_range=None,
              projection='Robinson', transform='PlateCarree', central_longitude=180, proj_args=None,
-             add_gridlines=False, gridline_labels=True, gridline_style='--', ssv=None, coastline_zorder=99, coastline_width=1,
-             **kws):
+             add_gridlines=False, gridline_labels=True, gridline_style='--', ssv=None,
+             coastline_zorder=99, coastline_width=1, site_markersizes=100, df_sites=None, colname_dict=None, **kws):
         ''' The plotting functionality
 
         Args:
@@ -276,6 +286,8 @@ class XDataArray:
             ssv (`xarray.DataArray`): a sea surface variable used for plotting the coastlines
             coastline_zorder (int): the layer order for the coastlines
             coastline_width (float): the width of the coastlines
+            df_sites (`pandas.DataFrame`): a `pandas.DataFrame` that stores the information of a collection of sites
+            colname_dict (dict): a dictionary of column names for `df_sites` in the "key:value" format "assumed name:real name"
 
         '''
         ndim = len(self.da.dims)
@@ -311,16 +323,41 @@ class XDataArray:
                 gl.top_labels = False
                 gl.right_labels = False
 
-            if self.da.attrs['comp'] in ['ocn', 'ice']:
+            # add coastlines
+            if ssv is not None:
+                # using a sea surface variable with NaNs for coastline plotting
+                ax.contour(ssv.lon, ssv.lat, np.isnan(ssv), levels=[0, 1], colors='k', transform=_transform, zorder=coastline_zorder, linewidths=coastline_width)
+            elif 'comp' in self.da.attrs and (self.da.attrs['comp'] in ['ocn', 'ice']):
+                # using NaNs in the dataarray itself for coastline plotting
                 ax.contour(self.da.lon, self.da.lat, np.isnan(self.da), levels=[0, 1], colors='k', transform=_transform, zorder=coastline_zorder, linewidths=coastline_width)
             else:
-                if ssv is None:
-                    ax.coastlines(zorder=coastline_zorder, linewidth=coastline_width)
+                ax.coastlines(zorder=coastline_zorder, linewidth=coastline_width)
+
+            im = self.da.plot.contourf(ax=ax, **_plt_kws)
+
+            if df_sites is not None:
+                colname_dict = {} if colname_dict is None else colname_dict
+                _colname_dict={'lat': 'lat', 'lon':'lon', 'value': 'value', 'type': 'type'}
+                _colname_dict.update(colname_dict)
+                site_lons = df_sites[_colname_dict['lon']] if _colname_dict['lon'] in df_sites else None
+                site_lats = df_sites[_colname_dict['lat']] if _colname_dict['lat'] in df_sites else None
+                site_vals = df_sites[_colname_dict['value']] if _colname_dict['value'] in df_sites else None
+                site_types = df_sites[_colname_dict['types']] if _colname_dict['type'] in df_sites else None
+
+                if site_types is None:
+                    site_markers = 'o'
+
+                    if site_vals is None:
+                        site_colors = 'gray'
+                    else:
+                        site_colors = site_vals
                 else:
-                    ax.contour(ssv.lon, ssv.lat, np.isnan(ssv), levels=[0, 1], colors='k', transform=_transform, zorder=coastline_zorder, linewidths=coastline_width)
+                    site_markers = [visual.marker_dict[t] for t in site_types]
 
-            self.da.plot.contourf(ax=ax, **_plt_kws)
-
+                cmap_obj = plt.get_cmap(_plt_kws['cmap'])
+                norm = BoundaryNorm(im.levels, ncolors=cmap_obj.N, clip=True)
+                ax.scatter(site_lons, site_lats, s=site_markersizes, marker=site_markers, edgecolors='k', c=site_colors,
+                           zorder=99, transform=_transform, cmap=cmap_obj, norm=norm)
 
         elif ndim == 2:
             # vertical
