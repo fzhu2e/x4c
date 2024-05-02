@@ -14,7 +14,7 @@ from . import utils, visual
 import os
 dirpath = os.path.dirname(__file__)
 
-def load_dataset(path, adjust_month=False, comp=None, grid=None, **kws):
+def load_dataset(path, adjust_month=False, comp=None, grid=None, vn=None, **kws):
     ''' Load a netCDF file and form a `xarray.Dataset`
 
     Args:
@@ -22,13 +22,14 @@ def load_dataset(path, adjust_month=False, comp=None, grid=None, **kws):
         adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
         comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
         grid (str): the grid tag for the CESM output (e.g., ne16, g16)
+        vn (str): variable name
 
     '''
     ds = xr.load_dataset(path, **kws)
-    ds = utils.update_ds(ds, path=path, comp=comp, grid=grid, adjust_month=adjust_month)
+    ds = utils.update_ds(ds, vn=vn, path=path, comp=comp, grid=grid, adjust_month=adjust_month)
     return ds
 
-def open_dataset(path, adjust_month=False, comp=None, grid=None, **kws):
+def open_dataset(path, adjust_month=False, comp=None, grid=None, vn=None, **kws):
     ''' Open a netCDF file and form a `xarray.Dataset` with a lazy load mode
 
     Args:
@@ -36,13 +37,14 @@ def open_dataset(path, adjust_month=False, comp=None, grid=None, **kws):
         adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
         comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
         grid (str): the grid tag for the CESM output (e.g., ne16, g16)
+        vn (str): variable name
 
     '''
     ds = xr.open_dataset(path, **kws)
-    ds = utils.update_ds(ds, path=path, comp=comp, grid=grid, adjust_month=adjust_month)
+    ds = utils.update_ds(ds, vn=vn, path=path, comp=comp, grid=grid, adjust_month=adjust_month)
     return ds
 
-def open_mfdataset(paths, adjust_month=False, comp=None, grid=None, **kws):
+def open_mfdataset(paths, adjust_month=False, comp=None, grid=None, vn=None, **kws):
     ''' Open multiple netCDF files and form a `xarray.Dataset` in a lazy load mode
 
     Args:
@@ -50,10 +52,11 @@ def open_mfdataset(paths, adjust_month=False, comp=None, grid=None, **kws):
         adjust_month (bool): adjust the month of the `xarray.Dataset` (the default CESM output has a month shift)
         comp (str): the tag for CESM component, including "atm", "ocn", "lnd", "ice", and "rof"
         grid (str): the grid tag for the CESM output (e.g., ne16, g16)
+        vn (str): variable name
 
     '''
     ds = xr.open_mfdataset(paths, **kws)
-    ds = utils.update_ds(ds, path=paths, comp=comp, grid=grid, adjust_month=adjust_month)
+    ds = utils.update_ds(ds, vn=vn, path=paths, comp=comp, grid=grid, adjust_month=adjust_month)
     return ds
 
 @xr.register_dataset_accessor('x')
@@ -134,8 +137,8 @@ class XDataset:
     def __getitem__(self, key):
         da = self.ds[key]
 
-        if 'source' in self.ds.attrs:
-            da.attrs['source'] = self.ds.attrs['source']
+        if 'path' in self.ds.attrs:
+            da.attrs['path'] = self.ds.attrs['path']
 
         if 'gw' in self.ds:
             da.attrs['gw'] = self.ds['gw']
@@ -150,10 +153,20 @@ class XDataset:
             da.attrs['comp'] = self.ds.attrs['comp']
             if 'time' in da.coords:
                 da.time.attrs['long_name'] = 'Model Year'
+
         if 'grid' in self.ds.attrs:
             da.attrs['grid'] = self.ds.attrs['grid']
 
         return da
+
+    @property
+    def da(self):
+        ''' get its `xarray.DataArray` version '''
+        if 'vn' in self.ds.attrs:
+            vn = self.ds.attrs['vn']
+            return self.ds.x[vn]
+        else:
+            raise ValueError('`vn` not existed in `Dataset.attrs`')
 
 
 @xr.register_dataarray_accessor('x')
@@ -173,12 +186,31 @@ class XDataArray:
         da = utils.update_attrs(da, self.da)
         return da
 
+    def regrid(self, **kws):
+        ds_rgd = self.ds.x.regrid(**kws)
+        return ds_rgd.x.da
+
+    @property
+    def ds(self):
+        ''' get its `xarray.Dataset` version '''
+        ds_tmp = self.da.to_dataset()
+
+        for v in ['gw', 'lat', 'lon']:
+            if v in self.da.attrs: ds_tmp[v] = self.da.attrs[v]
+
+        for v in ['comp', 'grid']:
+            if v in self.da.attrs: ds_tmp.attrs[v] = self.da.attrs[v]
+        
+        ds_tmp.attrs['vn'] = self.da.name
+        return ds_tmp
+
     @property
     def gm(self):
         ''' the global area-weighted mean '''
         gw = self.da.attrs['gw']
         da = self.da.weighted(gw).mean(list(gw.dims))
         da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'Global Mean {da.attrs["long_name"]}'
         return da
 
     @property
@@ -188,6 +220,7 @@ class XDataArray:
         lat = self.da.attrs['lat']
         da = self.da.where(lat>0).weighted(gw).mean(list(gw.dims))
         da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'NH Mean {da.attrs["long_name"]}'
         return da
 
     @property
@@ -197,6 +230,7 @@ class XDataArray:
         lat = self.da.attrs['lat']
         da = self.da.where(lat<0).weighted(gw).mean(list(gw.dims))
         da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'SH Mean {da.attrs["long_name"]}'
         return da
 
     @property
@@ -208,6 +242,7 @@ class XDataArray:
         else:
             da = self.da.mean('lon')
         da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
         return da
 
     def geo_mean(self, ind=None, latlon_range=(-90, 90, 0, 360)):
@@ -303,12 +338,17 @@ class XDataArray:
                 _transform = ccrs.__dict__[transform]()
                 ax = plt.subplot(projection=_projection)
 
+            if 'units' in self.da.attrs:
+                cbar_lb = f'{self.da.name} [{self.da.units}]'
+            else:
+                cbar_lb = self.da.name
+
             _plt_kws = {
                 'transform': _transform,
                 'extend': 'both',
                 'cmap': visual.infer_cmap(self.da),
                 'cbar_kwargs': {
-                    'label': f'{self.da.name} [{self.da.units}]',
+                    'label': cbar_lb,
                     'aspect': 10,
                 },
             }

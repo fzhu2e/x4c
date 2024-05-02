@@ -142,17 +142,15 @@ def update_attrs(da, da_src):
 
     return da
 
-def update_ds(ds, path, comp=None, grid=None, adjust_month=False):
+def update_ds(ds, path, vn=None, comp=None, grid=None, adjust_month=False,
+              gw_name=None, lat_name=None, lon_name=None):
     if adjust_month:
         ds['time'] = ds['time'].get_index('time') - datetime.timedelta(days=1)
 
-    ds.attrs['source'] = path
-
-    if comp is not None:
-        ds.attrs['comp'] = comp
-
-    if grid is not None:
-        ds.attrs['grid'] = grid
+    ds.attrs['path'] = path
+    if vn is not None: ds.attrs['vn'] = vn
+    if comp is not None: ds.attrs['comp'] = comp
+    if grid is not None: ds.attrs['grid'] = grid
 
     if 'comp' in ds.attrs:
         grid_weight_dict = {
@@ -175,9 +173,14 @@ def update_ds(ds, path, comp=None, grid=None, adjust_month=False):
             'ice': 'TLAT',
             'lnd': 'lat',
         }
-        ds['gw'] = ds[grid_weight_dict[comp]]
-        ds['lat'] = ds[lat_dict[comp]]
-        ds['lon'] = ds[lon_dict[comp]]
+
+        gw_name = grid_weight_dict[comp] if gw_name is None else gw_name
+        lat_name = lat_dict[comp] if lat_name is None else lat_name
+        lon_name = lon_dict[comp] if lon_name is None else lon_name
+
+    if gw_name is not None: ds['gw'] = ds[gw_name]
+    if lat_name is not None: ds['lat'] = ds[lat_name]
+    if lon_name is not None: ds['lon'] = ds[lon_name]
 
     return ds
 
@@ -206,7 +209,12 @@ def add_cyclic_point(da):
     da_wrap.attrs = da.attrs.copy()
     return da_wrap
 
-def ann_modifier(da, ann_method, long_name):
+def ann_modifier(da, ann_method, long_name=None):
+    if 'long_name' in da.attrs:
+        long_name = da.attrs['long_name'] if long_name is None else long_name
+    else:
+        long_name = da.name
+
     if ann_method == 'ann':
         da_out = da.x.annualize()
         da_out.attrs['long_name'] = f'{long_name} (Annual)'
@@ -217,3 +225,19 @@ def ann_modifier(da, ann_method, long_name):
         da_out.attrs['long_name'] = f'{long_name} ({months_char})'
 
     return da_out
+
+def convert_units(da, units=None):
+    if units is not None:
+        if 'units' in da.attrs:
+            if da.attrs['units'] == 'K' and units == 'degC':
+                da -= 273.15
+                da.attrs['units'] = '°C'
+            elif da.attrs['units'] == 'degC' and units == 'K':
+                da += 273.15
+                da.attrs['units'] = 'K'
+            elif da.attrs['units'] == 'degC' and units == 'degC' or units is None:
+                da.attrs['units'] = '°C'
+        else:
+            p_warning("The inpu `xarray.DataArray` doesn't have a unit.")
+
+    return da

@@ -38,7 +38,7 @@ class Timeseries:
             )
         )
 
-        self.ds = xr.Dataset()
+        self.ds = {}
         self.diags = {}
         self.vars_info = {}
         for path in self.paths:
@@ -55,9 +55,9 @@ class Timeseries:
         ''' Clear the existing `.ds` property
         '''
         if vn is not None:
-            del(self.ds[vn])
+            self.ds.pop(vn)
         else:
-            self.ds = xr.Dataset()
+            self.ds = {}
 
     def load(self, vn, adjust_month=True, load_idx=-1, regrid=False):
         ''' Load a specific variable
@@ -72,25 +72,25 @@ class Timeseries:
             vn = [vn]
 
         for v in vn:
-            if v in ['KMT', 'z_t', 'z_w', 'dz', 'dzw']:
-                vn_tmp = 'SSH'
-                comp, mdl, h_str = self.vars_info[vn_tmp]
-                paths = sorted(glob.glob(
-                    os.path.join(
-                        self.root_dir,
-                        self.path_pattern \
-                            .replace('comp', comp) \
-                            .replace('casename', '*') \
-                            .replace('mdl', mdl) \
-                            .replace('h_str', h_str) \
-                            .replace('vn', vn_tmp) \
-                            .replace('timespan', '*'),
-                    )
-                ))
-                with xr.load_dataset(paths[-1], decode_cf=False) as ds:
-                    self.ds[v] = ds.x[v]
+            # if v in ['KMT', 'z_t', 'z_w', 'dz', 'dzw']:
+            #     vn_tmp = 'SSH'
+            #     comp, mdl, h_str = self.vars_info[vn_tmp]
+            #     paths = sorted(glob.glob(
+            #         os.path.join(
+            #             self.root_dir,
+            #             self.path_pattern \
+            #                 .replace('comp', comp) \
+            #                 .replace('casename', '*') \
+            #                 .replace('mdl', mdl) \
+            #                 .replace('h_str', h_str) \
+            #                 .replace('vn', vn_tmp) \
+            #                 .replace('timespan', '*'),
+            #         )
+            #     ))
+            #     with xr.load_dataset(paths[-1], decode_cf=False) as ds:
+            #         self.ds[v] = ds.x[v]
 
-            elif v in self.vars_info:
+            if v in self.vars_info:
                 comp, mdl, h_str = self.vars_info[v]
                 paths = sorted(glob.glob(
                     os.path.join(
@@ -112,27 +112,24 @@ class Timeseries:
                         utils.p_warning(f'>>> case.ds["{v}"] already loaded but will be reloaded due to a different regrid status')
 
                 if v in self.ds:
-                    if (load_idx is not None) and (paths[load_idx] != self.ds[v].attrs['source']):
+                    if (load_idx is not None) and (paths[load_idx] != self.ds[v].attrs['path']):
                         self.clear_ds(v)
                         utils.p_warning(f'>>> case.ds["{v}"] already loaded but will be reloaded due to a different `load_idx`')
                 
                 # new load
                 if v not in self.ds:
                     if load_idx is not None:
-                        ds =  core.load_dataset(paths[load_idx], adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+                        ds =  core.load_dataset(paths[load_idx], vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
                     else:
-                        ds =  core.open_mfdataset(paths, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+                        ds =  core.open_mfdataset(paths, vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
 
                     if regrid:
-                        da_rgd = ds.x.regrid().x[v]
-                        self.ds[v] = da_rgd
+                        self.ds[v] = ds.x.regrid()
                         self.ds[v].attrs.update({'regridded': True})
-                        self.ds[v].values = da_rgd.values # somehow this step is necessary, otherwise will be all NaN; a bug of `xarray`?
                     else:
-                        self.ds[v] = ds.x[v]
-                        self.ds[v].values = ds.x[v].values  # somehow this step is necessary, otherwise will be all NaN; a bug of `xarray`?
+                        self.ds[v] = ds
 
-                    self.ds.attrs.update(ds.attrs)
+                    self.ds[v].attrs['vn'] = v
                     utils.p_success(f'>>> case.ds["{v}"] created')
 
                 elif v in self.ds:
@@ -142,11 +139,11 @@ class Timeseries:
                 utils.p_warning(f'>>> Variable {v} not existed')
 
         
-    def calc(self, vn, load_idx=-1, adjust_month=True, **kws):
-        ''' Calculate a diagnostic variable
+    def calc(self, spell, load_idx=-1, adjust_month=True, **kws):
+        ''' Calculate a diagnostic spell
 
         Args:
-            vn (str): The diagnostic variable name in the format of `plot_type:diag_name:ann_method`, where
+            spell (str): The diagnostic spell in the format of `plot_type:diag_name:ann_method[:sm_method]`, where
                 The `plot_type` supports:
                 
                     * `ts`: timeseries plots
@@ -172,26 +169,63 @@ class Timeseries:
                     * `<m>`: a number in [..., -11, -12, 1, 2, ..., 12] representing a month
                     * `<m1>,<m2>,...`: a list of months sepearted by commmas
                     
+                The `sm_method` supports:
+                
+                    * `gm`: global mean
+                    * `nhm`: NH mean
+                    * `shm`: SH mean
+
                 For example,
                 
                     * `ts:GMST:ann`: annual mean GMST timeseries
+                    * `ts:SHH:ann:shm`: annual mean SH mean SHH timeseries
                     * `map:TS:-12,1,2`: DJF mean TS 2D map
                     * `map:MLD:3`: March MLD 2D map
                     * `zm:LST:6,7,8,9`: JJAS LST zonal mean
 
         '''
-        plot_type, diag_name, ann_method = vn.split(':')
-        func_name = f'calc_{plot_type}_{diag_name}'
-        self.diags[vn] = diags.DiagCalc.__dict__[func_name](self, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method, **kws)
-        utils.p_success(f'>>> case.diags["{vn}"] created')
+        spell_elements = spell.split(':')
+        if len(spell_elements) == 3:
+            plot_type, diag_name, ann_method = spell_elements
+        elif len(spell_elements) == 4:
+            plot_type, diag_name, ann_method, sm_method = spell_elements
+        else:
+            raise ValueError('Wrong diagnostic spell.')
 
-    def plot(self, vn, **kws):
-        ''' Plot a diagnostic variable
+        func_name = f'calc_{plot_type}_{diag_name}'
+        if func_name in diags.DiagCalc.__dict__:
+            self.diags[spell] = diags.DiagCalc.__dict__[func_name](
+                self, load_idx=load_idx,
+                adjust_month=adjust_month,
+                ann_method=ann_method, **kws,
+            )
+        else:
+            func_name = f'calc_{plot_type}'
+            if 'sm_method' in locals(): kws.update({'sm_method': sm_method})
+
+            self.diags[spell] = diags.DiagCalc.__dict__[func_name](
+                self, vn=diag_name, load_idx=load_idx,
+                adjust_month=adjust_month,
+                ann_method=ann_method, **kws,
+            )
+
+        utils.p_success(f'>>> case.diags["{spell}"] created')
+
+    def plot(self, spell, **kws):
+        ''' Plot a diagnostic spell
 
         Args:
-            vn (str): The diagnostic variable name in the format of `plot_type:diag_name:ann_method`, see :func:`x4c.case.Timeseries.calc`
+            spell (str): The diagnostic variable name in the format of `plot_type:diag_name:ann_method[:sm_method]`, see :func:`x4c.case.Timeseries.calc`
         '''
-        plot_type, diag_name, ann_method = vn.split(':')
+        spell_elements = spell.split(':')
+        if len(spell_elements) == 3:
+            plot_type, diag_name, ann_method = spell_elements
+        elif len(spell_elements) == 4:
+            plot_type, diag_name, ann_method, sm_method = spell_elements
+        else:
+            raise ValueError('Wrong diagnostic spell.')
+
+        if 'sm_method' in locals(): kws.update({'sm_method': sm_method})
         return diags.DiagPlot.__dict__[f'plot_{plot_type}'](self, diag_name, ann_method=ann_method, **kws)
 
 class Logs:

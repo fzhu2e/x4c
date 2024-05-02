@@ -35,7 +35,7 @@ exclude_patterns = [
     '_build',
     'Thumbs.db',
     '.DS_Store',
-    'notebooks/test/*.ipynb',  # notebooks under test won't be rendered
+    'notebooks/test-*.ipynb',  # notebooks with filenames starting with "test" won't be rendered
 ]
 
 extensions = [
@@ -51,7 +51,7 @@ extensions = [
     # 'sphinx_gallery.load_style',
 ]
 
-html_logo = 'NCAR-logo.png'
+html_logo = 'x4c-logo.png'
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for

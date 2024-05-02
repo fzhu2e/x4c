@@ -1,0 +1,901 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Diagnostics from the log files &#8212; x4c  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=db61ab07" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css?v=fca5bd30" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/diag-log';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/x4c-logo.png" class="logo__image only-light" alt="x4c  documentation - Home"/>
+    <script>document.write(`<img src="../_static/x4c-logo.png" class="logo__image only-dark" alt="x4c  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ug-installation.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ug-core.html">Core Features</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="core-regrid.html">Regrid from CESM grid to lat/lon grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-geo_mean.html">Calculate the geo-spatial mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-annualize.html">Annualize CESM output with flexible months</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-visualize.html">Basic visualizations</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ug-diags.html">CESM Diagnostics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="diag-atm.html">Diagnostics: ATM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag-ocn.html">Diagnostics: OCN</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ug-api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/fzhu2e/x4c" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/fzhu2e/x4c/edit/main/notebooks/diag-log.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/fzhu2e/x4c/issues/new?title=Issue%20on%20page%20%2Fnotebooks/diag-log.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/diag-log.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Diagnostics from the log files</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMST-vs-CO2">GMST vs CO2</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Diagnostics-from-the-log-files">
+<h1>Diagnostics from the log files<a class="headerlink" href="#Diagnostics-from-the-log-files" title="Link to this heading">#</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%load_ext autoreload
+%autoreload 2
+
+import os
+os.chdir(&#39;/glade/u/home/fengzhu/Github/x4c/docsrc/notebooks&#39;)
+import numpy as np
+import x4c
+import matplotlib.pyplot as plt
+print(x4c.__version__)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+2024.4.16
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>casename = &#39;b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005&#39;
+
+L = {}
+L[&#39;3xCO2&#39;] = x4c.Logs(
+    f&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/{casename}/logs&#39;,
+    comp=&#39;ocn&#39;,
+    # load_num=-10,  # the last n files
+)
+
+casename = &#39;b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.1.5xCO2.005&#39;
+L[&#39;1.5xCO2&#39;] = x4c.Logs(
+    f&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/{casename}/logs&#39;,
+    comp=&#39;ocn&#39;,
+    # load_num=-10,  # the last n files
+)
+
+casename = &#39;b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.PI.tuning.110&#39;
+L[&#39;PI&#39;] = x4c.Logs(
+    f&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/{casename}/logs&#39;,
+    comp=&#39;ocn&#39;,
+    # load_num=-10,  # the last n files
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Logs.dirpath: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005/logs</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; 351 Logs.paths:</span>
+Start: ocn.log.2682906.desched1.231221-232436.gz
+End: ocn.log.4100121.desched1.240412-113541.gz
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Logs.dirpath: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.1.5xCO2.005/logs</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; 120 Logs.paths:</span>
+Start: ocn.log.3770172.desched1.240309-201624.gz
+End: ocn.log.4181436.desched1.240418-232117.gz
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Logs.dirpath: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.PI.tuning.110/logs</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; 49 Logs.paths:</span>
+Start: ocn.log.3925680.desched1.240327-145303.gz
+End: ocn.log.4116831.desched1.240414-093039.gz
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>for k, v in L.items():
+    v.get_vars(&#39;TEMP&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>dT = {}
+for k, v in L.items():
+    if k != &#39;PI&#39;:
+        dT[k] = L[k].df_ann[&#39;TEMP&#39;].values[-1] - L[&#39;PI&#39;].df_ann[&#39;TEMP&#39;].values[-1]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case = {}
+
+dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005&#39;
+case[&#39;3xCO2&#39;] = x4c.Timeseries(dirpath)
+
+dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.1.5xCO2.005&#39;
+case[&#39;1.5xCO2&#39;] = x4c.Timeseries(dirpath)
+
+dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.PI.tuning.110&#39;
+case[&#39;PI&#39;] = x4c.Timeseries(dirpath)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.root_dir: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.path_pattern: comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.grid_dict: {&#39;atm&#39;: &#39;ne16&#39;, &#39;lnd&#39;: &#39;ne16&#39;, &#39;rof&#39;: &#39;ne16&#39;, &#39;ocn&#39;: &#39;g16&#39;, &#39;ice&#39;: &#39;g16&#39;}</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vars_info created</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.root_dir: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.1.5xCO2.005</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.path_pattern: comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.grid_dict: {&#39;atm&#39;: &#39;ne16&#39;, &#39;lnd&#39;: &#39;ne16&#39;, &#39;rof&#39;: &#39;ne16&#39;, &#39;ocn&#39;: &#39;g16&#39;, &#39;ice&#39;: &#39;g16&#39;}</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vars_info created</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.root_dir: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.PI.tuning.110</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.path_pattern: comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.grid_dict: {&#39;atm&#39;: &#39;ne16&#39;, &#39;lnd&#39;: &#39;ne16&#39;, &#39;rof&#39;: &#39;ne16&#39;, &#39;ocn&#39;: &#39;g16&#39;, &#39;ice&#39;: &#39;g16&#39;}</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vars_info created</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>gmst = {}
+for k, v in case.items():
+    v.calc(&#39;ts:GMST:ann&#39;, load_idx=-1)
+    gmst[k] = np.atleast_1d(v.diags[&#39;ts:GMST:ann&#39;].mean(&#39;time&#39;))[0]
+    print(k, gmst[k])
+
+dGMST = {}
+for k, v in gmst.items():
+    if k != &#39;PI&#39;:
+        dGMST[k] = gmst[k] - gmst[&#39;PI&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] already loaded; to reload, run case.clear_ds(&#34;TS&#34;) before case.load(&#34;TS&#34;)</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.diags[&#34;ts:GMST:ann&#34;] created</span>
+3xCO2 24.291184689859584
+<span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] already loaded; to reload, run case.clear_ds(&#34;TS&#34;) before case.load(&#34;TS&#34;)</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.diags[&#34;ts:GMST:ann&#34;] created</span>
+1.5xCO2 20.367479046876184
+<span class="ansi-yellow-intense-fg ansi-bold">&gt;&gt;&gt; case.ds[&#34;TS&#34;] already loaded; to reload, run case.clear_ds(&#34;TS&#34;) before case.load(&#34;TS&#34;)</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.diags[&#34;ts:GMST:ann&#34;] created</span>
+PI 15.148048207480398
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>x4c.set_style(&#39;journal_spines&#39;, font_scale=1.2)
+fig, ax = plt.subplots(figsize=[7, 4])
+lw = 3
+ax.plot(L[&#39;3xCO2&#39;].df_ann.index, L[&#39;3xCO2&#39;].df_ann[&#39;TEMP&#39;], label=&#39;3x CO2&#39;, color=&#39;tab:red&#39;, lw=lw)
+ax.plot(L[&#39;1.5xCO2&#39;].df_ann.index, L[&#39;1.5xCO2&#39;].df_ann[&#39;TEMP&#39;], label=&#39;1.5x CO2&#39;, color=&#39;tab:blue&#39;, lw=lw)
+ax.set_xlim([0, 7000])
+ax.set_ylim([8.5, 13])
+ax.set_ylabel(&#39;TEMP [°C]&#39;)
+ax.set_xlabel(&#39;Model Year&#39;)
+ax.set_title(&#39;Global Volume Mean Ocean Temperature&#39;, weight=&#39;bold&#39;)
+
+ax.text(3500, 12., r&#39;$\Delta$: MCO$-$PI&#39;, color=&#39;k&#39;)
+ax.text(4500, 11.5, r&#39;$\Delta GMST = $&#39;+f&#39;{dGMST[&quot;3xCO2&quot;]:.1f}&#39;, color=&#39;tab:red&#39;)
+ax.text(4500, 11, r&#39;$\Delta OCNT = $&#39;+f&#39;{dT[&quot;3xCO2&quot;]:.1f}&#39;, color=&#39;tab:red&#39;)
+ax.text(4720, 10.5, r&#39;$\frac{\Delta GMST}{\Delta OCNT} = $&#39;+f&#39;{dGMST[&quot;3xCO2&quot;]/dT[&quot;3xCO2&quot;]:.1f}&#39;, color=&#39;tab:red&#39;)
+ax.text(2200, 11.5, r&#39;$\Delta GMST = $&#39;+f&#39;{dGMST[&quot;1.5xCO2&quot;]:.1f}&#39;, color=&#39;tab:blue&#39;)
+ax.text(2200, 11, r&#39;$\Delta OCNT = $&#39;+f&#39;{dT[&quot;1.5xCO2&quot;]:.1f}&#39;, color=&#39;tab:blue&#39;)
+ax.text(2420, 10.5, r&#39;$\frac{\Delta GMST}{\Delta OCNT} = $&#39;+f&#39;{dGMST[&quot;1.5xCO2&quot;]/dT[&quot;1.5xCO2&quot;]:.1f}&#39;, color=&#39;tab:blue&#39;)
+ax.text(200, 9.9, r&#39;IC: 2-kyr spin-up (Acosta et al., 2022)&#39;, color=&#39;tab:brown&#39;)
+ax.scatter(0, 10.05, s=100, marker=&#39;o&#39;, color=&#39;tab:brown&#39;, zorder=99)
+
+# ax.text(4500, 11.5, r&#39;$\Delta T_{GMST} = $&#39;+f&#39;{dGMST[&quot;3xCO2&quot;]:.1f}&#39;, color=&#39;tab:red&#39;)
+# ax.text(4620, 11, r&#39;$\Delta T_{OCN} = $&#39;+f&#39;{dT[&quot;3xCO2&quot;]:.1f}&#39;, color=&#39;tab:red&#39;)
+# ax.text(4720, 10.5, r&#39;$\frac{\Delta T_{GMST}}{\Delta T_{OCN}} = $&#39;+f&#39;{dGMST[&quot;3xCO2&quot;]/dT[&quot;3xCO2&quot;]:.1f}&#39;, color=&#39;tab:red&#39;)
+
+# ax.text(2000, 11.5, r&#39;$\Delta T_{GMST} = $&#39;+f&#39;{dGMST[&quot;1.5xCO2&quot;]:.1f}&#39;, color=&#39;tab:blue&#39;)
+# ax.text(2120, 11, r&#39;$\Delta T_{OCN} = $&#39;+f&#39;{dT[&quot;1.5xCO2&quot;]:.1f}&#39;, color=&#39;tab:blue&#39;)
+# ax.text(2220, 10.5, r&#39;$\frac{\Delta T_{GMST}}{\Delta T_{OCN}} = $&#39;+f&#39;{dGMST[&quot;1.5xCO2&quot;]/dT[&quot;1.5xCO2&quot;]:.1f}&#39;, color=&#39;tab:blue&#39;)
+
+ax.legend(ncol=1, loc=&#39;lower right&#39;)
+x4c.showfig(fig)
+x4c.savefig(fig, &#39;./figs/ocn_temp_spin-up.pdf&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_diag-log_7_0.png" src="../_images/notebooks_diag-log_7_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Figure saved at: &#34;figs/ocn_temp_spin-up.pdf&#34;
+</pre></div></div>
+</div>
+<section id="GMST-vs-CO2">
+<h2>GMST vs CO2<a class="headerlink" href="#GMST-vs-CO2" title="Link to this heading">#</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>import xarray as xr
+fpath = &#39;/glade/work/fengzhu/Projects/MioMIP1/MioMIP1.nc&#39;
+MioMIP1=xr.open_dataset(fpath,decode_times=False)
+
+
+ds_PA = xr.load_dataset(&#39;/glade/campaign/univ/ubrn0018/data/climo/B.MMIOx2_C5_840_WISOon.cam.h0.2100-2199.climo.nc&#39;)
+tas_PA = ds_PA[&#39;TS&#39;].x.annualize() - 273.15
+
+wgts = np.cos(np.deg2rad(tas_PA.lat))
+gmst[&#39;PA&#39;] = tas_PA.weighted(wgts).mean((&#39;lon&#39;, &#39;lat&#39;)).data.item()
+gmst[&#39;PA&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+23.077908400031777
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>MioMIP1.exp.data
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([&#39;COSMOS Late Miocene 278ppm&#39;, &#39;COSMOS Late Miocene 450ppm&#39;,
+       &#39;COSMOS Late Miocene ICEQ 278ppm&#39;,
+       &#39;COSMOS Late Miocene ICEQ 450ppm&#39;, &#39;HadCM3L Late Miocene 280ppm&#39;,
+       &#39;HadCM3L Late Miocene 400ppm&#39;, &#39;HadCM3L Tortonian 400ppm&#39;,
+       &#39;HadCM3L Messinian 400ppm&#39;, &#39;NorESM-L 10Ma 350ppm&#39;,
+       &#39;NorESM-L 10Ma 560ppm&#39;, &#39;CCSM-NH3 355ppm&#39;, &#39;CCSM-NH3 560ppm&#39;,
+       &#39;CCSM3 T42 MMCO 400ppm&#39;, &#39;CCSM3 T42 MMCO 200ppm&#39;,
+       &#39;CCSM3 T42 MMG 200ppm&#39;, &#39;CCSM3 T42 MMG 400ppm&#39;, &#39;CCSM4 400ppm&#39;,
+       &#39;CESM1 400ppm&#39;, &#39;COSMOS Mid Miocene 278ppm&#39;,
+       &#39;COSMOS Mid Miocene 450ppm&#39;, &#39;HadCM3L Mid Miocene 90SLE 280ppm&#39;,
+       &#39;HadCM3L Mid Miocene 90SLE 400ppm&#39;,
+       &#39;HadCM3L Mid Miocene 90SLE 560ppm&#39;,
+       &#39;HadCM3L Mid Miocene 90SLE 850ppm&#39;,
+       &#39;HadCM3L Mid Miocene 55SLE 280ppm&#39;,
+       &#39;HadCM3L Mid Miocene 55SLE 400ppm&#39;,
+       &#39;HadCM3L Mid Miocene 55SLE 560ppm&#39;,
+       &#39;HadCM3L Mid Miocene 55SLE 850ppm&#39;,
+       &#39;HadCM3L Mid Miocene NoICE 280ppm&#39;,
+       &#39;HadCM3L Mid Miocene NoICE 400ppm&#39;,
+       &#39;HadCM3L Mid Miocene NoICE 560ppm&#39;,
+       &#39;HadCM3L Mid Miocene NoICE 850ppm&#39;, &#39;HadCM3L Langhian 280ppm&#39;,
+       &#39;HadCM3L Langhian 400ppm&#39;, &#39;HadCM3L Langhian 560ppm&#39;,
+       &#39;IPSLCM 20Ma 420ppm&#39;, &#39;IPSLCM 20Ma 560ppm&#39;, &#39;IPSLCM 20Ma 840ppm&#39;,
+       &#39;IPSLCM 20Ma NoGIS 560ppm&#39;, &#39;NorESM-L 20Ma 350ppm&#39;,
+       &#39;NorESM-L 20Ma 560ppm&#39;], dtype=&#39;&lt;U32&#39;)
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>co2base = 284.7
+
+exp = {
+    &#39;iCESM1.3 Mid Miocene&#39;: {
+        &#39;CO2&#39;: np.array([1.5, 3]),
+        &#39;GMST&#39;: np.array([
+            gmst[&#39;1.5xCO2&#39;],
+            gmst[&#39;3xCO2&#39;],
+        ])
+    },
+    &#39;Acosta et al. (2022) Mid Miocene&#39;: {&#39;CO2&#39;: np.array([840])/co2base, &#39;GMST&#39;: np.array([gmst[&#39;PA&#39;]])},
+}
+
+for name in MioMIP1.exp.data:
+    # print(name.split(&#39;ppm&#39;)[0].split())
+    exp_name = &#39; &#39;.join(name.split(&#39;ppm&#39;)[0].split()[:-1])
+    co2ppm = float(name.split(&#39;ppm&#39;)[0].split()[-1]) / co2base
+    gmst = MioMIP1.TS_GM.sel(exp=name).data.item()-273.15
+    if exp_name not in exp:
+        exp[exp_name] = {}
+        exp[exp_name][&#39;CO2&#39;] = [co2ppm]
+        exp[exp_name][&#39;GMST&#39;] = [gmst]
+    else:
+        exp[exp_name][&#39;CO2&#39;].append(co2ppm)
+        exp[exp_name][&#39;GMST&#39;].append(gmst)
+
+for name in MioMIP1.exp.data:
+    exp[exp_name][&#39;CO2&#39;] = np.array(exp[exp_name][&#39;CO2&#39;])
+    exp[exp_name][&#39;GMST&#39;] = np.array(exp[exp_name][&#39;GMST&#39;])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>exp_names = [
+    &#39;iCESM1.3 Mid Miocene&#39;,
+    &#39;Acosta et al. (2022) Mid Miocene&#39;,
+    # &#39;COSMOS Late Miocene&#39;,
+    # &#39;COSMOS Late Miocene ICEQ&#39;,
+    # &#39;HadCM3L Late Miocene&#39;,
+    # &#39;HadCM3L Tortonian&#39;,
+    # &#39;HadCM3L Messinian&#39;,
+    &#39;NorESM-L 10Ma&#39;,
+    # &#39;CCSM-NH3&#39;,
+    &#39;CCSM3 T42 MMCO&#39;,
+    # &#39;CCSM3 T42 MMG&#39;,
+    # &#39;CCSM4&#39;,
+    # &#39;CESM1&#39;,
+    &#39;COSMOS Mid Miocene&#39;,
+    # &#39;HadCM3L Mid Miocene 90SLE&#39;,
+    &#39;HadCM3L Mid Miocene 55SLE&#39;,
+    &#39;HadCM3L Mid Miocene NoICE&#39;,
+    # &#39;HadCM3L Langhian&#39;,
+    &#39;IPSLCM 20Ma&#39;,
+    # &#39;IPSLCM 20Ma NoGIS&#39;,
+    &#39;NorESM-L 20Ma&#39;,
+]
+
+data_dict = {k: exp[k] for k in exp_names}
+fig, ax = plt.subplots(figsize=(4, 4))
+
+ylim=[14, 26]
+xlim = [0, 4]
+xticks=[1, 1.5, 2, 3, 4]
+xlabel=r&#39;CO2 $\times$ 284.7 [ppm]&#39;
+ylabel=r&#39;GMST [$^\circ$C]&#39;
+
+ax.set_xscale(&#39;log&#39;)
+ax.set_xlabel(xlabel)
+ax.set_ylabel(ylabel)
+ax.set_title(&#39;GMST vs CO2&#39;, weight=&#39;bold&#39;)
+ax.set_ylim(ylim)
+ax.set_xlim(xlim)
+ax.set_xticks(xticks)
+ax.set_xticklabels(xticks)
+
+for k, v in data_dict.items():
+    ax.plot(v[&#39;CO2&#39;], v[&#39;GMST&#39;], label=k, ms=10, marker=&#39;s&#39;)
+
+_lgd_kws = {
+    &#39;frameon&#39;: False,
+    &#39;bbox_to_anchor&#39;: (1, 1),
+    &#39;loc&#39;: &#39;upper left&#39;,
+    &#39;ncol&#39;: 1,
+}
+ax.legend(**_lgd_kws)
+
+
+mcomioallGMST=22.9262
+mcomioallGMST_1SDT=1.0077
+
+ax.fill_between(
+    np.arange(0, 7, 1),
+    mcomioallGMST-mcomioallGMST_1SDT,
+    mcomioallGMST+mcomioallGMST_1SDT,
+    facecolor=&#39;k&#39;, alpha=0.2,
+    label=&#39;Reconstruction (Burls et al., 2021)&#39;,
+)
+ax.legend(bbox_to_anchor=(0, -1.13), loc=&#39;lower left&#39;)
+x4c.showfig(fig)
+x4c.savefig(fig, &#39;./figs/GMSTvsCO2.pdf&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/glade/derecho/scratch/fengzhu/tmp/ipykernel_1798/3191291133.py:39: UserWarning: Attempt to set non-positive xlim on a log-scaled axis will be ignored.
+  ax.set_xlim(xlim)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_diag-log_12_1.png" src="../_images/notebooks_diag-log_12_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Figure saved at: &#34;figs/GMSTvsCO2.pdf&#34;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GMST-vs-CO2">GMST vs CO2</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Feng Zhu, Jiang Zhu, Dan Amrhein, Sophia Macarewich, Bette Otto-Bliersner, Esther Brady.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

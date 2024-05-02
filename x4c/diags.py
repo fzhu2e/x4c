@@ -5,19 +5,64 @@ import pop_tools
 from xhistogram.xarray import histogram
 
 class DiagCalc:
+    # General calculations
+    def calc_ts(case, vn, load_idx=-1, adjust_month=True, sm_method='gm', ann_method='ann', long_name=None, units=None):
+        ''' General timeseries calculation
+        '''
+        case.load(vn, load_idx=load_idx, adjust_month=adjust_month)
+        if long_name is None:
+            if 'long_name' in case.ds[vn].x.da.attrs:
+                long_name = case.ds[vn].x.da.attrs['long_name']
+            else:
+                long_name = vn
+
+        da_tmp = case.ds[vn].x.da
+        da_ann = utils.ann_modifier(da_tmp, ann_method, long_name=long_name)
+        da = getattr(da_ann.x, sm_method)
+        da = utils.convert_units(da, units)
+        return da
+
+    def calc_map(case, vn, load_idx=-1, adjust_month=True, ann_method='ann', clim=True, long_name=None, units=None):
+        ''' General map calculation
+        '''
+        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+        if long_name is None:
+            if 'long_name' in case.ds[vn].x.da.attrs:
+                long_name = case.ds[vn].x.da.attrs['long_name']
+            else:
+                long_name = vn
+
+        da_tmp = case.ds[vn].x.da
+        da = utils.ann_modifier(da_tmp, ann_method, long_name=long_name)
+        if clim: da = da.mean('time')
+        da = utils.convert_units(da, units)
+        return da
+
+    # Specific calculations
     def calc_ts_GMST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
         vn = 'TS'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month)
-        da_degC = case.ds[vn] - 273.15
+        da_degC = case.ds[vn].x.da - 273.15
         da_degC.attrs['units'] = '°C'
-        da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Global Mean Surface Temperature')
+        da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Surface Temperature')
         da = da_ann.x.gm
+        return da
+
+    def calc_ts_d18Osw(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+        vn = 'R18O'
+        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+        R18O = case.ds[vn].x.da.isel(z_t=0)
+        d18O = (R18O - 1)*1e3
+        da_ann = utils.ann_modifier(d18O, ann_method, long_name=r'Sea Surface $\delta^{18}$O')
+        da = da_ann.x.gm
+        da.name = 'd18Osw'
+        da.attrs['units'] = 'permil'
         return da
 
     def calc_map_TS(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
         vn = 'TS'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_degC = case.ds[vn] - 273.15
+        da_degC = case.ds[vn].x.da - 273.15
         da_degC.attrs['units'] = '°C'
         da = utils.ann_modifier(da_degC, ann_method, long_name='Surface Temperature')
         if clim: da = da.mean('time')
@@ -26,12 +71,12 @@ class DiagCalc:
     def calc_map_LST(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
         vn = 'TS'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_degC = case.ds[vn] - 273.15
+        da_degC = case.ds[vn].x.da - 273.15
         da_degC.attrs['units'] = '°C'
         da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Land Surface Temperature')
 
         case.load('LANDFRAC', load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        landfrac = case.ds['LANDFRAC'].x.annualize().mean('time')
+        landfrac = case.ds[vn].x.da.x.annualize().mean('time')
 
         da = da_ann.where(landfrac>0.5)
         if clim: da = da.mean('time')
@@ -42,7 +87,7 @@ class DiagCalc:
         vn = 'TEMP'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
         case.ds[vn].attrs['units'] = '°C'
-        sst = case.ds.x[vn].isel(z_t=0)
+        sst = case.ds[vn].x.da.isel(z_t=0)
         da = utils.ann_modifier(sst, ann_method, long_name='Sea Surface Temperature')
         if clim: da = da.mean('time')
         da.name = 'SST'
@@ -51,19 +96,79 @@ class DiagCalc:
     def calc_map_d18Osw(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
         vn = 'R18O'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        R18O = case.ds.x[vn].isel(z_t=0)
+        R18O = case.ds[vn].x.da.isel(z_t=0)
         d18O = (R18O - 1)*1e3
         da = utils.ann_modifier(d18O, ann_method, long_name=r'Sea Surface $\delta^{18}$O')
-        print(da)
         if clim: da = da.mean('time')
-        da.name = r'd18Osw'
+        da.name = 'd18Osw'
         da.attrs['units'] = 'permil'
         return da
+
+    def calc_map_d18Op(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+        case.load('PRECRC_H216Or', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('PRECSC_H216Os', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('PRECRL_H216OR', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('PRECSL_H216OS', load_idx=load_idx, adjust_month=adjust_month)
+
+        case.load('PRECRC_H218Or', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('PRECSC_H218Os', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('PRECRL_H218OR', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('PRECSL_H218OS', load_idx=load_idx, adjust_month=adjust_month)
+
+        p16O = case.ds['PRECRC_H216Or'].x.da + case.ds['PRECSC_H216Os'].x.da + case.ds['PRECRL_H216OR'].x.da + case.ds['PRECSL_H216OS'].x.da
+        p18O = case.ds['PRECRC_H218Or'].x.da + case.ds['PRECSC_H218Os'].x.da + case.ds['PRECRL_H218OR'].x.da + case.ds['PRECSL_H218OS'].x.da
+
+        p16O = p16O.where(p16O > 1e-18, 1e-18)
+        p18O = p18O.where(p18O > 1e-18, 1e-18)
+
+        d18Op = (p18O / p16O - 1)*1000
+        d18Op.name = 'd18Op'
+        d18Op = d18Op.x.regrid()
+        da = utils.ann_modifier(d18Op, ann_method, long_name=r'Precipitation $\delta^{18}$O')
+        da.attrs['units'] = 'permil'
+        if clim: da = da.mean('time')
+        return da
+
+    def calc_map_d18Op_clm(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+        case.load('RAIN_H218O', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('RAIN_H2OTR', load_idx=load_idx, adjust_month=adjust_month)
+
+        p16O = case.ds['RAIN_H2OTR'].x.da
+        p18O = case.ds['RAIN_H218O'].x.da
+
+        p16O = p16O.where(p16O > 1e-18, 1e-18)
+        p18O = p18O.where(p18O > 1e-18, 1e-18)
+
+        d18Op = (p18O / p16O - 1)*1000
+        d18Op.name = 'd18Op'
+        d18Op = d18Op.x.regrid()
+        da = utils.ann_modifier(d18Op, ann_method, long_name=r'Precipitation $\delta^{18}$O in CLM')
+        da.attrs['units'] = 'permil'
+        if clim: da = da.mean('time')
+        return da
+
+    def calc_map_d18Os_clm(case, load_idx=-1, lev_idx=0, adjust_month=True, ann_method='ann', clim=True):
+        case.load('H2OSOI_H2OTR', load_idx=load_idx, adjust_month=adjust_month)
+        case.load('H2OSOI_H218O', load_idx=load_idx, adjust_month=adjust_month)
+
+        p16O = case.ds['H2OSOI_H2OTR'].x.da
+        p18O = case.ds['H2OSOI_H218O'].x.da
+
+        p16O = p16O.where(p16O > 1e-18, 1e-18)
+        p18O = p18O.where(p18O > 1e-18, 1e-18)
+
+        d18Os = (p18O / p16O - 1) * 1000
+        d18Os.name = 'd18Os'
+        d18Os = d18Os.x.regrid()
+        da = utils.ann_modifier(d18Os, ann_method, long_name=r'Soil $\delta^{18}$O in CLM')
+        da.attrs['units'] = 'permil'
+        if clim: da = da.mean('time')
+        return da[lev_idx]
 
     def calc_map_MLD(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
         vn = 'XMXL'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_tmp = case.ds[vn] / 100
+        da_tmp = case.ds[vn].x.da / 100
         da = utils.ann_modifier(da_tmp, ann_method, long_name='Mixed Layer Depth')
         if clim: da = da.mean('time')
         da.name = 'MLD'
@@ -73,7 +178,7 @@ class DiagCalc:
     def calc_3d_PD(case, load_idx=-1, adjust_month=True, ann_method='ann'):
         vn = 'PD'
         case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_tmp = case.ds[vn]
+        da_tmp = case.ds[vn].x.da
         da_ann = utils.ann_modifier(da_tmp, ann_method, long_name='Potential Density')
         da = da_ann.mean('time')
         da.name = 'PD'
@@ -122,64 +227,64 @@ class DiagCalc:
         da = da_tmp.isel(transport_reg=transport_reg, moc_comp=0).mean('time')
         return da
 
-    def calc_ysig2_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0,
-                       refz=2000, sigma_mid=None, sigma_edge=None):
-        '''  Compute MOC with the isopycnal (constant density surfaces) sigma-2 vertical coordinate
+    # def calc_ysig2_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0,
+    #                    refz=2000, sigma_mid=None, sigma_edge=None):
+    #     '''  Compute MOC with the isopycnal (constant density surfaces) sigma-2 vertical coordinate
 
-        Reference: https://github.com/sgyeager/POP_MOC/blob/main/notebooks/pop_MOCsig2_1deg.ipynb
-        '''
-        case.load('SALT', load_idx=load_idx, adjust_month=adjust_month, regrid=False)
-        case.load('TEMP', load_idx=load_idx, adjust_month=adjust_month, regrid=False)
-        case.load('KMT')
-        sigma2_T = pop_tools.eos(salt=case.ds['SALT'], temp=case.ds['TEMP'], depth=xr.DataArray(refz)) - 1000
-        sigma2_T = sigma2_T.assign_attrs({'long_name':'Sigma referenced to {}m'.format(refz),'units':'kg/m^3'})
+    #     Reference: https://github.com/sgyeager/POP_MOC/blob/main/notebooks/pop_MOCsig2_1deg.ipynb
+    #     '''
+    #     case.load('SALT', load_idx=load_idx, adjust_month=adjust_month, regrid=False)
+    #     case.load('TEMP', load_idx=load_idx, adjust_month=adjust_month, regrid=False)
+    #     case.load('KMT')
+    #     sigma2_T = pop_tools.eos(salt=case.ds['SALT'], temp=case.ds['TEMP'], depth=xr.DataArray(refz)) - 1000
+    #     sigma2_T = sigma2_T.assign_attrs({'long_name':'Sigma referenced to {}m'.format(refz),'units':'kg/m^3'})
 
-        if sigma_mid is None:
-            sigma_mid = np.array([
-                28.  , 28.2 , 28.4 , 28.6 , 28.8 , 29.  , 29.2 , 29.4 , 29.6 ,
-                29.8 , 30.  , 30.2 , 30.4 , 30.6 , 30.8 , 31.  , 31.2 , 31.4 ,
-                31.6 , 31.8 , 32.  , 32.2 , 32.4 , 32.6 , 32.8 , 33.  , 33.2 ,
-                33.4 , 33.6 , 33.8 , 34.  , 34.2 , 34.4 , 34.6 , 34.8 , 35.  ,
-                35.1 , 35.2 , 35.3 , 35.4 , 35.5 , 35.6 , 35.7 , 35.8 , 35.9 ,
-                36.  , 36.05, 36.1 , 36.15, 36.2 , 36.25, 36.3 , 36.35, 36.4 ,
-                36.45, 36.5 , 36.55, 36.6 , 36.65, 36.7 , 36.75, 36.8 , 36.85,
-                36.9 , 36.95, 37.  , 37.05, 37.1 , 37.15, 37.2 , 37.25, 37.3 ,
-                37.35, 37.4 , 37.45, 37.5 , 37.55, 37.6 , 37.65, 37.7 , 37.75,
-                37.8 , 37.85, 37.9 , 37.95, 38.,
-            ])
+    #     if sigma_mid is None:
+    #         sigma_mid = np.array([
+    #             28.  , 28.2 , 28.4 , 28.6 , 28.8 , 29.  , 29.2 , 29.4 , 29.6 ,
+    #             29.8 , 30.  , 30.2 , 30.4 , 30.6 , 30.8 , 31.  , 31.2 , 31.4 ,
+    #             31.6 , 31.8 , 32.  , 32.2 , 32.4 , 32.6 , 32.8 , 33.  , 33.2 ,
+    #             33.4 , 33.6 , 33.8 , 34.  , 34.2 , 34.4 , 34.6 , 34.8 , 35.  ,
+    #             35.1 , 35.2 , 35.3 , 35.4 , 35.5 , 35.6 , 35.7 , 35.8 , 35.9 ,
+    #             36.  , 36.05, 36.1 , 36.15, 36.2 , 36.25, 36.3 , 36.35, 36.4 ,
+    #             36.45, 36.5 , 36.55, 36.6 , 36.65, 36.7 , 36.75, 36.8 , 36.85,
+    #             36.9 , 36.95, 37.  , 37.05, 37.1 , 37.15, 37.2 , 37.25, 37.3 ,
+    #             37.35, 37.4 , 37.45, 37.5 , 37.55, 37.6 , 37.65, 37.7 , 37.75,
+    #             37.8 , 37.85, 37.9 , 37.95, 38.,
+    #         ])
 
-        if sigma_edge is None:
-            sigma_edge = np.array([
-                0.   , 28.1  , 28.3  , 28.5  , 28.7  , 28.9  , 29.1  , 29.3  ,
-                29.5  , 29.7  , 29.9  , 30.1  , 30.3  , 30.5  , 30.7  , 30.9  ,
-                31.1  , 31.3  , 31.5  , 31.7  , 31.9  , 32.1  , 32.3  , 32.5  ,
-                32.7  , 32.9  , 33.1  , 33.3  , 33.5  , 33.7  , 33.9  , 34.1  ,
-                34.3  , 34.5  , 34.7  , 34.9  , 35.05 , 35.15 , 35.25 , 35.35 ,
-                35.45 , 35.55 , 35.65 , 35.75 , 35.85 , 35.95 , 36.025, 36.075,
-                36.125, 36.175, 36.225, 36.275, 36.325, 36.375, 36.425, 36.475,
-                36.525, 36.575, 36.625, 36.675, 36.725, 36.775, 36.825, 36.875,
-                36.925, 36.975, 37.025, 37.075, 37.125, 37.175, 37.225, 37.275,
-                37.325, 37.375, 37.425, 37.475, 37.525, 37.575, 37.625, 37.675,
-                37.725, 37.775, 37.825, 37.875, 37.925, 37.975, 50.,
-            ])
+    #     if sigma_edge is None:
+    #         sigma_edge = np.array([
+    #             0.   , 28.1  , 28.3  , 28.5  , 28.7  , 28.9  , 29.1  , 29.3  ,
+    #             29.5  , 29.7  , 29.9  , 30.1  , 30.3  , 30.5  , 30.7  , 30.9  ,
+    #             31.1  , 31.3  , 31.5  , 31.7  , 31.9  , 32.1  , 32.3  , 32.5  ,
+    #             32.7  , 32.9  , 33.1  , 33.3  , 33.5  , 33.7  , 33.9  , 34.1  ,
+    #             34.3  , 34.5  , 34.7  , 34.9  , 35.05 , 35.15 , 35.25 , 35.35 ,
+    #             35.45 , 35.55 , 35.65 , 35.75 , 35.85 , 35.95 , 36.025, 36.075,
+    #             36.125, 36.175, 36.225, 36.275, 36.325, 36.375, 36.425, 36.475,
+    #             36.525, 36.575, 36.625, 36.675, 36.725, 36.775, 36.825, 36.875,
+    #             36.925, 36.975, 37.025, 37.075, 37.125, 37.175, 37.225, 37.275,
+    #             37.325, 37.375, 37.425, 37.475, 37.525, 37.575, 37.625, 37.675,
+    #             37.725, 37.775, 37.825, 37.875, 37.925, 37.975, 50.,
+    #         ])
 
-        # Here, test histogram by counting cells in each density bin. Vertical sum should be same as KMT.
-        iso_count = histogram(sigma2_T, bins=[sigma_edge.values],dim=['z_t'],density=False)
-        iso_count = iso_count.rename({'density_bin':'sigma'}).assign_coords({'sigma':sigma_mid})
+    #     # Here, test histogram by counting cells in each density bin. Vertical sum should be same as KMT.
+    #     iso_count = histogram(sigma2_T, bins=[sigma_edge.values],dim=['z_t'],density=False)
+    #     iso_count = iso_count.rename({'density_bin':'sigma'}).assign_coords({'sigma':sigma_mid})
 
-        kmtdiff = iso_count.sum('sigma') - case.ds['KMT']
+    #     kmtdiff = iso_count.sum('sigma') - case.ds['KMT']
 
-        # Use histogram to compute layer thickness. Vertical sum should be same as HT.
-        dzwgts = (ds['dz']/100.).assign_attrs({'units':'m'})
-        iso_thick = histogram(sigma2_T, bins=[sigma_edge.values], weights=dzwgts,dim=['z_t'],density=False)
-        iso_thick = iso_thick.rename({'density_bin':'sigma'}).assign_coords({'sigma':sigma_mid})
-        iso_thick = iso_thick.rename('iso_thick').assign_attrs({'units':'m','long_name':'Isopycnal Layer Thickness'}).rename({'sigma':'sigma_mid'})
-        iso_thick = iso_thick.transpose('time','sigma_mid','nlat','nlon')
+    #     # Use histogram to compute layer thickness. Vertical sum should be same as HT.
+    #     dzwgts = (ds['dz']/100.).assign_attrs({'units':'m'})
+    #     iso_thick = histogram(sigma2_T, bins=[sigma_edge.values], weights=dzwgts,dim=['z_t'],density=False)
+    #     iso_thick = iso_thick.rename({'density_bin':'sigma'}).assign_coords({'sigma':sigma_mid})
+    #     iso_thick = iso_thick.rename('iso_thick').assign_attrs({'units':'m','long_name':'Isopycnal Layer Thickness'}).rename({'sigma':'sigma_mid'})
+    #     iso_thick = iso_thick.transpose('time','sigma_mid','nlat','nlon')
 
-        htdiff = iso_thick.sum('sigma_mid') - (ds['HT']/100.).assign_attrs({'units':'m'})
+    #     htdiff = iso_thick.sum('sigma_mid') - (ds['HT']/100.).assign_attrs({'units':'m'})
 
 
-        return da
+    #     return da
 
 class DiagPlot:
     kws_ts = {}
@@ -212,6 +317,13 @@ class DiagPlot:
         'cbar_kwargs': {'ticks': np.linspace(-1, 1, 11)},
     }
 
+    kws_map['d18Op'] = {
+        'levels': np.linspace(-20, 0, 21),
+        'cbar_kwargs': {'ticks': np.linspace(-20, 0, 11)},
+    }
+    kws_map['d18Op_clm'] = kws_map['d18Op']
+    kws_map['d18Os_clm'] = kws_map['d18Op']
+
     # ==========
     #  kws_zm
     # ----------
@@ -229,8 +341,11 @@ class DiagPlot:
     def plot_ts(case, diag_name, ann_method='ann', **kws):
         _kws = DiagPlot.kws_ts[diag_name].copy() if diag_name in DiagPlot.kws_ts else {}
         _kws = utils.update_dict(_kws, kws)
-        fig_ax =  case.diags[f'ts:{diag_name}:{ann_method}'].x.plot(**_kws)
-
+        spell = f'ts:{diag_name}:{ann_method}'
+        if 'sm_method' in _kws:
+            sm_method = _kws.pop('sm_method')
+            spell = f'ts:{diag_name}:{ann_method}:{sm_method}'
+        fig_ax =  case.diags[spell].x.plot(**_kws)
         return fig_ax
 
     # base function for map plotting
@@ -265,7 +380,7 @@ class DiagPlot:
 
         if 'SSH' in case.vars_info:
             case.load('SSH', regrid=True)
-            da_ssv = case.ds['SSH'].mean('time')
+            da_ssv = case.ds['SSH'].x.da.mean('time')
             if cyclic: da_ssv = utils.add_cyclic_point(da_ssv)
             fig_ax =  da.x.plot(ssv=da_ssv, **_kws)
         else:
