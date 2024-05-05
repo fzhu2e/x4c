@@ -173,8 +173,8 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../ug-diags.html">CESM Diagnostics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="diag-atm.html">Diagnostics: ATM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diag-ocn.html">Diagnostics: OCN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag-case.html">A “Timeseries Case” system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag-spell.html">A “spell” system</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ug-api.html">API Reference</a></li>
@@ -395,13 +395,14 @@ document.write(`
 <h1>Basic visualizations<a class="headerlink" href="#Basic-visualizations" title="Link to this heading">#</a></h1>
 <p>Note that this functionality only works on <code class="docutils literal notranslate"><span class="pre">xarray.DataArray</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;/glade/u/home/fengzhu/Github/x4c/docsrc/notebooks&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">x4c</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">x4c</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
@@ -413,7 +414,9 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-2024.4.14b0
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+2024.5.2.17
 </pre></div></div>
 </div>
 <section id="Load-data">
@@ -3158,35 +3161,45 @@ Attributes:
 <section id="OCN">
 <h2>OCN<a class="headerlink" href="#OCN" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dirpath</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005/ocn/proc/tseries/month_1&#39;</span>
 <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.pop.h.TEMP.695101-700012.nc&#39;</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">x4c</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="n">comp</span><span class="o">=</span><span class="s1">&#39;ocn&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="s1">&#39;g16&#39;</span><span class="p">,</span> <span class="n">adjust_month</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">x4c</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="n">comp</span><span class="o">=</span><span class="s1">&#39;ocn&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="s1">&#39;g16&#39;</span><span class="p">,</span> <span class="n">adjust_month</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sst</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">z_t</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">annualize</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">regrid</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;TEMP&#39;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">da_ann</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;TEMP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isel</span><span class="p">(</span><span class="n">z_t</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">annualize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sst</span> <span class="o">=</span> <span class="n">da_ann</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">regrid</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sst_clim</span> <span class="o">=</span> <span class="n">sst</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 <span class="n">sst_clim</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;°C&#39;</span>
+<span class="n">sst_clim</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Sea Surface Temperature&#39;</span>
+<span class="n">sst_clim</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;SST&#39;</span>
 <span class="n">sst_clim</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3553,7 +3566,7 @@ dl.xr-attrs {
   stroke: currentColor;
   fill: currentColor;
 }
-</style><pre class='xr-text-repr-fallback'>&lt;xarray.DataArray &#x27;TEMP&#x27; (lat: 180, lon: 360)&gt; Size: 259kB
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.DataArray &#x27;SST&#x27; (lat: 180, lon: 360)&gt; Size: 259kB
 array([[      nan,       nan,       nan, ...,       nan,       nan,
               nan],
        [      nan,       nan,       nan, ...,       nan,       nan,
@@ -3573,16 +3586,16 @@ Coordinates:
     z_t                 float32 4B 500.0
     latitude_longitude  float64 8B nan
 Attributes:
-    long_name:     Potential Temperature
+    long_name:     Sea Surface Temperature
     units:         °C
     grid_loc:      3111
     cell_methods:  time: mean
-    source:        /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseri...
-    gw:            &lt;xarray.DataArray &#x27;gw&#x27; (time: 50, lat: 180, lon: 360)&gt; Siz...
+    path:          /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseri...
+    gw:            &lt;xarray.DataArray &#x27;gw&#x27; (lat: 180, lon: 360)&gt; Size: 518kB\n...
     lat:           &lt;xarray.DataArray &#x27;lat&#x27; (lat: 180)&gt; Size: 1kB\narray([-89....
     lon:           &lt;xarray.DataArray &#x27;lon&#x27; (lon: 360)&gt; Size: 3kB\narray([  0....
     comp:          ocn
-    grid:          g16</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-array-name'>'TEMP'</div><ul class='xr-dim-list'><li><span class='xr-has-index'>lat</span>: 180</li><li><span class='xr-has-index'>lon</span>: 360</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-e6949d4c-368a-4d7f-a330-f18bace0cd67' class='xr-array-in' type='checkbox' checked><label for='section-e6949d4c-368a-4d7f-a330-f18bace0cd67' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>nan nan nan nan nan nan nan ... 6.289 6.289 6.288 6.288 6.287 6.287</span></div><div class='xr-array-data'><pre>array([[      nan,       nan,       nan, ...,       nan,       nan,
+    grid:          g16</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.DataArray</div><div class='xr-array-name'>'SST'</div><ul class='xr-dim-list'><li><span class='xr-has-index'>lat</span>: 180</li><li><span class='xr-has-index'>lon</span>: 360</li></ul></div><ul class='xr-sections'><li class='xr-section-item'><div class='xr-array-wrap'><input id='section-251111e1-873c-483b-89f5-a04201c4a2c3' class='xr-array-in' type='checkbox' checked><label for='section-251111e1-873c-483b-89f5-a04201c4a2c3' title='Show/hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-array-preview xr-preview'><span>nan nan nan nan nan nan nan ... 6.289 6.289 6.288 6.288 6.287 6.287</span></div><div class='xr-array-data'><pre>array([[      nan,       nan,       nan, ...,       nan,       nan,
               nan],
        [      nan,       nan,       nan, ...,       nan,       nan,
               nan],
@@ -3594,7 +3607,7 @@ Attributes:
        [6.1800756, 6.178551 , 6.17708  , ..., 6.184958 , 6.1832805,
         6.181652 ],
        [6.2866673, 6.286374 , 6.2860956, ..., 6.2877827, 6.287389 ,
-        6.287011 ]], dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-7c3e16d4-7c0b-4573-a285-14a9ffe20783' class='xr-section-summary-in' type='checkbox'  checked><label for='section-7c3e16d4-7c0b-4573-a285-14a9ffe20783' class='xr-section-summary' >Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>lat</span></div><div class='xr-var-dims'>(lat)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-89.5 -88.5 -87.5 ... 88.5 89.5</div><input id='attrs-dca25c28-2c9a-4c9f-aa73-6914d79bb6f8' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-dca25c28-2c9a-4c9f-aa73-6914d79bb6f8' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-386fe454-9fce-4f14-a989-0c53b2213fd8' class='xr-var-data-in' type='checkbox'><label for='data-386fe454-9fce-4f14-a989-0c53b2213fd8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>bounds :</span></dt><dd>lat_bounds</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd></dl></div><div class='xr-var-data'><pre>array([-89.5, -88.5, -87.5, -86.5, -85.5, -84.5, -83.5, -82.5, -81.5, -80.5,
+        6.287011 ]], dtype=float32)</pre></div></div></li><li class='xr-section-item'><input id='section-84cda712-0444-459b-a883-8be7a212e136' class='xr-section-summary-in' type='checkbox'  checked><label for='section-84cda712-0444-459b-a883-8be7a212e136' class='xr-section-summary' >Coordinates: <span>(4)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>lat</span></div><div class='xr-var-dims'>(lat)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-89.5 -88.5 -87.5 ... 88.5 89.5</div><input id='attrs-bc722375-1a81-4770-9dbb-69714c57e2c1' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-bc722375-1a81-4770-9dbb-69714c57e2c1' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b402434d-61ba-41e8-905b-dfaa9915e040' class='xr-var-data-in' type='checkbox'><label for='data-b402434d-61ba-41e8-905b-dfaa9915e040' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>bounds :</span></dt><dd>lat_bounds</dd><dt><span>standard_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd></dl></div><div class='xr-var-data'><pre>array([-89.5, -88.5, -87.5, -86.5, -85.5, -84.5, -83.5, -82.5, -81.5, -80.5,
        -79.5, -78.5, -77.5, -76.5, -75.5, -74.5, -73.5, -72.5, -71.5, -70.5,
        -69.5, -68.5, -67.5, -66.5, -65.5, -64.5, -63.5, -62.5, -61.5, -60.5,
        -59.5, -58.5, -57.5, -56.5, -55.5, -54.5, -53.5, -52.5, -51.5, -50.5,
@@ -3611,59 +3624,30 @@ Attributes:
         50.5,  51.5,  52.5,  53.5,  54.5,  55.5,  56.5,  57.5,  58.5,  59.5,
         60.5,  61.5,  62.5,  63.5,  64.5,  65.5,  66.5,  67.5,  68.5,  69.5,
         70.5,  71.5,  72.5,  73.5,  74.5,  75.5,  76.5,  77.5,  78.5,  79.5,
-        80.5,  81.5,  82.5,  83.5,  84.5,  85.5,  86.5,  87.5,  88.5,  89.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>lon</span></div><div class='xr-var-dims'>(lon)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.5 1.5 2.5 ... 357.5 358.5 359.5</div><input id='attrs-8157a0fb-dbed-4576-96af-167f23479aab' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-8157a0fb-dbed-4576-96af-167f23479aab' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-9d086d2a-5da2-4f98-bac6-150edbd0642d' class='xr-var-data-in' type='checkbox'><label for='data-9d086d2a-5da2-4f98-bac6-150edbd0642d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>bounds :</span></dt><dd>lon_bounds</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd></dl></div><div class='xr-var-data'><pre>array([  0.5,   1.5,   2.5, ..., 357.5, 358.5, 359.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>z_t</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>500.0</div><input id='attrs-1cd82c58-35e8-471b-b8f7-e875dd1ef653' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-1cd82c58-35e8-471b-b8f7-e875dd1ef653' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7f529d31-0150-4644-81c7-8f198e4f0242' class='xr-var-data-in' type='checkbox'><label for='data-7f529d31-0150-4644-81c7-8f198e4f0242' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>depth from surface to midpoint of layer</dd><dt><span>units :</span></dt><dd>centimeters</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>valid_min :</span></dt><dd>500.0</dd><dt><span>valid_max :</span></dt><dd>537500.0</dd></dl></div><div class='xr-var-data'><pre>array(500., dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude_longitude</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>nan</div><input id='attrs-08829235-e3fa-47e8-a4fe-9643e8898fc5' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-08829235-e3fa-47e8-a4fe-9643e8898fc5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-62464f86-42e6-4a52-8d76-8809dde948ae' class='xr-var-data-in' type='checkbox'><label for='data-62464f86-42e6-4a52-8d76-8809dde948ae' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array(nan)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-0a6db9a6-13d9-4a6c-94ea-f7ba22f89656' class='xr-section-summary-in' type='checkbox'  ><label for='section-0a6db9a6-13d9-4a6c-94ea-f7ba22f89656' class='xr-section-summary' >Indexes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-index-name'><div>lon</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-ace4d166-7607-45cb-b5e6-7f269c5b0467' class='xr-index-data-in' type='checkbox'/><label for='index-ace4d166-7607-45cb-b5e6-7f269c5b0467' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Index([  0.5,   1.5,   2.5,   3.5,   4.5,   5.5,   6.5,   7.5,   8.5,   9.5,
+        80.5,  81.5,  82.5,  83.5,  84.5,  85.5,  86.5,  87.5,  88.5,  89.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>lon</span></div><div class='xr-var-dims'>(lon)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.5 1.5 2.5 ... 357.5 358.5 359.5</div><input id='attrs-2e466571-cee7-4c42-a31f-2165e35d274b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-2e466571-cee7-4c42-a31f-2165e35d274b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c556cf67-649c-4d4c-bdb4-0c79a8523feb' class='xr-var-data-in' type='checkbox'><label for='data-c556cf67-649c-4d4c-bdb4-0c79a8523feb' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>bounds :</span></dt><dd>lon_bounds</dd><dt><span>standard_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd></dl></div><div class='xr-var-data'><pre>array([  0.5,   1.5,   2.5, ..., 357.5, 358.5, 359.5])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>z_t</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>500.0</div><input id='attrs-07f9e27c-4e42-432c-9e63-401552543922' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-07f9e27c-4e42-432c-9e63-401552543922' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7fbd7efd-aea0-4b67-b1fb-c3ed9263808e' class='xr-var-data-in' type='checkbox'><label for='data-7fbd7efd-aea0-4b67-b1fb-c3ed9263808e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>depth from surface to midpoint of layer</dd><dt><span>units :</span></dt><dd>centimeters</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>valid_min :</span></dt><dd>500.0</dd><dt><span>valid_max :</span></dt><dd>537500.0</dd></dl></div><div class='xr-var-data'><pre>array(500., dtype=float32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>latitude_longitude</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>nan</div><input id='attrs-cf9addae-3e6f-4fdb-ba47-f32fa5fd8eb5' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-cf9addae-3e6f-4fdb-ba47-f32fa5fd8eb5' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-964f9a03-80a5-4684-8723-8fd0494f340d' class='xr-var-data-in' type='checkbox'><label for='data-964f9a03-80a5-4684-8723-8fd0494f340d' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array(nan)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-8b6fa81e-aaa8-4bbb-abb6-15ad84c88c7d' class='xr-section-summary-in' type='checkbox'  ><label for='section-8b6fa81e-aaa8-4bbb-abb6-15ad84c88c7d' class='xr-section-summary' >Indexes: <span>(2)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-index-name'><div>lon</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-fc47eb80-4779-4da6-bc57-4964c9636ff4' class='xr-index-data-in' type='checkbox'/><label for='index-fc47eb80-4779-4da6-bc57-4964c9636ff4' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Index([  0.5,   1.5,   2.5,   3.5,   4.5,   5.5,   6.5,   7.5,   8.5,   9.5,
        ...
        350.5, 351.5, 352.5, 353.5, 354.5, 355.5, 356.5, 357.5, 358.5, 359.5],
-      dtype=&#x27;float64&#x27;, name=&#x27;lon&#x27;, length=360))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>lat</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-54c47011-670e-4a6b-a725-22bb49e3919d' class='xr-index-data-in' type='checkbox'/><label for='index-54c47011-670e-4a6b-a725-22bb49e3919d' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Index([-89.5, -88.5, -87.5, -86.5, -85.5, -84.5, -83.5, -82.5, -81.5, -80.5,
+      dtype=&#x27;float64&#x27;, name=&#x27;lon&#x27;, length=360))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>lat</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-e00d9401-f4bb-4a36-afd4-329cd03b20c1' class='xr-index-data-in' type='checkbox'/><label for='index-e00d9401-f4bb-4a36-afd4-329cd03b20c1' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Index([-89.5, -88.5, -87.5, -86.5, -85.5, -84.5, -83.5, -82.5, -81.5, -80.5,
        ...
         80.5,  81.5,  82.5,  83.5,  84.5,  85.5,  86.5,  87.5,  88.5,  89.5],
-      dtype=&#x27;float64&#x27;, name=&#x27;lat&#x27;, length=180))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-ba5e722d-7665-4f74-a5f7-793a0f71e9e3' class='xr-section-summary-in' type='checkbox'  ><label for='section-ba5e722d-7665-4f74-a5f7-793a0f71e9e3' class='xr-section-summary' >Attributes: <span>(10)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>Potential Temperature</dd><dt><span>units :</span></dt><dd>°C</dd><dt><span>grid_loc :</span></dt><dd>3111</dd><dt><span>cell_methods :</span></dt><dd>time: mean</dd><dt><span>source :</span></dt><dd>/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005/ocn/proc/tseries/month_1/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.pop.h.TEMP.695101-700012.nc</dd><dt><span>gw :</span></dt><dd>&lt;xarray.DataArray &#x27;gw&#x27; (time: 50, lat: 180, lon: 360)&gt; Size: 26MB
-array([[[2.96077457e+12, 2.96000404e+12, 2.95917559e+12, ...,
-         2.96263003e+12, 2.96207343e+12, 2.96145742e+12],
-        [3.25218577e+12, 3.24523615e+12, 3.23800168e+12, ...,
-         3.27160879e+12, 3.26541211e+12, 3.25893129e+12],
-        [3.46924756e+12, 3.45509462e+12, 3.44062718e+12, ...,
-         3.50631734e+12, 3.49654213e+12, 3.48305707e+12],
-        ...,
-        [5.77039946e+12, 5.78597938e+12, 5.80184364e+12, ...,
-         5.72563275e+12, 5.74011144e+12, 5.75510861e+12],
-        [6.16674474e+12, 6.17543959e+12, 6.18431922e+12, ...,
-         6.14179493e+12, 6.14991984e+12, 6.15823729e+12],
-        [6.58905668e+12, 6.59178782e+12, 6.59458402e+12, ...,
-         6.58135777e+12, 6.58380946e+12, 6.58639750e+12]],
-
-       [[2.96077457e+12, 2.96000404e+12, 2.95917559e+12, ...,
-         2.96263003e+12, 2.96207343e+12, 2.96145742e+12],
-        [3.25218577e+12, 3.24523615e+12, 3.23800168e+12, ...,
-         3.27160879e+12, 3.26541211e+12, 3.25893129e+12],
-        [3.46924756e+12, 3.45509462e+12, 3.44062718e+12, ...,
-         3.50631734e+12, 3.49654213e+12, 3.48305707e+12],
-...
-        [5.77039946e+12, 5.78597938e+12, 5.80184364e+12, ...,
-         5.72563275e+12, 5.74011144e+12, 5.75510861e+12],
-        [6.16674474e+12, 6.17543959e+12, 6.18431922e+12, ...,
-         6.14179493e+12, 6.14991984e+12, 6.15823729e+12],
-        [6.58905668e+12, 6.59178782e+12, 6.59458402e+12, ...,
-         6.58135777e+12, 6.58380946e+12, 6.58639750e+12]],
-
-       [[2.96077457e+12, 2.96000404e+12, 2.95917559e+12, ...,
-         2.96263003e+12, 2.96207343e+12, 2.96145742e+12],
-        [3.25218577e+12, 3.24523615e+12, 3.23800168e+12, ...,
-         3.27160879e+12, 3.26541211e+12, 3.25893129e+12],
-        [3.46924756e+12, 3.45509462e+12, 3.44062718e+12, ...,
-         3.50631734e+12, 3.49654213e+12, 3.48305707e+12],
-        ...,
-        [5.77039946e+12, 5.78597938e+12, 5.80184364e+12, ...,
-         5.72563275e+12, 5.74011144e+12, 5.75510861e+12],
-        [6.16674474e+12, 6.17543959e+12, 6.18431922e+12, ...,
-         6.14179493e+12, 6.14991984e+12, 6.15823729e+12],
-        [6.58905668e+12, 6.59178782e+12, 6.59458402e+12, ...,
-         6.58135777e+12, 6.58380946e+12, 6.58639750e+12]]])
+      dtype=&#x27;float64&#x27;, name=&#x27;lat&#x27;, length=180))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-b0ef3ea4-6a07-453d-8aaa-b934f8268a3b' class='xr-section-summary-in' type='checkbox'  ><label for='section-b0ef3ea4-6a07-453d-8aaa-b934f8268a3b' class='xr-section-summary' >Attributes: <span>(10)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>Sea Surface Temperature</dd><dt><span>units :</span></dt><dd>°C</dd><dt><span>grid_loc :</span></dt><dd>3111</dd><dt><span>cell_methods :</span></dt><dd>time: mean</dd><dt><span>path :</span></dt><dd>/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005/ocn/proc/tseries/month_1/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.pop.h.TEMP.695101-700012.nc</dd><dt><span>gw :</span></dt><dd>&lt;xarray.DataArray &#x27;gw&#x27; (lat: 180, lon: 360)&gt; Size: 518kB
+array([[2.96077457e+12, 2.96000404e+12, 2.95917559e+12, ...,
+        2.96263003e+12, 2.96207343e+12, 2.96145742e+12],
+       [3.25218577e+12, 3.24523615e+12, 3.23800168e+12, ...,
+        3.27160879e+12, 3.26541211e+12, 3.25893129e+12],
+       [3.46924756e+12, 3.45509462e+12, 3.44062718e+12, ...,
+        3.50631734e+12, 3.49654213e+12, 3.48305707e+12],
+       ...,
+       [5.77039946e+12, 5.78597938e+12, 5.80184364e+12, ...,
+        5.72563275e+12, 5.74011144e+12, 5.75510861e+12],
+       [6.16674474e+12, 6.17543959e+12, 6.18431922e+12, ...,
+        6.14179493e+12, 6.14991984e+12, 6.15823729e+12],
+       [6.58905668e+12, 6.59178782e+12, 6.59458402e+12, ...,
+        6.58135777e+12, 6.58380946e+12, 6.58639750e+12]])
 Coordinates:
   * lat                 (lat) float64 1kB -89.5 -88.5 -87.5 ... 87.5 88.5 89.5
   * lon                 (lon) float64 3kB 0.5 1.5 2.5 3.5 ... 357.5 358.5 359.5
     z_t                 float32 4B 500.0
-  * time                (time) object 400B 6951-12-31 00:00:00 ... 7000-12-31...
     latitude_longitude  float64 8B nan
 Attributes:
     long_name:  area of T cells
@@ -3704,12 +3688,36 @@ Attributes:
     standard_name:  longitude
     units:          degrees_east</dd><dt><span>comp :</span></dt><dd>ocn</dd><dt><span>grid :</span></dt><dd>g16</dd></dl></div></li></ul></div></div></div>
 </div>
-<p>Note that ocn/ice fields won’t need kmt file to plot the coastlines.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">sst_clim</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sst_clim</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.collections.QuadMesh at 0x150fdd206a50&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_core-visualize_26_1.png" src="../_images/notebooks_core-visualize_26_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal_spines&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">sst_clim</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span>
     <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">7</span><span class="p">)},</span>
 <span class="p">)</span>
@@ -3720,14 +3728,15 @@ Attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_core-visualize_26_0.png" src="../_images/notebooks_core-visualize_26_0.png" />
+<img alt="../_images/notebooks_core-visualize_27_0.png" src="../_images/notebooks_core-visualize_27_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">sst_clim</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x4c</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;journal_spines&#39;</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">sst_clim</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span>
     <span class="n">cbar_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ticks&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">7</span><span class="p">)},</span>
     <span class="n">add_gridlines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -3736,20 +3745,12 @@ Attributes:
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/notebooks_core-visualize_27_0.png" src="../_images/notebooks_core-visualize_27_0.png" />
-</div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-[WARNING] yaksa: 10 leaked handle pool objects
-</pre></div></div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_core-visualize_28_0.png" src="../_images/notebooks_core-visualize_28_0.png" />
+</div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

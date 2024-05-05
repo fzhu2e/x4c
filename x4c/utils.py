@@ -1,3 +1,5 @@
+import os
+import glob
 import numpy as np
 import xarray as xr
 import xesmf as xe
@@ -210,10 +212,11 @@ def add_cyclic_point(da):
     return da_wrap
 
 def ann_modifier(da, ann_method, long_name=None):
-    if 'long_name' in da.attrs:
-        long_name = da.attrs['long_name'] if long_name is None else long_name
-    else:
-        long_name = da.name
+    if long_name is None:
+        if 'long_name' in da.attrs:
+            long_name = da.attrs['long_name']
+        else:
+            long_name = da.name
 
     if ann_method == 'ann':
         da_out = da.x.annualize()
@@ -241,3 +244,20 @@ def convert_units(da, units=None):
             p_warning("The inpu `xarray.DataArray` doesn't have a unit.")
 
     return da
+
+def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc', delimiters=['/', '.'], **kws):
+    s = path_pattern
+    for d in delimiters:
+        s = ' '.join(s.split(d))
+    path_elements = s.split()
+
+    for e in path_elements:
+        if e in kws:
+            path_pattern = path_pattern.replace(e, kws[e])
+        elif e in ['proc', 'tseries', 'month_1']:
+            pass
+        else:
+            path_pattern = path_pattern.replace(e, '*')
+
+    paths = sorted(glob.glob(os.path.join(root_dir, path_pattern)))
+    return paths

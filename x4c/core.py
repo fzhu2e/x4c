@@ -188,7 +188,9 @@ class XDataArray:
 
     def regrid(self, **kws):
         ds_rgd = self.ds.x.regrid(**kws)
-        return ds_rgd.x.da
+        da = ds_rgd.x.da
+        da.name = self.da.name
+        return da
 
     @property
     def ds(self):
@@ -201,6 +203,7 @@ class XDataArray:
         for v in ['comp', 'grid']:
             if v in self.da.attrs: ds_tmp.attrs[v] = self.da.attrs[v]
         
+        ds_tmp[self.da.name] = self.da
         ds_tmp.attrs['vn'] = self.da.name
         return ds_tmp
 
@@ -237,10 +240,7 @@ class XDataArray:
     def zm(self):
         ''' the zonal mean
         '''
-        if 'time' in self.da.coords:
-            da = self.da.mean(('time', 'lon'))
-        else:
-            da = self.da.mean('lon')
+        da = self.da.mean('lon')
         da = utils.update_attrs(da, self.da)
         if 'long_name' in da.attrs: da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
         return da

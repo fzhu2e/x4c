@@ -6,226 +6,226 @@ from xhistogram.xarray import histogram
 
 class DiagCalc:
     # General calculations
-    def calc_ts(case, vn, load_idx=-1, adjust_month=True, sm_method='gm', ann_method='ann', long_name=None, units=None):
-        ''' General timeseries calculation
-        '''
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month)
-        if long_name is None:
-            if 'long_name' in case.ds[vn].x.da.attrs:
-                long_name = case.ds[vn].x.da.attrs['long_name']
-            else:
-                long_name = vn
+    # def calc_ts(case, vn, load_idx=-1, adjust_month=True, sm_method='gm', ann_method='ann', long_name=None, units=None):
+    #     ''' General timeseries calculation
+    #     '''
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month)
+    #     if long_name is None:
+    #         if 'long_name' in case.ds[vn].x.da.attrs:
+    #             long_name = case.ds[vn].x.da.attrs['long_name']
+    #         else:
+    #             long_name = vn
 
-        da_tmp = case.ds[vn].x.da
-        da_ann = utils.ann_modifier(da_tmp, ann_method, long_name=long_name)
-        da = getattr(da_ann.x, sm_method)
-        da = utils.convert_units(da, units)
-        return da
+    #     da_tmp = case.ds[vn].x.da
+    #     da_ann = utils.ann_modifier(da_tmp, ann_method, long_name=long_name)
+    #     da = getattr(da_ann.x, sm_method)
+    #     da = utils.convert_units(da, units)
+    #     return da
 
-    def calc_map(case, vn, load_idx=-1, adjust_month=True, ann_method='ann', clim=True, long_name=None, units=None):
-        ''' General map calculation
-        '''
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        if long_name is None:
-            if 'long_name' in case.ds[vn].x.da.attrs:
-                long_name = case.ds[vn].x.da.attrs['long_name']
-            else:
-                long_name = vn
+    # def calc_map(case, vn, load_idx=-1, adjust_month=True, ann_method='ann', clim=True, long_name=None, units=None):
+    #     ''' General map calculation
+    #     '''
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     if long_name is None:
+    #         if 'long_name' in case.ds[vn].x.da.attrs:
+    #             long_name = case.ds[vn].x.da.attrs['long_name']
+    #         else:
+    #             long_name = vn
 
-        da_tmp = case.ds[vn].x.da
-        da = utils.ann_modifier(da_tmp, ann_method, long_name=long_name)
-        if clim: da = da.mean('time')
-        da = utils.convert_units(da, units)
-        return da
+    #     da_tmp = case.ds[vn].x.da
+    #     da = utils.ann_modifier(da_tmp, ann_method, long_name=long_name)
+    #     if clim: da = da.mean('time')
+    #     da = utils.convert_units(da, units)
+    #     return da
 
-    # Specific calculations
-    def calc_ts_GMST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        vn = 'TS'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month)
-        da_degC = case.ds[vn].x.da - 273.15
-        da_degC.attrs['units'] = '°C'
-        da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Surface Temperature')
-        da = da_ann.x.gm
-        return da
+    # # Specific calculations
+    # def calc_ts_GMST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     vn = 'TS'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month)
+    #     da_degC = case.ds[vn].x.da - 273.15
+    #     da_degC.attrs['units'] = '°C'
+    #     da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Surface Temperature')
+    #     da = da_ann.x.gm
+    #     return da
 
-    def calc_ts_d18Osw(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        vn = 'R18O'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        R18O = case.ds[vn].x.da.isel(z_t=0)
-        d18O = (R18O - 1)*1e3
-        da_ann = utils.ann_modifier(d18O, ann_method, long_name=r'Sea Surface $\delta^{18}$O')
-        da = da_ann.x.gm
-        da.name = 'd18Osw'
-        da.attrs['units'] = 'permil'
-        return da
+    # def calc_ts_d18Osw(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     vn = 'R18O'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     R18O = case.ds[vn].x.da.isel(z_t=0)
+    #     d18O = (R18O - 1)*1e3
+    #     da_ann = utils.ann_modifier(d18O, ann_method, long_name=r'Sea Surface $\delta^{18}$O')
+    #     da = da_ann.x.gm
+    #     da.name = 'd18Osw'
+    #     da.attrs['units'] = 'permil'
+    #     return da
 
-    def calc_map_TS(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        vn = 'TS'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_degC = case.ds[vn].x.da - 273.15
-        da_degC.attrs['units'] = '°C'
-        da = utils.ann_modifier(da_degC, ann_method, long_name='Surface Temperature')
-        if clim: da = da.mean('time')
-        return da
+    # def calc_map_TS(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     vn = 'TS'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     da_degC = case.ds[vn].x.da - 273.15
+    #     da_degC.attrs['units'] = '°C'
+    #     da = utils.ann_modifier(da_degC, ann_method, long_name='Surface Temperature')
+    #     if clim: da = da.mean('time')
+    #     return da
 
-    def calc_map_LST(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        vn = 'TS'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_degC = case.ds[vn].x.da - 273.15
-        da_degC.attrs['units'] = '°C'
-        da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Land Surface Temperature')
+    # def calc_map_LST(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     vn = 'TS'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     da_degC = case.ds[vn].x.da - 273.15
+    #     da_degC.attrs['units'] = '°C'
+    #     da_ann = utils.ann_modifier(da_degC, ann_method, long_name='Land Surface Temperature')
 
-        case.load('LANDFRAC', load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        landfrac = case.ds[vn].x.da.x.annualize().mean('time')
+    #     case.load('LANDFRAC', load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     landfrac = case.ds[vn].x.da.x.annualize().mean('time')
 
-        da = da_ann.where(landfrac>0.5)
-        if clim: da = da.mean('time')
-        da.name = 'LST'
-        return da
+    #     da = da_ann.where(landfrac>0.5)
+    #     if clim: da = da.mean('time')
+    #     da.name = 'LST'
+    #     return da
 
-    def calc_map_SST(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        vn = 'TEMP'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        case.ds[vn].attrs['units'] = '°C'
-        sst = case.ds[vn].x.da.isel(z_t=0)
-        da = utils.ann_modifier(sst, ann_method, long_name='Sea Surface Temperature')
-        if clim: da = da.mean('time')
-        da.name = 'SST'
-        return da
+    # def calc_map_SST(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     vn = 'TEMP'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     case.ds[vn].attrs['units'] = '°C'
+    #     sst = case.ds[vn].x.da.isel(z_t=0)
+    #     da = utils.ann_modifier(sst, ann_method, long_name='Sea Surface Temperature')
+    #     if clim: da = da.mean('time')
+    #     da.name = 'SST'
+    #     return da
 
-    def calc_map_d18Osw(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        vn = 'R18O'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        R18O = case.ds[vn].x.da.isel(z_t=0)
-        d18O = (R18O - 1)*1e3
-        da = utils.ann_modifier(d18O, ann_method, long_name=r'Sea Surface $\delta^{18}$O')
-        if clim: da = da.mean('time')
-        da.name = 'd18Osw'
-        da.attrs['units'] = 'permil'
-        return da
+    # def calc_map_d18Osw(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     vn = 'R18O'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     R18O = case.ds[vn].x.da.isel(z_t=0)
+    #     d18O = (R18O - 1)*1e3
+    #     da = utils.ann_modifier(d18O, ann_method, long_name=r'Sea Surface $\delta^{18}$O')
+    #     if clim: da = da.mean('time')
+    #     da.name = 'd18Osw'
+    #     da.attrs['units'] = 'permil'
+    #     return da
 
-    def calc_map_d18Op(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        case.load('PRECRC_H216Or', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('PRECSC_H216Os', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('PRECRL_H216OR', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('PRECSL_H216OS', load_idx=load_idx, adjust_month=adjust_month)
+    # def calc_map_d18Op(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     case.load('PRECRC_H216Or', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECSC_H216Os', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECRL_H216OR', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECSL_H216OS', load_idx=load_idx, adjust_month=adjust_month)
 
-        case.load('PRECRC_H218Or', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('PRECSC_H218Os', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('PRECRL_H218OR', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('PRECSL_H218OS', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECRC_H218Or', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECSC_H218Os', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECRL_H218OR', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('PRECSL_H218OS', load_idx=load_idx, adjust_month=adjust_month)
 
-        p16O = case.ds['PRECRC_H216Or'].x.da + case.ds['PRECSC_H216Os'].x.da + case.ds['PRECRL_H216OR'].x.da + case.ds['PRECSL_H216OS'].x.da
-        p18O = case.ds['PRECRC_H218Or'].x.da + case.ds['PRECSC_H218Os'].x.da + case.ds['PRECRL_H218OR'].x.da + case.ds['PRECSL_H218OS'].x.da
+    #     p16O = case.ds['PRECRC_H216Or'].x.da + case.ds['PRECSC_H216Os'].x.da + case.ds['PRECRL_H216OR'].x.da + case.ds['PRECSL_H216OS'].x.da
+    #     p18O = case.ds['PRECRC_H218Or'].x.da + case.ds['PRECSC_H218Os'].x.da + case.ds['PRECRL_H218OR'].x.da + case.ds['PRECSL_H218OS'].x.da
 
-        p16O = p16O.where(p16O > 1e-18, 1e-18)
-        p18O = p18O.where(p18O > 1e-18, 1e-18)
+    #     p16O = p16O.where(p16O > 1e-18, 1e-18)
+    #     p18O = p18O.where(p18O > 1e-18, 1e-18)
 
-        d18Op = (p18O / p16O - 1)*1000
-        d18Op.name = 'd18Op'
-        d18Op = d18Op.x.regrid()
-        da = utils.ann_modifier(d18Op, ann_method, long_name=r'Precipitation $\delta^{18}$O')
-        da.attrs['units'] = 'permil'
-        if clim: da = da.mean('time')
-        return da
+    #     d18Op = (p18O / p16O - 1)*1000
+    #     d18Op.name = 'd18Op'
+    #     d18Op = d18Op.x.regrid()
+    #     da = utils.ann_modifier(d18Op, ann_method, long_name=r'Precipitation $\delta^{18}$O')
+    #     da.attrs['units'] = 'permil'
+    #     if clim: da = da.mean('time')
+    #     return da
 
-    def calc_map_d18Op_clm(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        case.load('RAIN_H218O', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('RAIN_H2OTR', load_idx=load_idx, adjust_month=adjust_month)
+    # def calc_map_d18Op_clm(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     case.load('RAIN_H218O', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('RAIN_H2OTR', load_idx=load_idx, adjust_month=adjust_month)
 
-        p16O = case.ds['RAIN_H2OTR'].x.da
-        p18O = case.ds['RAIN_H218O'].x.da
+    #     p16O = case.ds['RAIN_H2OTR'].x.da
+    #     p18O = case.ds['RAIN_H218O'].x.da
 
-        p16O = p16O.where(p16O > 1e-18, 1e-18)
-        p18O = p18O.where(p18O > 1e-18, 1e-18)
+    #     p16O = p16O.where(p16O > 1e-18, 1e-18)
+    #     p18O = p18O.where(p18O > 1e-18, 1e-18)
 
-        d18Op = (p18O / p16O - 1)*1000
-        d18Op.name = 'd18Op'
-        d18Op = d18Op.x.regrid()
-        da = utils.ann_modifier(d18Op, ann_method, long_name=r'Precipitation $\delta^{18}$O in CLM')
-        da.attrs['units'] = 'permil'
-        if clim: da = da.mean('time')
-        return da
+    #     d18Op = (p18O / p16O - 1)*1000
+    #     d18Op.name = 'd18Op'
+    #     d18Op = d18Op.x.regrid()
+    #     da = utils.ann_modifier(d18Op, ann_method, long_name=r'Precipitation $\delta^{18}$O in CLM')
+    #     da.attrs['units'] = 'permil'
+    #     if clim: da = da.mean('time')
+    #     return da
 
-    def calc_map_d18Os_clm(case, load_idx=-1, lev_idx=0, adjust_month=True, ann_method='ann', clim=True):
-        case.load('H2OSOI_H2OTR', load_idx=load_idx, adjust_month=adjust_month)
-        case.load('H2OSOI_H218O', load_idx=load_idx, adjust_month=adjust_month)
+    # def calc_map_d18Os_clm(case, load_idx=-1, lev_idx=0, adjust_month=True, ann_method='ann', clim=True):
+    #     case.load('H2OSOI_H2OTR', load_idx=load_idx, adjust_month=adjust_month)
+    #     case.load('H2OSOI_H218O', load_idx=load_idx, adjust_month=adjust_month)
 
-        p16O = case.ds['H2OSOI_H2OTR'].x.da
-        p18O = case.ds['H2OSOI_H218O'].x.da
+    #     p16O = case.ds['H2OSOI_H2OTR'].x.da
+    #     p18O = case.ds['H2OSOI_H218O'].x.da
 
-        p16O = p16O.where(p16O > 1e-18, 1e-18)
-        p18O = p18O.where(p18O > 1e-18, 1e-18)
+    #     p16O = p16O.where(p16O > 1e-18, 1e-18)
+    #     p18O = p18O.where(p18O > 1e-18, 1e-18)
 
-        d18Os = (p18O / p16O - 1) * 1000
-        d18Os.name = 'd18Os'
-        d18Os = d18Os.x.regrid()
-        da = utils.ann_modifier(d18Os, ann_method, long_name=r'Soil $\delta^{18}$O in CLM')
-        da.attrs['units'] = 'permil'
-        if clim: da = da.mean('time')
-        return da[lev_idx]
+    #     d18Os = (p18O / p16O - 1) * 1000
+    #     d18Os.name = 'd18Os'
+    #     d18Os = d18Os.x.regrid()
+    #     da = utils.ann_modifier(d18Os, ann_method, long_name=r'Soil $\delta^{18}$O in CLM')
+    #     da.attrs['units'] = 'permil'
+    #     if clim: da = da.mean('time')
+    #     return da[lev_idx]
 
-    def calc_map_MLD(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
-        vn = 'XMXL'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_tmp = case.ds[vn].x.da / 100
-        da = utils.ann_modifier(da_tmp, ann_method, long_name='Mixed Layer Depth')
-        if clim: da = da.mean('time')
-        da.name = 'MLD'
-        da.attrs['units'] = 'm'
-        return da
+    # def calc_map_MLD(case, load_idx=-1, adjust_month=True, ann_method='ann', clim=True):
+    #     vn = 'XMXL'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     da_tmp = case.ds[vn].x.da / 100
+    #     da = utils.ann_modifier(da_tmp, ann_method, long_name='Mixed Layer Depth')
+    #     if clim: da = da.mean('time')
+    #     da.name = 'MLD'
+    #     da.attrs['units'] = 'm'
+    #     return da
 
-    def calc_3d_PD(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        vn = 'PD'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
-        da_tmp = case.ds[vn].x.da
-        da_ann = utils.ann_modifier(da_tmp, ann_method, long_name='Potential Density')
-        da = da_ann.mean('time')
-        da.name = 'PD'
-        return da
+    # def calc_3d_PD(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     vn = 'PD'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=True)
+    #     da_tmp = case.ds[vn].x.da
+    #     da_ann = utils.ann_modifier(da_tmp, ann_method, long_name='Potential Density')
+    #     da = da_ann.mean('time')
+    #     da.name = 'PD'
+    #     return da
 
-    def calc_yz_PD(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        da_tmp = DiagCalc.calc_3d_PD(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
-        da = da_tmp.x.zm
-        da['z_t'] = da_tmp['z_t'] / 1e5  # unit: cm -> km
-        da['z_t'].attrs['units'] = 'km'
-        da.name = 'PD'
-        return da
+    # def calc_yz_PD(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     da_tmp = DiagCalc.calc_3d_PD(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
+    #     da = da_tmp.x.zm
+    #     da['z_t'] = da_tmp['z_t'] / 1e5  # unit: cm -> km
+    #     da['z_t'].attrs['units'] = 'km'
+    #     da.name = 'PD'
+    #     return da
 
-    def calc_zm_LST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        da_tmp = DiagCalc.calc_map_LST(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
-        da = da_tmp.x.zm
-        da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
-        da.name = 'LST'
-        return da
+    # def calc_zm_LST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     da_tmp = DiagCalc.calc_map_LST(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
+    #     da = da_tmp.x.zm
+    #     da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
+    #     da.name = 'LST'
+    #     return da
 
-    def calc_zm_SST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        da_tmp = DiagCalc.calc_map_SST(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
-        da = da_tmp.x.zm
-        da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
-        da.name = 'SST'
-        return da
+    # def calc_zm_SST(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     da_tmp = DiagCalc.calc_map_SST(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
+    #     da = da_tmp.x.zm
+    #     da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
+    #     da.name = 'SST'
+    #     return da
 
-    def calc_3d_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann'):
-        vn = 'MOC'
-        case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=False)
-        da_tmp = case.ds[vn]
-        da_ann = utils.ann_modifier(da_tmp, ann_method, long_name='Meridional Ocean Circulation')
+    # def calc_3d_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann'):
+    #     vn = 'MOC'
+    #     case.load(vn, load_idx=load_idx, adjust_month=adjust_month, regrid=False)
+    #     da_tmp = case.ds[vn]
+    #     da_ann = utils.ann_modifier(da_tmp, ann_method, long_name='Meridional Ocean Circulation')
         
-        da = da_ann.copy()
-        da['moc_z'] = da_ann['moc_z'] / 1e5  # unit: cm -> km
-        da['moc_z'].attrs['units'] = 'km'
-        return da
+    #     da = da_ann.copy()
+    #     da['moc_z'] = da_ann['moc_z'] / 1e5  # unit: cm -> km
+    #     da['moc_z'].attrs['units'] = 'km'
+    #     return da
 
-    def calc_ts_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0, moc_z=slice(0.5, None), lat_aux_grid=slice(-90, -28)):
-        da_tmp = DiagCalc.calc_3d_MOC(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
-        da = da_tmp.isel(transport_reg=transport_reg, moc_comp=0).sel(moc_z=moc_z, lat_aux_grid=lat_aux_grid).min(('moc_z', 'lat_aux_grid'))
-        return da
+    # def calc_ts_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0, moc_z=slice(0.5, None), lat_aux_grid=slice(-90, -28)):
+    #     da_tmp = DiagCalc.calc_3d_MOC(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
+    #     da = da_tmp.isel(transport_reg=transport_reg, moc_comp=0).sel(moc_z=moc_z, lat_aux_grid=lat_aux_grid).min(('moc_z', 'lat_aux_grid'))
+    #     return da
 
-    def calc_yz_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0):
-        da_tmp = DiagCalc.calc_3d_MOC(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
-        da = da_tmp.isel(transport_reg=transport_reg, moc_comp=0).mean('time')
-        return da
+    # def calc_yz_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0):
+    #     da_tmp = DiagCalc.calc_3d_MOC(case, load_idx=load_idx, adjust_month=adjust_month, ann_method=ann_method)
+    #     da = da_tmp.isel(transport_reg=transport_reg, moc_comp=0).mean('time')
+    #     return da
 
     # def calc_ysig2_MOC(case, load_idx=-1, adjust_month=True, ann_method='ann', transport_reg=0,
     #                    refz=2000, sigma_mid=None, sigma_edge=None):
@@ -286,6 +286,71 @@ class DiagCalc:
 
     #     return da
 
+    # Get specific diagnostic variables
+    def get_SST(case, **kws):
+        vn = 'TEMP'
+        case.load(vn, **kws)
+        sst = case.ds[vn].x.da.isel(z_t=0)
+        sst.attrs['units'] = '°C'
+        sst.attrs['long_name'] = 'Sea Surface Temperature'
+        sst.name = 'SST'
+        return sst
+
+    def get_LST(case, **kws):
+        vn = 'TS'
+        case.load(vn, **kws)
+        ts = case.ds[vn].x.da
+
+        vn = 'LANDFRAC'
+        case.load(vn, **kws)
+        landfrac = case.ds[vn].x.da
+
+        lst = ts.where(landfrac>0.5)
+
+        lst.attrs['long_name'] = 'Land Surface Temperature'
+        lst.name = 'LST'
+        return lst
+
+    def get_MLD(case, **kws):
+        vn = 'XMXL'
+        case.load(vn, **kws)
+        da = case.ds[vn].x.da / 100
+        da.name = 'MLD'
+        da.attrs['units'] = 'm'
+        return da
+        
+    def get_d18Op(case, **kws):
+        case.load('PRECRC_H216Or', **kws)
+        case.load('PRECSC_H216Os', **kws)
+        case.load('PRECRL_H216OR', **kws)
+        case.load('PRECSL_H216OS', **kws)
+
+        case.load('PRECRC_H218Or', **kws)
+        case.load('PRECSC_H218Os', **kws)
+        case.load('PRECRL_H218OR', **kws)
+        case.load('PRECSL_H218OS', **kws)
+
+        p16O = case.ds['PRECRC_H216Or'].x.da + case.ds['PRECSC_H216Os'].x.da + case.ds['PRECRL_H216OR'].x.da + case.ds['PRECSL_H216OS'].x.da
+        p18O = case.ds['PRECRC_H218Or'].x.da + case.ds['PRECSC_H218Os'].x.da + case.ds['PRECRL_H218OR'].x.da + case.ds['PRECSL_H218OS'].x.da
+
+        p16O = p16O.where(p16O > 1e-18, 1e-18)
+        p18O = p18O.where(p18O > 1e-18, 1e-18)
+
+        d18Op = (p18O / p16O - 1)*1000
+        d18Op.name = 'd18Op'
+
+        return d18Op
+
+    def get_MOC(case, **kws):
+        vn = 'MOC'
+        case.load(vn, **kws)
+        da = case.ds[vn].x.da
+        da['moc_z'] = da['moc_z'] / 1e5  # unit: cm -> km
+        da['moc_z'].attrs['units'] = 'km'
+        da.name = 'MOC'
+        return da
+
+
 class DiagPlot:
     kws_ts = {}
     kws_map = {}
@@ -338,85 +403,85 @@ class DiagPlot:
 
 
     # base function for timeseries (ts) plotting
-    def plot_ts(case, diag_name, ann_method='ann', **kws):
-        _kws = DiagPlot.kws_ts[diag_name].copy() if diag_name in DiagPlot.kws_ts else {}
-        _kws = utils.update_dict(_kws, kws)
-        spell = f'ts:{diag_name}:{ann_method}'
-        if 'sm_method' in _kws:
-            sm_method = _kws.pop('sm_method')
-            spell = f'ts:{diag_name}:{ann_method}:{sm_method}'
-        fig_ax =  case.diags[spell].x.plot(**_kws)
-        return fig_ax
+    # def plot_ts(case, diag_name, ann_method='ann', **kws):
+    #     _kws = DiagPlot.kws_ts[diag_name].copy() if diag_name in DiagPlot.kws_ts else {}
+    #     _kws = utils.update_dict(_kws, kws)
+    #     spell = f'ts:{diag_name}:{ann_method}'
+    #     if 'sm_method' in _kws:
+    #         sm_method = _kws.pop('sm_method')
+    #         spell = f'ts:{diag_name}:{ann_method}:{sm_method}'
+    #     fig_ax =  case.diags[spell].x.plot(**_kws)
+    #     return fig_ax
 
     # base function for map plotting
-    def plot_map(case, diag_name, ann_method='ann', cyclic=False, t_idx=-1, clim=True, **kws):
-        ''' Base function for map plotting
+    # def plot_map(case, diag_name, ann_method='ann', cyclic=False, t_idx=-1, clim=True, **kws):
+    #     ''' Base function for map plotting
 
-        Args:
-            case (x4c.Timeseries): a CESM timeseries case object
-            diag_name (str): a diagnostics name
-            ann_method (str): a annualization method that supports:
+    #     Args:
+    #         case (x4c.Timeseries): a CESM timeseries case object
+    #         diag_name (str): a diagnostics name
+    #         ann_method (str): a annualization method that supports:
                 
-                    * `ann`: calendar year annual mean
-                    * `<m>`: a number in [..., -11, -12, 1, 2, ..., 12] representing a month
-                    * `<m1>,<m2>,...`: a list of months sepearted by commmas
-            cyclic (bool): if True, will add cyclic points to the data array to avoid a blank line in contourf plots
-        '''
-        _kws = DiagPlot.kws_map[diag_name].copy() if diag_name in DiagPlot.kws_map else {}
-        _kws = utils.update_dict(_kws, kws)
-        da = case.diags[f'map:{diag_name}:{ann_method}']
-        if 'time' in da.coords and clim:
-            da = da.mean('time')
-        elif 'time' in da.coords and not clim:
-            da = da.isel(time=t_idx)
+    #                 * `ann`: calendar year annual mean
+    #                 * `<m>`: a number in [..., -11, -12, 1, 2, ..., 12] representing a month
+    #                 * `<m1>,<m2>,...`: a list of months sepearted by commmas
+    #         cyclic (bool): if True, will add cyclic points to the data array to avoid a blank line in contourf plots
+    #     '''
+    #     _kws = DiagPlot.kws_map[diag_name].copy() if diag_name in DiagPlot.kws_map else {}
+    #     _kws = utils.update_dict(_kws, kws)
+    #     da = case.diags[f'map:{diag_name}:{ann_method}']
+    #     if 'time' in da.coords and clim:
+    #         da = da.mean('time')
+    #     elif 'time' in da.coords and not clim:
+    #         da = da.isel(time=t_idx)
             
-        if 'cyclic' in _kws: cyclic = _kws.pop('cyclic')
+    #     if 'cyclic' in _kws: cyclic = _kws.pop('cyclic')
 
-        if cyclic:
-            da_original = da.copy()
-            da = utils.add_cyclic_point(da_original)
-            da.name = da_original.name
-            da.attrs = da_original.attrs
+    #     if cyclic:
+    #         da_original = da.copy()
+    #         da = utils.add_cyclic_point(da_original)
+    #         da.name = da_original.name
+    #         da.attrs = da_original.attrs
 
-        if 'SSH' in case.vars_info:
-            case.load('SSH', regrid=True)
-            da_ssv = case.ds['SSH'].x.da.mean('time')
-            if cyclic: da_ssv = utils.add_cyclic_point(da_ssv)
-            fig_ax =  da.x.plot(ssv=da_ssv, **_kws)
-        else:
-            fig_ax =  da.x.plot(**_kws)
+    #     if 'SSH' in case.vars_info:
+    #         case.load('SSH', regrid=True)
+    #         da_ssv = case.ds['SSH'].x.da.mean('time')
+    #         if cyclic: da_ssv = utils.add_cyclic_point(da_ssv)
+    #         fig_ax =  da.x.plot(ssv=da_ssv, **_kws)
+    #     else:
+    #         fig_ax =  da.x.plot(**_kws)
 
-        return fig_ax
+    #     return fig_ax
 
     # base function for vertical slice (yz) plotting
-    def plot_yz(case, diag_name, ann_method='ann', **kws):
-        _kws = DiagPlot.kws_yz[diag_name].copy() if diag_name in DiagPlot.kws_yz else {}
-        _kws = utils.update_dict(_kws, kws)
+    # def plot_yz(case, diag_name, ann_method='ann', **kws):
+    #     _kws = DiagPlot.kws_yz[diag_name].copy() if diag_name in DiagPlot.kws_yz else {}
+    #     _kws = utils.update_dict(_kws, kws)
 
-        fig_ax =  case.diags[f'yz:{diag_name}:{ann_method}'].x.plot(**_kws)
-        ax = fig_ax[-1] if isinstance(fig_ax, tuple) else fig_ax
+    #     fig_ax =  case.diags[f'yz:{diag_name}:{ann_method}'].x.plot(**_kws)
+    #     ax = fig_ax[-1] if isinstance(fig_ax, tuple) else fig_ax
 
-        ax.set_xticks([-90, -60, -30, 0, 30, 60, 90])
-        ax.set_xticklabels(['90°S', '60°S', '30°S', 'EQ', '30°N', '60°N', '90°N'])
-        ax.set_xlim([-90, 90])
-        ax.set_xlabel('Latitude')
+    #     ax.set_xticks([-90, -60, -30, 0, 30, 60, 90])
+    #     ax.set_xticklabels(['90°S', '60°S', '30°S', 'EQ', '30°N', '60°N', '90°N'])
+    #     ax.set_xlim([-90, 90])
+    #     ax.set_xlabel('Latitude')
 
-        ax.invert_yaxis()
-        ax.set_yticks([0, 2, 4])
-        ax.set_ylabel('Depth [km]')
-        return fig_ax
+    #     ax.invert_yaxis()
+    #     ax.set_yticks([0, 2, 4])
+    #     ax.set_ylabel('Depth [km]')
+    #     return fig_ax
 
     # base function for zonal mean (zm) plotting
-    def plot_zm(case, diag_name, ann_method='ann', **kws):
-        _kws = DiagPlot.kws_zm[diag_name].copy() if diag_name in DiagPlot.kws_zm else {}
-        _kws = utils.update_dict(_kws, kws)
+    # def plot_zm(case, diag_name, ann_method='ann', **kws):
+    #     _kws = DiagPlot.kws_zm[diag_name].copy() if diag_name in DiagPlot.kws_zm else {}
+    #     _kws = utils.update_dict(_kws, kws)
 
-        fig_ax = case.diags[f'zm:{diag_name}:{ann_method}'].x.plot(**_kws)
-        ax = fig_ax[-1] if isinstance(fig_ax, tuple) else fig_ax
+    #     fig_ax = case.diags[f'zm:{diag_name}:{ann_method}'].x.plot(**_kws)
+    #     ax = fig_ax[-1] if isinstance(fig_ax, tuple) else fig_ax
 
-        ax.set_xticks([-90, -60, -30, 0, 30, 60, 90])
-        ax.set_xticklabels(['90°S', '60°S', '30°S', 'EQ', '30°N', '60°N', '90°N'])
-        ax.set_xlim([-90, 90])
-        ax.set_xlabel('Latitude')
+    #     ax.set_xticks([-90, -60, -30, 0, 30, 60, 90])
+    #     ax.set_xticklabels(['90°S', '60°S', '30°S', 'EQ', '30°N', '60°N', '90°N'])
+    #     ax.set_xlim([-90, 90])
+    #     ax.set_xlabel('Latitude')
 
-        return fig_ax
+    #     return fig_ax
