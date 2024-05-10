@@ -70,7 +70,7 @@ Then install some dependencies via :code:`conda`:
 
 .. code-block:: bash
 
-    conda install -c conda-forge jupyter notebook xesmf cartopy pop_tools
+    conda install -c conda-forge jupyter notebook xesmf cartopy pop-tools
 
 Once the above dependencies have been installed, simply
 

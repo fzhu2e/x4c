@@ -4245,11 +4245,30 @@ Checking dates: 100%|██████████| 160/160 [00:00&lt;00:00, 12
 </table></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vn</span> <span class="o">=</span> <span class="s1">&#39;SST&#39;</span>
-<span class="k">case</span><span class="o">.</span><span class="n">check_timespan</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch_old_rfiles&#39;</span>
+<span class="c1"># case = x4c.Timeseries(dirpath)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Logs.dirpath: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch/logs</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; 50 Logs.paths:</span>
+Start: ocn.log.4146414.desched1.240416-143953.gz
+End: ocn.log.4343698.desched1.240502-115141.gz
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># case.check_timespan(&#39;R18O&#39;)</span>
 </pre></div>
 </div>
 </div>
@@ -4258,221 +4277,166 @@ Checking dates: 100%|██████████| 160/160 [00:00&lt;00:00, 12
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Checking dates: 100%|██████████| 138/138 [00:00&lt;00:00, 12350.67it/s]
+Checking dates: 100%|██████████| 10/10 [00:00&lt;00:00, 61.50it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <style type="text/css">
-#T_df052_row0_col0, #T_df052_row0_col1, #T_df052_row0_col2, #T_df052_row0_col3, #T_df052_row0_col4, #T_df052_row0_col5, #T_df052_row0_col6, #T_df052_row0_col7, #T_df052_row0_col8, #T_df052_row0_col9, #T_df052_row1_col0, #T_df052_row1_col1, #T_df052_row1_col2, #T_df052_row1_col3, #T_df052_row1_col4, #T_df052_row1_col5, #T_df052_row1_col6, #T_df052_row1_col7, #T_df052_row1_col8, #T_df052_row1_col9, #T_df052_row2_col0, #T_df052_row2_col1, #T_df052_row2_col2, #T_df052_row2_col3, #T_df052_row2_col4, #T_df052_row2_col5, #T_df052_row2_col6, #T_df052_row2_col7, #T_df052_row2_col8, #T_df052_row2_col9, #T_df052_row3_col0, #T_df052_row3_col1, #T_df052_row3_col2, #T_df052_row3_col3, #T_df052_row3_col4, #T_df052_row3_col5, #T_df052_row3_col6, #T_df052_row3_col7, #T_df052_row3_col8, #T_df052_row3_col9, #T_df052_row4_col0, #T_df052_row4_col1, #T_df052_row4_col2, #T_df052_row4_col3, #T_df052_row4_col4, #T_df052_row4_col5, #T_df052_row4_col6, #T_df052_row4_col7, #T_df052_row4_col8, #T_df052_row4_col9, #T_df052_row5_col0, #T_df052_row5_col1, #T_df052_row5_col2, #T_df052_row5_col3, #T_df052_row5_col4, #T_df052_row5_col5, #T_df052_row5_col6, #T_df052_row5_col7, #T_df052_row5_col8, #T_df052_row5_col9, #T_df052_row6_col0, #T_df052_row6_col1, #T_df052_row6_col2, #T_df052_row6_col3, #T_df052_row6_col4, #T_df052_row6_col5, #T_df052_row6_col6, #T_df052_row6_col7, #T_df052_row6_col8, #T_df052_row6_col9, #T_df052_row7_col0, #T_df052_row7_col1, #T_df052_row7_col2, #T_df052_row7_col3, #T_df052_row7_col4, #T_df052_row7_col5, #T_df052_row7_col6, #T_df052_row7_col7, #T_df052_row7_col8, #T_df052_row7_col9, #T_df052_row8_col0, #T_df052_row8_col1, #T_df052_row8_col2, #T_df052_row8_col3, #T_df052_row8_col4, #T_df052_row8_col5, #T_df052_row8_col6, #T_df052_row8_col7, #T_df052_row8_col8, #T_df052_row8_col9, #T_df052_row9_col0, #T_df052_row9_col1, #T_df052_row9_col2, #T_df052_row9_col3, #T_df052_row9_col4, #T_df052_row9_col5, #T_df052_row9_col6, #T_df052_row9_col7, #T_df052_row9_col8, #T_df052_row9_col9, #T_df052_row10_col0, #T_df052_row10_col1, #T_df052_row10_col2, #T_df052_row10_col3, #T_df052_row10_col4, #T_df052_row10_col5, #T_df052_row10_col6, #T_df052_row10_col7, #T_df052_row10_col8, #T_df052_row10_col9, #T_df052_row11_col0, #T_df052_row11_col1, #T_df052_row11_col2, #T_df052_row11_col3, #T_df052_row11_col4, #T_df052_row11_col5, #T_df052_row11_col6, #T_df052_row11_col7, #T_df052_row11_col8, #T_df052_row11_col9, #T_df052_row12_col0, #T_df052_row12_col1, #T_df052_row12_col2, #T_df052_row12_col3, #T_df052_row12_col4, #T_df052_row12_col5, #T_df052_row12_col6, #T_df052_row12_col7, #T_df052_row12_col8, #T_df052_row12_col9, #T_df052_row13_col0, #T_df052_row13_col1, #T_df052_row13_col2, #T_df052_row13_col3, #T_df052_row13_col4, #T_df052_row13_col5, #T_df052_row13_col6, #T_df052_row13_col7, #T_df052_row13_col8, #T_df052_row13_col9 {
-  background-color: red;
-  color: white;
-}
 </style>
-<table id="T_df052">
+<table id="T_06961">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_df052_level0_col0" class="col_heading level0 col0" >1</th>
-      <th id="T_df052_level0_col1" class="col_heading level0 col1" >2</th>
-      <th id="T_df052_level0_col2" class="col_heading level0 col2" >3</th>
-      <th id="T_df052_level0_col3" class="col_heading level0 col3" >4</th>
-      <th id="T_df052_level0_col4" class="col_heading level0 col4" >5</th>
-      <th id="T_df052_level0_col5" class="col_heading level0 col5" >6</th>
-      <th id="T_df052_level0_col6" class="col_heading level0 col6" >7</th>
-      <th id="T_df052_level0_col7" class="col_heading level0 col7" >8</th>
-      <th id="T_df052_level0_col8" class="col_heading level0 col8" >9</th>
-      <th id="T_df052_level0_col9" class="col_heading level0 col9" >10</th>
+      <th id="T_06961_level0_col0" class="col_heading level0 col0" >1</th>
+      <th id="T_06961_level0_col1" class="col_heading level0 col1" >2</th>
+      <th id="T_06961_level0_col2" class="col_heading level0 col2" >3</th>
+      <th id="T_06961_level0_col3" class="col_heading level0 col3" >4</th>
+      <th id="T_06961_level0_col4" class="col_heading level0 col4" >5</th>
+      <th id="T_06961_level0_col5" class="col_heading level0 col5" >6</th>
+      <th id="T_06961_level0_col6" class="col_heading level0 col6" >7</th>
+      <th id="T_06961_level0_col7" class="col_heading level0 col7" >8</th>
+      <th id="T_06961_level0_col8" class="col_heading level0 col8" >9</th>
+      <th id="T_06961_level0_col9" class="col_heading level0 col9" >10</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th id="T_df052_level0_row0" class="row_heading level0 row0" >1</th>
-      <td id="T_df052_row0_col0" class="data row0 col0" >000101-005112</td>
-      <td id="T_df052_row0_col1" class="data row0 col1" >005201-010212</td>
-      <td id="T_df052_row0_col2" class="data row0 col2" >010301-015312</td>
-      <td id="T_df052_row0_col3" class="data row0 col3" >015401-020412</td>
-      <td id="T_df052_row0_col4" class="data row0 col4" >020501-025512</td>
-      <td id="T_df052_row0_col5" class="data row0 col5" >025601-030612</td>
-      <td id="T_df052_row0_col6" class="data row0 col6" >030701-035712</td>
-      <td id="T_df052_row0_col7" class="data row0 col7" >035801-040812</td>
-      <td id="T_df052_row0_col8" class="data row0 col8" >040901-045912</td>
-      <td id="T_df052_row0_col9" class="data row0 col9" >046001-051012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row1" class="row_heading level0 row1" >2</th>
-      <td id="T_df052_row1_col0" class="data row1 col0" >051101-056112</td>
-      <td id="T_df052_row1_col1" class="data row1 col1" >056201-061212</td>
-      <td id="T_df052_row1_col2" class="data row1 col2" >061301-066312</td>
-      <td id="T_df052_row1_col3" class="data row1 col3" >066401-071412</td>
-      <td id="T_df052_row1_col4" class="data row1 col4" >071501-076512</td>
-      <td id="T_df052_row1_col5" class="data row1 col5" >076601-081612</td>
-      <td id="T_df052_row1_col6" class="data row1 col6" >081701-086712</td>
-      <td id="T_df052_row1_col7" class="data row1 col7" >086801-091812</td>
-      <td id="T_df052_row1_col8" class="data row1 col8" >091901-096912</td>
-      <td id="T_df052_row1_col9" class="data row1 col9" >097001-102012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row2" class="row_heading level0 row2" >3</th>
-      <td id="T_df052_row2_col0" class="data row2 col0" >102101-107112</td>
-      <td id="T_df052_row2_col1" class="data row2 col1" >107201-112212</td>
-      <td id="T_df052_row2_col2" class="data row2 col2" >112301-117312</td>
-      <td id="T_df052_row2_col3" class="data row2 col3" >117401-122412</td>
-      <td id="T_df052_row2_col4" class="data row2 col4" >122501-127512</td>
-      <td id="T_df052_row2_col5" class="data row2 col5" >127601-132612</td>
-      <td id="T_df052_row2_col6" class="data row2 col6" >132701-137712</td>
-      <td id="T_df052_row2_col7" class="data row2 col7" >137801-142812</td>
-      <td id="T_df052_row2_col8" class="data row2 col8" >142901-147912</td>
-      <td id="T_df052_row2_col9" class="data row2 col9" >148001-153012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row3" class="row_heading level0 row3" >4</th>
-      <td id="T_df052_row3_col0" class="data row3 col0" >153101-158112</td>
-      <td id="T_df052_row3_col1" class="data row3 col1" >158201-163212</td>
-      <td id="T_df052_row3_col2" class="data row3 col2" >163301-168312</td>
-      <td id="T_df052_row3_col3" class="data row3 col3" >168401-173412</td>
-      <td id="T_df052_row3_col4" class="data row3 col4" >173501-178512</td>
-      <td id="T_df052_row3_col5" class="data row3 col5" >178601-183612</td>
-      <td id="T_df052_row3_col6" class="data row3 col6" >183701-188712</td>
-      <td id="T_df052_row3_col7" class="data row3 col7" >188801-193812</td>
-      <td id="T_df052_row3_col8" class="data row3 col8" >193901-198912</td>
-      <td id="T_df052_row3_col9" class="data row3 col9" >199001-204012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row4" class="row_heading level0 row4" >5</th>
-      <td id="T_df052_row4_col0" class="data row4 col0" >204101-209112</td>
-      <td id="T_df052_row4_col1" class="data row4 col1" >209201-214212</td>
-      <td id="T_df052_row4_col2" class="data row4 col2" >214301-219312</td>
-      <td id="T_df052_row4_col3" class="data row4 col3" >219401-224412</td>
-      <td id="T_df052_row4_col4" class="data row4 col4" >224501-229512</td>
-      <td id="T_df052_row4_col5" class="data row4 col5" >229601-234612</td>
-      <td id="T_df052_row4_col6" class="data row4 col6" >234701-239712</td>
-      <td id="T_df052_row4_col7" class="data row4 col7" >239801-244812</td>
-      <td id="T_df052_row4_col8" class="data row4 col8" >244901-249912</td>
-      <td id="T_df052_row4_col9" class="data row4 col9" >250001-255012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row5" class="row_heading level0 row5" >6</th>
-      <td id="T_df052_row5_col0" class="data row5 col0" >255101-260112</td>
-      <td id="T_df052_row5_col1" class="data row5 col1" >260201-265212</td>
-      <td id="T_df052_row5_col2" class="data row5 col2" >265301-270312</td>
-      <td id="T_df052_row5_col3" class="data row5 col3" >270401-275412</td>
-      <td id="T_df052_row5_col4" class="data row5 col4" >275501-280512</td>
-      <td id="T_df052_row5_col5" class="data row5 col5" >280601-285612</td>
-      <td id="T_df052_row5_col6" class="data row5 col6" >285701-290712</td>
-      <td id="T_df052_row5_col7" class="data row5 col7" >290801-295812</td>
-      <td id="T_df052_row5_col8" class="data row5 col8" >295901-300912</td>
-      <td id="T_df052_row5_col9" class="data row5 col9" >301001-306012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row6" class="row_heading level0 row6" >7</th>
-      <td id="T_df052_row6_col0" class="data row6 col0" >306101-311112</td>
-      <td id="T_df052_row6_col1" class="data row6 col1" >311201-316212</td>
-      <td id="T_df052_row6_col2" class="data row6 col2" >316301-321312</td>
-      <td id="T_df052_row6_col3" class="data row6 col3" >321401-326412</td>
-      <td id="T_df052_row6_col4" class="data row6 col4" >326501-331512</td>
-      <td id="T_df052_row6_col5" class="data row6 col5" >331601-336612</td>
-      <td id="T_df052_row6_col6" class="data row6 col6" >336701-341712</td>
-      <td id="T_df052_row6_col7" class="data row6 col7" >341801-346812</td>
-      <td id="T_df052_row6_col8" class="data row6 col8" >346901-351912</td>
-      <td id="T_df052_row6_col9" class="data row6 col9" >352001-357012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row7" class="row_heading level0 row7" >8</th>
-      <td id="T_df052_row7_col0" class="data row7 col0" >357101-362112</td>
-      <td id="T_df052_row7_col1" class="data row7 col1" >362201-367212</td>
-      <td id="T_df052_row7_col2" class="data row7 col2" >367301-372312</td>
-      <td id="T_df052_row7_col3" class="data row7 col3" >372401-377412</td>
-      <td id="T_df052_row7_col4" class="data row7 col4" >377501-382512</td>
-      <td id="T_df052_row7_col5" class="data row7 col5" >382601-387612</td>
-      <td id="T_df052_row7_col6" class="data row7 col6" >387701-392712</td>
-      <td id="T_df052_row7_col7" class="data row7 col7" >392801-397812</td>
-      <td id="T_df052_row7_col8" class="data row7 col8" >397901-402912</td>
-      <td id="T_df052_row7_col9" class="data row7 col9" >403001-408012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row8" class="row_heading level0 row8" >9</th>
-      <td id="T_df052_row8_col0" class="data row8 col0" >408101-413112</td>
-      <td id="T_df052_row8_col1" class="data row8 col1" >413201-418212</td>
-      <td id="T_df052_row8_col2" class="data row8 col2" >418301-423312</td>
-      <td id="T_df052_row8_col3" class="data row8 col3" >423401-428412</td>
-      <td id="T_df052_row8_col4" class="data row8 col4" >428501-433512</td>
-      <td id="T_df052_row8_col5" class="data row8 col5" >433601-438612</td>
-      <td id="T_df052_row8_col6" class="data row8 col6" >438701-443712</td>
-      <td id="T_df052_row8_col7" class="data row8 col7" >443801-448812</td>
-      <td id="T_df052_row8_col8" class="data row8 col8" >448901-453912</td>
-      <td id="T_df052_row8_col9" class="data row8 col9" >454001-459012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row9" class="row_heading level0 row9" >10</th>
-      <td id="T_df052_row9_col0" class="data row9 col0" >459101-464112</td>
-      <td id="T_df052_row9_col1" class="data row9 col1" >464201-469212</td>
-      <td id="T_df052_row9_col2" class="data row9 col2" >469301-474312</td>
-      <td id="T_df052_row9_col3" class="data row9 col3" >474401-479412</td>
-      <td id="T_df052_row9_col4" class="data row9 col4" >479501-484512</td>
-      <td id="T_df052_row9_col5" class="data row9 col5" >484601-489612</td>
-      <td id="T_df052_row9_col6" class="data row9 col6" >489701-494712</td>
-      <td id="T_df052_row9_col7" class="data row9 col7" >494801-499812</td>
-      <td id="T_df052_row9_col8" class="data row9 col8" >499901-504912</td>
-      <td id="T_df052_row9_col9" class="data row9 col9" >505001-510012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row10" class="row_heading level0 row10" >11</th>
-      <td id="T_df052_row10_col0" class="data row10 col0" >510101-515112</td>
-      <td id="T_df052_row10_col1" class="data row10 col1" >515201-520212</td>
-      <td id="T_df052_row10_col2" class="data row10 col2" >520301-525312</td>
-      <td id="T_df052_row10_col3" class="data row10 col3" >525401-530412</td>
-      <td id="T_df052_row10_col4" class="data row10 col4" >530501-535512</td>
-      <td id="T_df052_row10_col5" class="data row10 col5" >535601-540612</td>
-      <td id="T_df052_row10_col6" class="data row10 col6" >540701-545712</td>
-      <td id="T_df052_row10_col7" class="data row10 col7" >545801-550812</td>
-      <td id="T_df052_row10_col8" class="data row10 col8" >550901-555912</td>
-      <td id="T_df052_row10_col9" class="data row10 col9" >556001-561012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row11" class="row_heading level0 row11" >12</th>
-      <td id="T_df052_row11_col0" class="data row11 col0" >561101-566112</td>
-      <td id="T_df052_row11_col1" class="data row11 col1" >566201-571212</td>
-      <td id="T_df052_row11_col2" class="data row11 col2" >571301-576312</td>
-      <td id="T_df052_row11_col3" class="data row11 col3" >576401-581412</td>
-      <td id="T_df052_row11_col4" class="data row11 col4" >581501-586512</td>
-      <td id="T_df052_row11_col5" class="data row11 col5" >586601-591612</td>
-      <td id="T_df052_row11_col6" class="data row11 col6" >591701-596712</td>
-      <td id="T_df052_row11_col7" class="data row11 col7" >596801-601812</td>
-      <td id="T_df052_row11_col8" class="data row11 col8" >601901-606912</td>
-      <td id="T_df052_row11_col9" class="data row11 col9" >607001-612012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row12" class="row_heading level0 row12" >13</th>
-      <td id="T_df052_row12_col0" class="data row12 col0" >612101-617112</td>
-      <td id="T_df052_row12_col1" class="data row12 col1" >617201-622212</td>
-      <td id="T_df052_row12_col2" class="data row12 col2" >622301-627312</td>
-      <td id="T_df052_row12_col3" class="data row12 col3" >627401-632412</td>
-      <td id="T_df052_row12_col4" class="data row12 col4" >632501-637512</td>
-      <td id="T_df052_row12_col5" class="data row12 col5" >637601-642612</td>
-      <td id="T_df052_row12_col6" class="data row12 col6" >642701-647712</td>
-      <td id="T_df052_row12_col7" class="data row12 col7" >647801-652812</td>
-      <td id="T_df052_row12_col8" class="data row12 col8" >652901-657912</td>
-      <td id="T_df052_row12_col9" class="data row12 col9" >658001-663012</td>
-    </tr>
-    <tr>
-      <th id="T_df052_level0_row13" class="row_heading level0 row13" >14</th>
-      <td id="T_df052_row13_col0" class="data row13 col0" >663101-668112</td>
-      <td id="T_df052_row13_col1" class="data row13 col1" >668201-673212</td>
-      <td id="T_df052_row13_col2" class="data row13 col2" >673301-678312</td>
-      <td id="T_df052_row13_col3" class="data row13 col3" >678401-683412</td>
-      <td id="T_df052_row13_col4" class="data row13 col4" >683501-688512</td>
-      <td id="T_df052_row13_col5" class="data row13 col5" >688601-693612</td>
-      <td id="T_df052_row13_col6" class="data row13 col6" >693701-698712</td>
-      <td id="T_df052_row13_col7" class="data row13 col7" >698801-703812</td>
-      <td id="T_df052_row13_col8" class="data row13 col8" ></td>
-      <td id="T_df052_row13_col9" class="data row13 col9" ></td>
+      <th id="T_06961_level0_row0" class="row_heading level0 row0" >1</th>
+      <td id="T_06961_row0_col0" class="data row0 col0" >700101-705012</td>
+      <td id="T_06961_row0_col1" class="data row0 col1" >705101-710012</td>
+      <td id="T_06961_row0_col2" class="data row0 col2" >710101-715012</td>
+      <td id="T_06961_row0_col3" class="data row0 col3" >715101-720012</td>
+      <td id="T_06961_row0_col4" class="data row0 col4" >720101-725012</td>
+      <td id="T_06961_row0_col5" class="data row0 col5" >725101-730012</td>
+      <td id="T_06961_row0_col6" class="data row0 col6" >730101-735012</td>
+      <td id="T_06961_row0_col7" class="data row0 col7" >735101-740012</td>
+      <td id="T_06961_row0_col8" class="data row0 col8" >740101-745012</td>
+      <td id="T_06961_row0_col9" class="data row0 col9" >745101-750012</td>
     </tr>
   </tbody>
 </table></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dirpath</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch/logs&#39;</span>
+<span class="n">case</span> <span class="o">=</span> <span class="n">x4c</span><span class="o">.</span><span class="n">Logs</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">get_vars</span><span class="p">([</span><span class="s1">&#39;R18O&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">df_ann</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Month</th>
+      <th>R18O</th>
+    </tr>
+    <tr>
+      <th>Year</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>7001</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7002</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7003</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7004</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7005</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>7996</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7997</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7998</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>7999</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+    <tr>
+      <th>8000</th>
+      <td>6.5</td>
+      <td>1.000729</td>
+    </tr>
+  </tbody>
+</table>
+<p>1000 rows × 2 columns</p>
+</div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:

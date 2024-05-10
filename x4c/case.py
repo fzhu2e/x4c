@@ -139,7 +139,7 @@ class Timeseries:
             da = da.isel(time=t_idx)
             da.attrs['long_name'] += f'\n{da.time.values}'
 
-        if 'ncol' in da.dims or 'nlat' in da.dims or 'nlon' in da.dims:
+        if 'ncol' in da.dims or 'lndgrid' in da.dims or 'nlat' in da.dims or 'nlon' in da.dims:
             da = da.x.regrid()
 
         if len(da.dims) == 2 and 'lat' in da.dims and 'lon' in da.dims:
@@ -170,7 +170,7 @@ class Timeseries:
                 da.name = da_original.name
                 da.attrs = da_original.attrs
 
-            if da.comp != 'ocn' and 'SSH' in self.vars_info:
+            if da.comp not in ['ocn', 'ice'] and 'SSH' in self.vars_info:
                 self.load('SSH')
                 da_ssv = self.ds['SSH'].x.regrid().x.da.mean('time')
                 if cyclic: da_ssv = utils.add_cyclic_point(da_ssv)

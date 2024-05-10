@@ -79,7 +79,7 @@ class XDataset:
         comp = self.ds.attrs['comp']
         grid = self.ds.attrs['grid']
 
-        if grid in ['ne16']:
+        if grid in ['ne16', 'ne30', 'ne120']:
             # SE grid
             ds = self.ds.copy()
             if comp == 'lnd':
