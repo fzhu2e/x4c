@@ -53,7 +53,7 @@ def regrid_cam_se(ds, weight_file):
     # output variable shapew
     out_shape = weights.dst_grid_dims.load().data.tolist()[::-1]
 
-    print(f"Regridding from {in_shape} to {out_shape}")
+    # print(f"Regridding from {in_shape} to {out_shape}")
 
     # Insert dummy dimension
     vars_with_ncol = [name for name in dataset.variables if "ncol" in dataset[name].dims]
@@ -81,17 +81,18 @@ def regrid_cam_se(ds, weight_file):
         dummy_in,
         dummy_out,
         weights=weight_file,
-        method="test",
+        method="bilinear",
         reuse_weights=True,
         periodic=True,
     )
 
     # Actually regrid, after renaming
     regridded = regridder(updated.rename({"dummy": "lat", "ncol": "lon"}), keep_attrs=True)
-
     # merge back any variables that didn't have the ncol dimension
     # And so were not regridded
-    return xr.merge([dataset.drop_vars(regridded.variables), regridded])
+    ds_out = xr.merge([dataset.drop_vars(regridded.variables, errors='ignore'), regridded])
+
+    return ds_out
 
 def annualize(ds, months=None):
     months = list(range(1, 13)) if months is None else np.abs(months)
