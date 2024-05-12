@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='x4c',  # required
-    version='2024.5.10.14',
+    version='2024.5.11',
     description='x4c: Xarray for CESM',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -16,6 +16,7 @@ setup(
     include_package_data=True,
     license='MIT',
     zip_safe=False,
+    scripts=['bin/x4c'],
     keywords='Xarray, CESM, Climate Data Analysis and Visualization',
     classifiers=[
         'Natural Language :: English',

@@ -341,6 +341,13 @@ class DiagCalc:
 
         return d18Op
 
+    def get_d18Osw(case, **kws):
+        case.load('R18O', **kws)
+        R18O = case.ds['R18O'].x.da
+        d18Osw = (R18O - 1)*1e3
+        d18Osw.name = 'd18Osw'
+        return d18Osw
+
     def get_MOC(case, **kws):
         vn = 'MOC'
         case.load(vn, **kws)

@@ -120,6 +120,8 @@ class XDataset:
 
         ds_rgd.attrs = dict(self.ds.attrs)
         # utils.p_success(f'Dataset regridded to regular grid: [dlon: {dlon} x dlat: {dlat}]')
+        if 'lat' in ds_rgd.attrs: del(ds_rgd.attrs['lat'])
+        if 'lon' in ds_rgd.attrs: del(ds_rgd.attrs['lon'])
         return ds_rgd
 
     def annualize(self, months=None):
@@ -133,6 +135,7 @@ class XDataset:
         ds_ann = utils.annualize(self.ds, months=months)
         ds_ann.attrs = dict(self.ds.attrs)
         return ds_ann
+
 
     def __getitem__(self, key):
         da = self.ds[key]
@@ -168,6 +171,16 @@ class XDataset:
         else:
             raise ValueError('`vn` not existed in `Dataset.attrs`')
 
+    @property
+    def climo(self):
+        ds = self.ds.groupby('time.month').mean(dim='time')
+        ds.attrs['climo_period'] = (self.ds['time.year'].values[0], self.ds['time.year'].values[-1])
+        if 'comp' in self.ds.attrs: da.attrs['comp'] = self.ds.attrs['comp']
+        if 'grid' in self.ds.attrs: da.attrs['grid'] = self.ds.attrs['grid']
+        if 'month' in ds.coords:
+            ds = ds.rename({'month': 'time'})
+        return ds
+        
 
 @xr.register_dataarray_accessor('x')
 class XDataArray:
@@ -190,6 +203,8 @@ class XDataArray:
         ds_rgd = self.ds.x.regrid(**kws)
         da = ds_rgd.x.da
         da.name = self.da.name
+        if 'lat' in da.attrs: del(da.attrs['lat'])
+        if 'lon' in da.attrs: del(da.attrs['lon'])
         return da
 
     @property
@@ -243,6 +258,16 @@ class XDataArray:
         da = self.da.mean('lon')
         da = utils.update_attrs(da, self.da)
         if 'long_name' in da.attrs: da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
+        return da
+
+    @property
+    def climo(self):
+        da = self.da.groupby('time.month').mean(dim='time')
+        da.attrs['climo_period'] = (self.da['time.year'].values[0], self.da['time.year'].values[-1])
+        if 'comp' in self.da.attrs: da.attrs['comp'] = self.da.attrs['comp']
+        if 'grid' in self.da.attrs: da.attrs['grid'] = self.da.attrs['grid']
+        if 'month' in da.coords:
+            da = da.rename({'month': 'time'})
         return da
 
     def geo_mean(self, ind=None, latlon_range=(-90, 90, 0, 360)):

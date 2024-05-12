@@ -181,9 +181,9 @@ def update_ds(ds, path, vn=None, comp=None, grid=None, adjust_month=False,
         lat_name = lat_dict[comp] if lat_name is None else lat_name
         lon_name = lon_dict[comp] if lon_name is None else lon_name
 
-    if gw_name is not None: ds['gw'] = ds[gw_name]
-    if lat_name is not None: ds['lat'] = ds[lat_name]
-    if lon_name is not None: ds['lon'] = ds[lon_name]
+    if gw_name is not None and gw_name in ds: ds['gw'] = ds[gw_name]
+    if lat_name is not None and lat_name in ds: ds['lat'] = ds[lat_name]
+    if lon_name is not None and lon_name in ds: ds['lon'] = ds[lon_name]
 
     return ds
 
