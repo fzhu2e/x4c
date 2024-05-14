@@ -43,13 +43,15 @@ class Timeseries:
             mdl = path.split('.')[-5]
             h_str = path.split('.')[-4]
             vn = path.split('.')[-3]
-            if vn not in self.vars_info:
-                self.vars_info[vn] = (comp, mdl, h_str)
+            if (vn, comp) not in self.vars_info:
+                self.vars_info[(vn, comp)] = (comp, mdl, h_str)
 
         utils.p_success(f'>>> case.vars_info created')
 
-    def get_paths(self, vn, timespan=None):
-        paths = utils.find_paths(self.root_dir, self.path_pattern, vn=vn)
+    def get_paths(self, vn, comp=None, timespan=None):
+        if comp is None: comp = self.get_vn_comp(vn)
+        comp, mdl, h_str = self.vars_info[(vn, comp)]
+        paths = utils.find_paths(self.root_dir, self.path_pattern, vn=vn, comp=comp, mdl=mdl, h_str=h_str)
         if timespan is None:
             paths_sub = paths
         else:
@@ -62,23 +64,39 @@ class Timeseries:
                     paths_sub.append(path)
 
         return paths_sub
+
+    def get_vn_comp(self, vn):
+        comps = []
+        for (v, comp) in self.vars_info:
+            if v == vn:
+                comps.append(comp)
+        
+        if len(comps) == 1:
+            return comps[0]
+        else:
+            utils.p_warning(f'{vn} belongs to components: {comps}')
+            raise ValueError('The input variable name belongs to multiple components. Please specify via the argument `comp`.')
+
     
-    def load(self, vn, timespan=None, load_idx=-1, adjust_month=True):
+    def load(self, vn, comp=None, timespan=None, load_idx=-1, adjust_month=True):
         if not isinstance(vn, (list, tuple)):
             vn = [vn]
 
         for v in vn:
-            if v in self.vars_info:
+            if comp is None: comp = self.get_vn_comp(v)
+
+            if (v, comp) in self.vars_info:
                 if v not in self.ds:
-                    comp, mdl, h_str = self.vars_info[v]
+                    comp, mdl, h_str = self.vars_info[(v, comp)]
                     if timespan is None:
-                        paths = utils.find_paths(self.root_dir, self.path_pattern, vn=v)[load_idx]
+                        # paths = utils.find_paths(self.root_dir, self.path_pattern, vn=v, comp=comp)[load_idx]
+                        paths = self.get_paths(v, comp=comp)[load_idx]
                         if not isinstance(paths, (list, tuple)):
                             ds =  core.open_dataset(paths, vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
                         else:
                             ds =  core.open_mfdataset(paths, vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
                     else:
-                        paths = self.get_paths(v, timespan=timespan)
+                        paths = self.get_paths(v, comp=comp, timespan=timespan)
                         if len(paths) == 1:
                             ds =  core.open_dataset(paths[0], vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
                         else:
@@ -107,7 +125,7 @@ class Timeseries:
 
         if f'get_{vn}' in diags.DiagCalc.__dict__:
             da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month)
-        elif vn in self.vars_info:
+        elif (vn, comp) in self.vars_info:
             self.load(vn, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month)
             da = self.ds[vn].x.da
         else:
@@ -179,7 +197,7 @@ class Timeseries:
                 da.name = da_original.name
                 da.attrs = da_original.attrs
 
-            if da.comp not in ['ocn', 'ice'] and 'SSH' in self.vars_info:
+            if da.comp not in ['ocn', 'ice'] and ('SSH', 'ocn') in self.vars_info:
                 self.load('SSH')
                 da_ssv = self.ds['SSH'].x.regrid().x.da.mean('time')
                 if cyclic: da_ssv = utils.add_cyclic_point(da_ssv)
@@ -212,21 +230,14 @@ class Timeseries:
 
         return fig_ax
 
-    def get_climo(self, vn, timespan=None, adjust_month=True, slicing=False, regrid=False):
+    def get_climo(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False):
         ''' Generate the climatology file for the given variable
 
         Args:
             slicing (bool): could be problematic
         '''
-        comp = self.vars_info[vn][0]
         grid = self.grid_dict[comp]
-        paths = self.get_paths(vn, timespan=timespan)
-        # da = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')[vn]
-        # if slicing: da = da.sel(time=slice(str(timespan[0]), str(timespan[1])))
-        # da_out = da.x.climo
-        # da_out.attrs['comp'] = comp
-        # da_out.attrs['grid'] = grid
-        # if regrid: da_out = da_out.x.regrid()
+        paths = self.get_paths(vn, comp=comp, timespan=timespan)
         ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
         if slicing: ds = ds.sel(time=slice(str(timespan[0]), str(timespan[1])))
         ds_out = ds.x.climo
@@ -235,26 +246,28 @@ class Timeseries:
         if regrid: ds_out = ds_out.x.regrid()
         return ds_out
 
-    def save_climo(self, vn, output_dirpath, casename=None, timespan=None, adjust_month=True, slicing=False, regrid=False, overwrite=False):
+    def save_climo(self, vn, output_dirpath, comp=None, casename=None, timespan=None, adjust_month=True, slicing=False, regrid=False, overwrite=False):
         fname = f'{vn}_climo.nc' if casename is None else f'{casename}_{vn}_climo.nc'
         out_path = os.path.join(output_dirpath, fname)
         if overwrite or not os.path.exists(out_path):
-            climo = self.get_climo(vn, timespan=timespan, adjust_month=adjust_month, slicing=slicing, regrid=regrid)
+            if comp is None: comp = self.get_vn_comp(vn)
+
+            climo = self.get_climo(vn, comp=comp, timespan=timespan, adjust_month=adjust_month, slicing=slicing, regrid=regrid)
             climo.to_netcdf(out_path)
             climo.close()
 
-    def gen_climo(self, output_dirpath, casename=None, timespan=None, vns=None, adjust_month=True,
-                  comp=None, nproc=None, slicing=False, regrid=False, overwrite=False):
+    def gen_climo(self, output_dirpath, comp=None, casename=None, timespan=None, vns=None, adjust_month=True,
+                  nproc=None, slicing=False, regrid=False, overwrite=False):
         output_dirpath = pathlib.Path(output_dirpath)
         if not output_dirpath.exists():
             output_dirpath.mkdir(parents=True, exist_ok=True)
             utils.p_success(f'>>> output directory created at: {output_dirpath}')
 
+        if comp is None:
+            raise ValueError('Please specify component via the argument `comp`.')
+
         if vns is None:
-            if comp is None:
-                vns = list(self.vars_info)
-            else:
-                vns = [k for k, v in self.vars_info.items() if comp==v[0]]
+            vns = [k[0] for k, v in self.vars_info.items() if comp==v[0]]
 
         utils.p_header(f'>>> Generating climo for {len(vns)} variables:')
         for i in range(len(vns)//10+1):
@@ -263,19 +276,15 @@ class Timeseries:
         nproc = 8 if nproc is None else nproc
         if nproc == 1:
             for v in tqdm(vns, total=len(vns), desc=f'Generating climo files'):
-                self.save_climo(v, output_dirpath=output_dirpath, casename=casename, timespan=timespan,
+                self.save_climo(v, output_dirpath=output_dirpath, comp=comp, casename=casename, timespan=timespan,
                                 adjust_month=adjust_month, slicing=slicing, regrid=regrid, overwrite=overwrite)
         else:
             utils.p_hint(f'>>> nproc: {nproc}')
             with mp.Pool(processes=nproc) as p:
-                arg_list = [(v, output_dirpath, casename, timespan, adjust_month, slicing, regrid, overwrite) for v in vns]
+                arg_list = [(v, output_dirpath, comp, casename, timespan, adjust_month, slicing, regrid, overwrite) for v in vns]
                 p.starmap(self.save_climo, tqdm(arg_list, total=len(vns), desc=f'Generating climo files'))
 
         utils.p_success(f'>>> {len(vns)} climo files created in: {output_dirpath}')
-
-        
-
-        
 
     def check_timespan(self, vn, timespan=None, ncol=10):
         paths = self.get_paths(vn, timespan=timespan)

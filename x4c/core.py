@@ -175,8 +175,8 @@ class XDataset:
     def climo(self):
         ds = self.ds.groupby('time.month').mean(dim='time')
         ds.attrs['climo_period'] = (self.ds['time.year'].values[0], self.ds['time.year'].values[-1])
-        if 'comp' in self.ds.attrs: da.attrs['comp'] = self.ds.attrs['comp']
-        if 'grid' in self.ds.attrs: da.attrs['grid'] = self.ds.attrs['grid']
+        if 'comp' in self.ds.attrs: ds.attrs['comp'] = self.ds.attrs['comp']
+        if 'grid' in self.ds.attrs: ds.attrs['grid'] = self.ds.attrs['grid']
         if 'month' in ds.coords:
             ds = ds.rename({'month': 'time'})
         return ds

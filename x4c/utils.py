@@ -255,8 +255,10 @@ def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_
     for e in path_elements:
         if e in kws:
             path_pattern = path_pattern.replace(e, kws[e])
-        elif e in ['proc', 'tseries', 'month_1']:
+        elif e in ['proc', 'tseries', 'month_1', 'nc']:
             pass
+        elif e in ['timespan']:
+            path_pattern = path_pattern.replace(e, '*[0-9]')
         else:
             path_pattern = path_pattern.replace(e, '*')
 
