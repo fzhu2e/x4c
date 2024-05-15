@@ -230,7 +230,7 @@ class Timeseries:
 
         return fig_ax
 
-    def get_climo(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False):
+    def get_climo(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False, chunk_nt=None):
         ''' Generate the climatology file for the given variable
 
         Args:
@@ -238,26 +238,34 @@ class Timeseries:
         '''
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
-        ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
-        if slicing: ds = ds.sel(time=slice(str(timespan[0]), str(timespan[1])))
+        if chunk_nt is None:
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+        else:
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+
+        if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
         ds_out = ds.x.climo
         ds_out.attrs['comp'] = comp
         ds_out.attrs['grid'] = grid
         if regrid: ds_out = ds_out.x.regrid()
         return ds_out
 
-    def save_climo(self, vn, output_dirpath, comp=None, casename=None, timespan=None, adjust_month=True, slicing=False, regrid=False, overwrite=False):
+    def save_climo(self, vn, output_dirpath, comp=None, casename=None, timespan=None, adjust_month=True,
+                   slicing=False, regrid=False, overwrite=False, chunk_nt=None):
         fname = f'{vn}_climo.nc' if casename is None else f'{casename}_{vn}_climo.nc'
         out_path = os.path.join(output_dirpath, fname)
         if overwrite or not os.path.exists(out_path):
             if comp is None: comp = self.get_vn_comp(vn)
 
-            climo = self.get_climo(vn, comp=comp, timespan=timespan, adjust_month=adjust_month, slicing=slicing, regrid=regrid)
+            climo = self.get_climo(
+                vn, comp=comp, timespan=timespan, adjust_month=adjust_month,
+                slicing=slicing, regrid=regrid, chunk_nt=chunk_nt,
+            )
             climo.to_netcdf(out_path)
             climo.close()
 
     def gen_climo(self, output_dirpath, comp=None, casename=None, timespan=None, vns=None, adjust_month=True,
-                  nproc=None, slicing=False, regrid=False, overwrite=False):
+                  nproc=None, slicing=False, regrid=False, overwrite=False, chunk_nt=None):
         output_dirpath = pathlib.Path(output_dirpath)
         if not output_dirpath.exists():
             output_dirpath.mkdir(parents=True, exist_ok=True)
@@ -277,11 +285,11 @@ class Timeseries:
         if nproc == 1:
             for v in tqdm(vns, total=len(vns), desc=f'Generating climo files'):
                 self.save_climo(v, output_dirpath=output_dirpath, comp=comp, casename=casename, timespan=timespan,
-                                adjust_month=adjust_month, slicing=slicing, regrid=regrid, overwrite=overwrite)
+                                adjust_month=adjust_month, slicing=slicing, regrid=regrid, overwrite=overwrite, chunk_nt=chunk_nt)
         else:
             utils.p_hint(f'>>> nproc: {nproc}')
             with mp.Pool(processes=nproc) as p:
-                arg_list = [(v, output_dirpath, comp, casename, timespan, adjust_month, slicing, regrid, overwrite) for v in vns]
+                arg_list = [(v, output_dirpath, comp, casename, timespan, adjust_month, slicing, regrid, overwrite, chunk_nt) for v in vns]
                 p.starmap(self.save_climo, tqdm(arg_list, total=len(vns), desc=f'Generating climo files'))
 
         utils.p_success(f'>>> {len(vns)} climo files created in: {output_dirpath}')
