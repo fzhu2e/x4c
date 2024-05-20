@@ -38,6 +38,11 @@ def regrid_cam_se(ds, weight_file):
     -------
     regridded
         xarray.Dataset after regridding.
+
+    Reference
+    ---------
+    ESDS post: https://ncar.github.io/esds/posts/2023/cam-se-analysis/#define-regridding-function-that-constructs-an-xesmf-regridder 
+    
     """
     dataset = ds.copy()
     assert isinstance(dataset, xr.Dataset)
@@ -222,6 +227,9 @@ def ann_modifier(da, ann_method, long_name=None):
     if ann_method == 'ann':
         da_out = da.x.annualize()
         da_out.attrs['long_name'] = f'{long_name} (Annual)'
+    elif ann_method == 'climo':
+        da_out = da.x.climo
+        da_out.attrs['long_name'] = f'{long_name} (Climatology)'
     else:
         months = [int(s) for s in ann_method.split(',')]
         months_char = infer_months_char(months)

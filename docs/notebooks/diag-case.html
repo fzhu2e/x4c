@@ -54,7 +54,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/diag-case';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="A “spell” system" href="diag-spell.html" />
+    <link rel="next" title="Climatology (climo) files generation" href="diag-climo.html" />
     <link rel="prev" title="CESM Diagnostics" href="../ug-diags.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -174,6 +174,7 @@
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../ug-diags.html">CESM Diagnostics</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">A “Timeseries Case” system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag-climo.html">Climatology (climo) files generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diag-spell.html">A “spell” system</a></li>
 </ul>
 </li>
@@ -393,14 +394,14 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%load_ext autoreload
+%autoreload 2
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;/glade/u/home/fengzhu/Github/x4c/docsrc/notebooks&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">x4c</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">x4c</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+import os
+os.chdir(&#39;/glade/u/home/fengzhu/Github/x4c/docsrc/notebooks&#39;)
+import numpy as np
+import x4c
+print(x4c.__version__)
 </pre></div>
 </div>
 </div>
@@ -416,9 +417,9 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dirpath</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005&#39;</span>
-<span class="n">case</span> <span class="o">=</span> <span class="n">x4c</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
-<span class="k">case</span><span class="o">.</span><span class="n">vars_info</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005&#39;
+case = x4c.Timeseries(dirpath)
+case.vars_info
 </pre></div>
 </div>
 </div>
@@ -1134,11 +1135,11 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the case of a single file</span>
-<span class="n">vn</span> <span class="o">=</span> <span class="s1">&#39;TEMP&#39;</span>
-<span class="k">case</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="p">(</span><span class="mi">6951</span><span class="p">,</span> <span class="mi">7000</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-<span class="k">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">]</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span># the case of a single file
+vn = &#39;TEMP&#39;
+case.load(vn, timespan=(6951, 7000))
+print(case.ds[vn].path)
+case.ds[vn]
 </pre></div>
 </div>
 </div>
@@ -1735,7 +1736,7 @@ Attributes: (12/16)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">][</span><span class="n">vn</span><span class="p">]</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.ds[vn][vn]
 </pre></div>
 </div>
 </div>
@@ -2169,10 +2170,10 @@ Attributes:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># the case of multiple files</span>
-<span class="k">case</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="p">(</span><span class="mi">6901</span><span class="p">,</span> <span class="mi">7000</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-<span class="k">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">][</span><span class="n">vn</span><span class="p">]</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span># the case of multiple files
+case.load(vn, timespan=(6901, 7000))
+print(case.ds[vn].path)
+case.ds[vn][vn]
 </pre></div>
 </div>
 </div>
@@ -2967,9 +2968,9 @@ Attributes:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="n">load_idx</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-<span class="k">case</span><span class="o">.</span><span class="n">ds</span><span class="p">[</span><span class="n">vn</span><span class="p">][</span><span class="n">vn</span><span class="p">]</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.load(vn, load_idx=slice(-2, None))
+print(case.ds[vn].path)
+case.ds[vn][vn]
 </pre></div>
 </div>
 </div>
@@ -3766,8 +3767,8 @@ Attributes:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vn</span> <span class="o">=</span> <span class="s1">&#39;TS&#39;</span>
-<span class="k">case</span><span class="o">.</span><span class="n">check_timespan</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>vn = &#39;TS&#39;
+case.check_timespan(vn)
 </pre></div>
 </div>
 </div>
@@ -3992,8 +3993,8 @@ Checking dates: 100%|██████████| 140/140 [00:01&lt;00:00, 88
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vn</span> <span class="o">=</span> <span class="s1">&#39;TS&#39;</span>
-<span class="k">case</span><span class="o">.</span><span class="n">check_timespan</span><span class="p">(</span><span class="n">vn</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8000</span><span class="p">))</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>vn = &#39;TS&#39;
+case.check_timespan(vn, timespan=(1, 8000))
 </pre></div>
 </div>
 </div>
@@ -4248,8 +4249,8 @@ Checking dates: 100%|██████████| 160/160 [00:00&lt;00:00, 12
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch_old_rfiles&#39;</span>
-<span class="c1"># case = x4c.Timeseries(dirpath)</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span># dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch_old_rfiles&#39;
+# case = x4c.Timeseries(dirpath)
 </pre></div>
 </div>
 </div>
@@ -4268,7 +4269,7 @@ End: ocn.log.4343698.desched1.240502-115141.gz
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># case.check_timespan(&#39;R18O&#39;)</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span># case.check_timespan(&#39;R18O&#39;)
 </pre></div>
 </div>
 </div>
@@ -4324,8 +4325,8 @@ Checking dates: 100%|██████████| 10/10 [00:00&lt;00:00, 61.5
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dirpath</span> <span class="o">=</span> <span class="s1">&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch/logs&#39;</span>
-<span class="n">case</span> <span class="o">=</span> <span class="n">x4c</span><span class="o">.</span><span class="n">Logs</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch/logs&#39;
+case = x4c.Logs(dirpath)
 </pre></div>
 </div>
 </div>
@@ -4333,7 +4334,7 @@ Checking dates: 100%|██████████| 10/10 [00:00&lt;00:00, 61.5
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">get_vars</span><span class="p">([</span><span class="s1">&#39;R18O&#39;</span><span class="p">])</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.get_vars([&#39;R18O&#39;])
 </pre></div>
 </div>
 </div>
@@ -4341,7 +4342,7 @@ Checking dates: 100%|██████████| 10/10 [00:00&lt;00:00, 61.5
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">case</span><span class="o">.</span><span class="n">df_ann</span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.df_ann
 </pre></div>
 </div>
 </div>
@@ -4442,7 +4443,7 @@ Checking dates: 100%|██████████| 10/10 [00:00&lt;00:00, 61.5
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -4470,11 +4471,11 @@ Checking dates: 100%|██████████| 10/10 [00:00&lt;00:00, 61.5
       </div>
     </a>
     <a class="right-next"
-       href="diag-spell.html"
+       href="diag-climo.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">A “spell” system</p>
+        <p class="prev-next-title">Climatology (climo) files generation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

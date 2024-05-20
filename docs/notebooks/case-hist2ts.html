@@ -1,0 +1,1745 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>&lt;no title&gt; &#8212; x4c  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/theme_overrides.css?v=db61ab07" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/style.css?v=fca5bd30" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/case-hist2ts';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/x4c-logo.png" class="logo__image only-light" alt="x4c  documentation - Home"/>
+    <script>document.write(`<img src="../_static/x4c-logo.png" class="logo__image only-dark" alt="x4c  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../ug-installation.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ug-core.html">Core Features</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="core-regrid.html">Regrid from CESM grid to lat/lon grid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-geo_mean.html">Calculate the geo-spatial mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-annualize.html">Annualize CESM output with flexible months</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core-visualize.html">Basic visualizations</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ug-diags.html">CESM Diagnostics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="diag-case.html">A “Timeseries Case” system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag-climo.html">Climatology (climo) files generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag-spell.html">A “spell” system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ug-api.html">API Reference</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/fzhu2e/x4c" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/fzhu2e/x4c/edit/main/notebooks/case-hist2ts.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/fzhu2e/x4c/issues/new?title=Issue%20on%20page%20%2Fnotebooks/case-hist2ts.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/case-hist2ts.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1><no title></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%load_ext autoreload
+%autoreload 2
+
+import os
+os.chdir(&#39;/glade/u/home/fengzhu/Github/x4c/docsrc/notebooks&#39;)
+import numpy as np
+import x4c
+print(x4c.__version__)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2024.5.15
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>dirpath = &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch&#39;
+case = x4c.History(dirpath)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.root_dir: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch</span>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; case.comps_info: {&#39;atm&#39;: (&#39;cam&#39;, &#39;h0&#39;), &#39;ocn&#39;: (&#39;pop&#39;, &#39;h&#39;), &#39;lnd&#39;: (&#39;clm2&#39;, &#39;h0&#39;), &#39;ice&#39;: (&#39;cice&#39;, &#39;h&#39;), &#39;rof&#39;: (&#39;rtm&#39;, &#39;h0&#39;)}</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.paths[&#34;atm&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.paths[&#34;ocn&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.paths[&#34;lnd&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.paths[&#34;ice&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.paths[&#34;rof&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vns[&#34;atm&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vns[&#34;ocn&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vns[&#34;lnd&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vns[&#34;ice&#34;] created</span>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; case.vns[&#34;rof&#34;] created</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%%time
+ds = case.get_ts(&#39;atm&#39;, &#39;TS&#39;, timespan=(7501, 7501), nproc=12)
+ds
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Loading history files: 100%|██████████| 12/12 [00:00&lt;00:00, 5554.14it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 1.86 s, sys: 2.12 s, total: 3.98 s
+Wall time: 6.38 s
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div><svg style="position: absolute; width: 0; height: 0; overflow: hidden">
+<defs>
+<symbol id="icon-database" viewBox="0 0 32 32">
+<path d="M16 0c-8.837 0-16 2.239-16 5v4c0 2.761 7.163 5 16 5s16-2.239 16-5v-4c0-2.761-7.163-5-16-5z"></path>
+<path d="M16 17c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+<path d="M16 26c-8.837 0-16-2.239-16-5v6c0 2.761 7.163 5 16 5s16-2.239 16-5v-6c0 2.761-7.163 5-16 5z"></path>
+</symbol>
+<symbol id="icon-file-text2" viewBox="0 0 32 32">
+<path d="M28.681 7.159c-0.694-0.947-1.662-2.053-2.724-3.116s-2.169-2.030-3.116-2.724c-1.612-1.182-2.393-1.319-2.841-1.319h-15.5c-1.378 0-2.5 1.121-2.5 2.5v27c0 1.378 1.122 2.5 2.5 2.5h23c1.378 0 2.5-1.122 2.5-2.5v-19.5c0-0.448-0.137-1.23-1.319-2.841zM24.543 5.457c0.959 0.959 1.712 1.825 2.268 2.543h-4.811v-4.811c0.718 0.556 1.584 1.309 2.543 2.268zM28 29.5c0 0.271-0.229 0.5-0.5 0.5h-23c-0.271 0-0.5-0.229-0.5-0.5v-27c0-0.271 0.229-0.5 0.5-0.5 0 0 15.499-0 15.5 0v7c0 0.552 0.448 1 1 1h7v19.5z"></path>
+<path d="M23 26h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 22h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+<path d="M23 18h-14c-0.552 0-1-0.448-1-1s0.448-1 1-1h14c0.552 0 1 0.448 1 1s-0.448 1-1 1z"></path>
+</symbol>
+</defs>
+</svg>
+<style>/* CSS stylesheet for displaying xarray objects in jupyterlab.
+ *
+ */
+
+:root {
+  --xr-font-color0: var(--jp-content-font-color0, rgba(0, 0, 0, 1));
+  --xr-font-color2: var(--jp-content-font-color2, rgba(0, 0, 0, 0.54));
+  --xr-font-color3: var(--jp-content-font-color3, rgba(0, 0, 0, 0.38));
+  --xr-border-color: var(--jp-border-color2, #e0e0e0);
+  --xr-disabled-color: var(--jp-layout-color3, #bdbdbd);
+  --xr-background-color: var(--jp-layout-color0, white);
+  --xr-background-color-row-even: var(--jp-layout-color1, white);
+  --xr-background-color-row-odd: var(--jp-layout-color2, #eeeeee);
+}
+
+html[theme=dark],
+body[data-theme=dark],
+body.vscode-dark {
+  --xr-font-color0: rgba(255, 255, 255, 1);
+  --xr-font-color2: rgba(255, 255, 255, 0.54);
+  --xr-font-color3: rgba(255, 255, 255, 0.38);
+  --xr-border-color: #1F1F1F;
+  --xr-disabled-color: #515151;
+  --xr-background-color: #111111;
+  --xr-background-color-row-even: #111111;
+  --xr-background-color-row-odd: #313131;
+}
+
+.xr-wrap {
+  display: block !important;
+  min-width: 300px;
+  max-width: 700px;
+}
+
+.xr-text-repr-fallback {
+  /* fallback to plain text repr when CSS is not injected (untrusted notebook) */
+  display: none;
+}
+
+.xr-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px var(--xr-border-color);
+}
+
+.xr-header > div,
+.xr-header > ul {
+  display: inline;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.xr-obj-type,
+.xr-array-name {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.xr-obj-type {
+  color: var(--xr-font-color2);
+}
+
+.xr-sections {
+  padding-left: 0 !important;
+  display: grid;
+  grid-template-columns: 150px auto auto 1fr 20px 20px;
+}
+
+.xr-section-item {
+  display: contents;
+}
+
+.xr-section-item input {
+  display: none;
+}
+
+.xr-section-item input + label {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-item input:enabled + label {
+  cursor: pointer;
+  color: var(--xr-font-color2);
+}
+
+.xr-section-item input:enabled + label:hover {
+  color: var(--xr-font-color0);
+}
+
+.xr-section-summary {
+  grid-column: 1;
+  color: var(--xr-font-color2);
+  font-weight: 500;
+}
+
+.xr-section-summary > span {
+  display: inline-block;
+  padding-left: 0.5em;
+}
+
+.xr-section-summary-in:disabled + label {
+  color: var(--xr-font-color2);
+}
+
+.xr-section-summary-in + label:before {
+  display: inline-block;
+  content: '►';
+  font-size: 11px;
+  width: 15px;
+  text-align: center;
+}
+
+.xr-section-summary-in:disabled + label:before {
+  color: var(--xr-disabled-color);
+}
+
+.xr-section-summary-in:checked + label:before {
+  content: '▼';
+}
+
+.xr-section-summary-in:checked + label > span {
+  display: none;
+}
+
+.xr-section-summary,
+.xr-section-inline-details {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.xr-section-inline-details {
+  grid-column: 2 / -1;
+}
+
+.xr-section-details {
+  display: none;
+  grid-column: 1 / -1;
+  margin-bottom: 5px;
+}
+
+.xr-section-summary-in:checked ~ .xr-section-details {
+  display: contents;
+}
+
+.xr-array-wrap {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 20px auto;
+}
+
+.xr-array-wrap > label {
+  grid-column: 1;
+  vertical-align: top;
+}
+
+.xr-preview {
+  color: var(--xr-font-color3);
+}
+
+.xr-array-preview,
+.xr-array-data {
+  padding: 0 5px !important;
+  grid-column: 2;
+}
+
+.xr-array-data,
+.xr-array-in:checked ~ .xr-array-preview {
+  display: none;
+}
+
+.xr-array-in:checked ~ .xr-array-data,
+.xr-array-preview {
+  display: inline-block;
+}
+
+.xr-dim-list {
+  display: inline-block !important;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0;
+}
+
+.xr-dim-list li {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+.xr-dim-list:before {
+  content: '(';
+}
+
+.xr-dim-list:after {
+  content: ')';
+}
+
+.xr-dim-list li:not(:last-child):after {
+  content: ',';
+  padding-right: 5px;
+}
+
+.xr-has-index {
+  font-weight: bold;
+}
+
+.xr-var-list,
+.xr-var-item {
+  display: contents;
+}
+
+.xr-var-item > div,
+.xr-var-item label,
+.xr-var-item > .xr-var-name span {
+  background-color: var(--xr-background-color-row-even);
+  margin-bottom: 0;
+}
+
+.xr-var-item > .xr-var-name:hover span {
+  padding-right: 5px;
+}
+
+.xr-var-list > li:nth-child(odd) > div,
+.xr-var-list > li:nth-child(odd) > label,
+.xr-var-list > li:nth-child(odd) > .xr-var-name span {
+  background-color: var(--xr-background-color-row-odd);
+}
+
+.xr-var-name {
+  grid-column: 1;
+}
+
+.xr-var-dims {
+  grid-column: 2;
+}
+
+.xr-var-dtype {
+  grid-column: 3;
+  text-align: right;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-preview {
+  grid-column: 4;
+}
+
+.xr-index-preview {
+  grid-column: 2 / 5;
+  color: var(--xr-font-color2);
+}
+
+.xr-var-name,
+.xr-var-dims,
+.xr-var-dtype,
+.xr-preview,
+.xr-attrs dt {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.xr-var-name:hover,
+.xr-var-dims:hover,
+.xr-var-dtype:hover,
+.xr-attrs dt:hover {
+  overflow: visible;
+  width: auto;
+  z-index: 1;
+}
+
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  display: none;
+  background-color: var(--xr-background-color) !important;
+  padding-bottom: 5px !important;
+}
+
+.xr-var-attrs-in:checked ~ .xr-var-attrs,
+.xr-var-data-in:checked ~ .xr-var-data,
+.xr-index-data-in:checked ~ .xr-index-data {
+  display: block;
+}
+
+.xr-var-data > table {
+  float: right;
+}
+
+.xr-var-name span,
+.xr-var-data,
+.xr-index-name div,
+.xr-index-data,
+.xr-attrs {
+  padding-left: 25px !important;
+}
+
+.xr-attrs,
+.xr-var-attrs,
+.xr-var-data,
+.xr-index-data {
+  grid-column: 1 / -1;
+}
+
+dl.xr-attrs {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 125px auto;
+}
+
+.xr-attrs dt,
+.xr-attrs dd {
+  padding: 0;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  width: auto;
+}
+
+.xr-attrs dt {
+  font-weight: normal;
+  grid-column: 1;
+}
+
+.xr-attrs dt:hover span {
+  display: inline-block;
+  background: var(--xr-background-color);
+  padding-right: 10px;
+}
+
+.xr-attrs dd {
+  grid-column: 2;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.xr-icon-database,
+.xr-icon-file-text2,
+.xr-no-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1.5em !important;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+</style><pre class='xr-text-repr-fallback'>&lt;xarray.Dataset&gt;
+Dimensions:       (lev: 30, ilev: 31, time: 12, ncol: 13826, nbnd: 2)
+Coordinates:
+  * lev           (lev) float64 3.643 7.595 14.36 24.61 ... 957.5 976.3 992.6
+  * ilev          (ilev) float64 2.255 5.032 10.16 18.56 ... 967.5 985.1 1e+03
+  * time          (time) object 7501-02-01 00:00:00 ... 7502-01-01 00:00:00
+Dimensions without coordinates: ncol, nbnd
+Data variables: (12/31)
+    hyam          (lev) float64 0.003643 0.007595 0.01436 ... 0.001989 0.0
+    hybm          (lev) float64 0.0 0.0 0.0 0.0 ... 0.9251 0.9512 0.9743 0.9926
+    P0            float64 1e+05
+    hyai          (ilev) float64 0.002255 0.005032 0.01016 ... 0.003979 0.0 0.0
+    hybi          (ilev) float64 0.0 0.0 0.0 0.0 ... 0.9389 0.9636 0.9851 1.0
+    date          (time) int32 75010201 75010301 75010401 ... 75011201 75020101
+    ...            ...
+    n2ovmr        (time) float64 2.757e-07 2.757e-07 ... 2.757e-07 2.757e-07
+    f11vmr        (time) float64 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+    f12vmr        (time) float64 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
+    sol_tsi       (time) float64 -1.0 -1.0 -1.0 -1.0 ... -1.0 -1.0 -1.0 -1.0
+    nsteph        (time) int32 131401488 131402832 ... 131416032 131417520
+    TS            (time, ncol) float32 303.6 303.1 302.4 ... 294.9 292.4 293.3
+Attributes:
+    np:               4
+    ne:               16
+    Conventions:      CF-1.0
+    source:           CAM
+    case:             b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO...
+    title:            UNSET
+    logname:          fengzhu
+    host:             derecho1
+    Version:          $Name$
+    revision_Id:      $Id$
+    initial_file:     /glade/campaign/cesm/cesmdata/inputdata/atm/cam/inic/ho...
+    topography_file:  /glade/work/fengzhu/Projects/Miocene-on-Derecho/04.atm-...</pre><div class='xr-wrap' style='display:none'><div class='xr-header'><div class='xr-obj-type'>xarray.Dataset</div></div><ul class='xr-sections'><li class='xr-section-item'><input id='section-eef880ca-4d08-4aa1-8364-dfac409f996e' class='xr-section-summary-in' type='checkbox' disabled ><label for='section-eef880ca-4d08-4aa1-8364-dfac409f996e' class='xr-section-summary'  title='Expand/collapse section'>Dimensions:</label><div class='xr-section-inline-details'><ul class='xr-dim-list'><li><span class='xr-has-index'>lev</span>: 30</li><li><span class='xr-has-index'>ilev</span>: 31</li><li><span class='xr-has-index'>time</span>: 12</li><li><span>ncol</span>: 13826</li><li><span>nbnd</span>: 2</li></ul></div><div class='xr-section-details'></div></li><li class='xr-section-item'><input id='section-75d806be-1bca-484d-976a-eba82a5758a0' class='xr-section-summary-in' type='checkbox'  checked><label for='section-75d806be-1bca-484d-976a-eba82a5758a0' class='xr-section-summary' >Coordinates: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>lev</span></div><div class='xr-var-dims'>(lev)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>3.643 7.595 14.36 ... 976.3 992.6</div><input id='attrs-86c0332e-becf-48ed-a9cc-6250c165c69d' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-86c0332e-becf-48ed-a9cc-6250c165c69d' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-20309738-1f2f-4722-9b99-8f22e85cee11' class='xr-var-data-in' type='checkbox'><label for='data-20309738-1f2f-4722-9b99-8f22e85cee11' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>hybrid level at midpoints (1000*(A+B))</dd><dt><span>units :</span></dt><dd>hPa</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>standard_name :</span></dt><dd>atmosphere_hybrid_sigma_pressure_coordinate</dd><dt><span>formula_terms :</span></dt><dd>a: hyam b: hybm p0: P0 ps: PS</dd></dl></div><div class='xr-var-data'><pre>array([  3.643466,   7.59482 ,  14.356632,  24.61222 ,  38.2683  ,  54.59548 ,
+        72.012451,  87.82123 , 103.317127, 121.547241, 142.994039, 168.22508 ,
+       197.908087, 232.828619, 273.910817, 322.241902, 379.100904, 445.992574,
+       524.687175, 609.778695, 691.38943 , 763.404481, 820.858369, 859.534767,
+       887.020249, 912.644547, 936.198398, 957.48548 , 976.325407, 992.556095])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>ilev</span></div><div class='xr-var-dims'>(ilev)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.255 5.032 10.16 ... 985.1 1e+03</div><input id='attrs-0632c6ce-1e61-4bdf-8020-59dd70f3c992' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-0632c6ce-1e61-4bdf-8020-59dd70f3c992' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-3d80c502-34f4-4e59-9437-8a46b7288fba' class='xr-var-data-in' type='checkbox'><label for='data-3d80c502-34f4-4e59-9437-8a46b7288fba' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>hybrid level at interfaces (1000*(A+B))</dd><dt><span>units :</span></dt><dd>hPa</dd><dt><span>positive :</span></dt><dd>down</dd><dt><span>standard_name :</span></dt><dd>atmosphere_hybrid_sigma_pressure_coordinate</dd><dt><span>formula_terms :</span></dt><dd>a: hyai b: hybi p0: P0 ps: PS</dd></dl></div><div class='xr-var-data'><pre>array([   2.25524 ,    5.031692,   10.157947,   18.555317,   30.669123,
+         45.867477,   63.323483,   80.701418,   94.941042,  111.693211,
+        131.401271,  154.586807,  181.863353,  213.952821,  251.704417,
+        296.117216,  348.366588,  409.835219,  482.149929,  567.224421,
+        652.332969,  730.445892,  796.363071,  845.353667,  873.715866,
+        900.324631,  924.964462,  947.432335,  967.538625,  985.11219 ,
+       1000.      ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span class='xr-has-index'>time</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>7501-02-01 00:00:00 ... 7502-01-...</div><input id='attrs-c6c7830c-50ef-4e41-8054-176b9db4dbbe' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c6c7830c-50ef-4e41-8054-176b9db4dbbe' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-fa8195d1-2ef1-48bb-9c05-3d8922205afb' class='xr-var-data-in' type='checkbox'><label for='data-fa8195d1-2ef1-48bb-9c05-3d8922205afb' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time</dd><dt><span>bounds :</span></dt><dd>time_bnds</dd></dl></div><div class='xr-var-data'><pre>array([cftime.DatetimeNoLeap(7501, 2, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 3, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 4, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 5, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 6, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 7, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 8, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 9, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 10, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 11, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7501, 12, 1, 0, 0, 0, 0, has_year_zero=True),
+       cftime.DatetimeNoLeap(7502, 1, 1, 0, 0, 0, 0, has_year_zero=True)],
+      dtype=object)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-9c897bda-f7f8-4a0f-902c-9d6414b4da31' class='xr-section-summary-in' type='checkbox'  ><label for='section-9c897bda-f7f8-4a0f-902c-9d6414b4da31' class='xr-section-summary' >Data variables: <span>(31)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-var-name'><span>hyam</span></div><div class='xr-var-dims'>(lev)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.003643 0.007595 ... 0.001989 0.0</div><input id='attrs-13d00ffa-ec67-4b5c-9d0e-ead051815b00' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-13d00ffa-ec67-4b5c-9d0e-ead051815b00' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-97749509-cb8b-4698-b297-5def9e3d1f71' class='xr-var-data-in' type='checkbox'><label for='data-97749509-cb8b-4698-b297-5def9e3d1f71' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>hybrid A coefficient at layer midpoints</dd></dl></div><div class='xr-var-data'><pre>array([0.00364347, 0.00759482, 0.01435663, 0.02461222, 0.0382683 ,
+       0.05459548, 0.07201245, 0.08782123, 0.10331713, 0.12154724,
+       0.14299404, 0.16822508, 0.17823067, 0.17032433, 0.16102291,
+       0.15008029, 0.13720686, 0.12206194, 0.10424471, 0.08497915,
+       0.0665017 , 0.05019679, 0.03718866, 0.02843195, 0.02220898,
+       0.01640738, 0.01107456, 0.00625495, 0.00198941, 0.        ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>hybm</span></div><div class='xr-var-dims'>(lev)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.0 0.0 ... 0.9743 0.9926</div><input id='attrs-c233071a-bda6-40ca-aaa9-f530f8f54fe7' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-c233071a-bda6-40ca-aaa9-f530f8f54fe7' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7390ba0b-e8ea-44e1-a7d0-5c1174388dfd' class='xr-var-data-in' type='checkbox'><label for='data-7390ba0b-e8ea-44e1-a7d0-5c1174388dfd' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>hybrid B coefficient at layer midpoints</dd></dl></div><div class='xr-var-data'><pre>array([0.        , 0.        , 0.        , 0.        , 0.        ,
+       0.        , 0.        , 0.        , 0.        , 0.        ,
+       0.        , 0.        , 0.01967741, 0.06250429, 0.11288791,
+       0.17216162, 0.24189404, 0.32393064, 0.42044246, 0.52479954,
+       0.62488773, 0.71320769, 0.78366971, 0.83110282, 0.86481127,
+       0.89623716, 0.92512384, 0.95123053, 0.974336  , 0.9925561 ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>P0</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>1e+05</div><input id='attrs-7d609241-a1ab-43d1-b9a5-520d882fb672' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-7d609241-a1ab-43d1-b9a5-520d882fb672' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-eead275c-1cd7-4a86-939c-9093630767ba' class='xr-var-data-in' type='checkbox'><label for='data-eead275c-1cd7-4a86-939c-9093630767ba' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>reference pressure</dd><dt><span>units :</span></dt><dd>Pa</dd></dl></div><div class='xr-var-data'><pre>array(100000.)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>hyai</span></div><div class='xr-var-dims'>(ilev)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.002255 0.005032 ... 0.0 0.0</div><input id='attrs-882fac6b-dab9-41da-956b-e1582fc16b13' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-882fac6b-dab9-41da-956b-e1582fc16b13' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-d5aed0a5-e9e1-4237-be6e-efcb7e44269f' class='xr-var-data-in' type='checkbox'><label for='data-d5aed0a5-e9e1-4237-be6e-efcb7e44269f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>hybrid A coefficient at layer interfaces</dd></dl></div><div class='xr-var-data'><pre>array([0.00225524, 0.00503169, 0.01015795, 0.01855532, 0.03066912,
+       0.04586748, 0.06332348, 0.08070142, 0.09494104, 0.11169321,
+       0.13140127, 0.15458681, 0.18186335, 0.17459799, 0.16605066,
+       0.15599516, 0.14416541, 0.13024831, 0.11387557, 0.09461386,
+       0.07534445, 0.05765894, 0.04273464, 0.03164268, 0.02522122,
+       0.01919674, 0.01361803, 0.00853109, 0.00397882, 0.        ,
+       0.        ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>hybi</span></div><div class='xr-var-dims'>(ilev)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.0 0.0 ... 0.9636 0.9851 1.0</div><input id='attrs-6ec84b5d-cc3e-4e44-a3cb-e8156820e85b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6ec84b5d-cc3e-4e44-a3cb-e8156820e85b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-bf1c4727-22a9-4f2f-a0cb-a876d60bd0e8' class='xr-var-data-in' type='checkbox'><label for='data-bf1c4727-22a9-4f2f-a0cb-a876d60bd0e8' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>hybrid B coefficient at layer interfaces</dd></dl></div><div class='xr-var-data'><pre>array([0.        , 0.        , 0.        , 0.        , 0.        ,
+       0.        , 0.        , 0.        , 0.        , 0.        ,
+       0.        , 0.        , 0.        , 0.03935483, 0.08565376,
+       0.14012206, 0.20420118, 0.27958691, 0.36827436, 0.47261056,
+       0.57698852, 0.67278695, 0.75362843, 0.81371099, 0.84849465,
+       0.88112789, 0.91134644, 0.93890125, 0.96355981, 0.98511219,
+       1.        ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>date</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>75010201 75010301 ... 75020101</div><input id='attrs-52f27a51-f862-4760-9f57-d3b5beca3fd4' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-52f27a51-f862-4760-9f57-d3b5beca3fd4' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ffccc4d6-5763-46f3-ae9a-f5af2e09af45' class='xr-var-data-in' type='checkbox'><label for='data-ffccc4d6-5763-46f3-ae9a-f5af2e09af45' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>current date (YYYYMMDD)</dd></dl></div><div class='xr-var-data'><pre>array([75010201, 75010301, 75010401, 75010501, 75010601, 75010701,
+       75010801, 75010901, 75011001, 75011101, 75011201, 75020101],
+      dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>datesec</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>0 0 0 0 0 0 0 0 0 0 0 0</div><input id='attrs-9e174e21-6000-4453-a844-a4e8e2126b43' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-9e174e21-6000-4453-a844-a4e8e2126b43' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-b214e177-2198-440f-97db-3703c9eb6996' class='xr-var-data-in' type='checkbox'><label for='data-b214e177-2198-440f-97db-3703c9eb6996' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>current seconds of current date</dd></dl></div><div class='xr-var-data'><pre>array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>lat</span></div><div class='xr-var-dims'>(ncol)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-35.26 -35.98 ... 37.91 36.74</div><input id='attrs-4a1c275b-2a8f-47db-8234-b9cc12e10176' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-4a1c275b-2a8f-47db-8234-b9cc12e10176' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-4eed780d-cb25-4d76-a30a-98bce36d935c' class='xr-var-data-in' type='checkbox'><label for='data-4eed780d-cb25-4d76-a30a-98bce36d935c' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>latitude</dd><dt><span>units :</span></dt><dd>degrees_north</dd></dl></div><div class='xr-var-data'><pre>array([-35.26438968, -35.98082588, -37.07155175, ...,  37.90897632,
+        37.90897632,  36.74360278])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>area</span></div><div class='xr-var-dims'>(ncol)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0001546 0.000515 ... 0.001289</div><input id='attrs-1b4acce5-8127-48c0-9f53-8bd3d6e90e94' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-1b4acce5-8127-48c0-9f53-8bd3d6e90e94' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-0e56f437-749f-4cdc-967d-997e2b649c88' class='xr-var-data-in' type='checkbox'><label for='data-0e56f437-749f-4cdc-967d-997e2b649c88' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([0.00015457, 0.00051501, 0.00051372, ..., 0.00128989, 0.00128989,
+       0.00128935])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>lon</span></div><div class='xr-var-dims'>(ncol)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>315.0 316.6 319.1 ... 137.5 135.0</div><input id='attrs-83833d50-fb2e-434f-b839-02fd2bcc88fe' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-83833d50-fb2e-434f-b839-02fd2bcc88fe' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-6ed82218-8868-4d80-b418-c60d7f097f7e' class='xr-var-data-in' type='checkbox'><label for='data-6ed82218-8868-4d80-b418-c60d7f097f7e' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>longitude</dd><dt><span>units :</span></dt><dd>degrees_east</dd></dl></div><div class='xr-var-data'><pre>array([315.        , 316.55471176, 319.07028824, ..., 132.47470023,
+       137.52529977, 135.        ])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>time_bnds</span></div><div class='xr-var-dims'>(time, nbnd)</div><div class='xr-var-dtype'>object</div><div class='xr-var-preview xr-preview'>7501-01-01 00:00:00 ... 7502-01-...</div><input id='attrs-3c6ec24e-3f9b-4c1e-8b0a-34bf7c286342' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3c6ec24e-3f9b-4c1e-8b0a-34bf7c286342' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e3897a8f-8d1e-4b6b-b21e-31aed11051fe' class='xr-var-data-in' type='checkbox'><label for='data-e3897a8f-8d1e-4b6b-b21e-31aed11051fe' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>time interval endpoints</dd></dl></div><div class='xr-var-data'><pre>array([[cftime.DatetimeNoLeap(7501, 1, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 2, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 2, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 3, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 3, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 4, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 4, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 5, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 5, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 6, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 6, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 7, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 7, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 8, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 8, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 9, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 9, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 10, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 10, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 11, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 11, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7501, 12, 1, 0, 0, 0, 0, has_year_zero=True)],
+       [cftime.DatetimeNoLeap(7501, 12, 1, 0, 0, 0, 0, has_year_zero=True),
+        cftime.DatetimeNoLeap(7502, 1, 1, 0, 0, 0, 0, has_year_zero=True)]],
+      dtype=object)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>date_written</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>|S8</div><div class='xr-var-preview xr-preview'>b&#x27;04/25/24&#x27; ... b&#x27;04/26/24&#x27;</div><input id='attrs-e705b691-b1ac-4f42-8bf2-141587432a60' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-e705b691-b1ac-4f42-8bf2-141587432a60' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-66905e45-2610-48da-85ef-c0741704f63f' class='xr-var-data-in' type='checkbox'><label for='data-66905e45-2610-48da-85ef-c0741704f63f' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;,
+       b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;, b&#x27;04/25/24&#x27;,
+       b&#x27;04/25/24&#x27;, b&#x27;04/26/24&#x27;], dtype=&#x27;|S8&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>time_written</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>|S8</div><div class='xr-var-preview xr-preview'>b&#x27;23:44:51&#x27; ... b&#x27;00:01:25&#x27;</div><input id='attrs-493a0bba-503e-467e-b6aa-3ef7860d6243' class='xr-var-attrs-in' type='checkbox' disabled><label for='attrs-493a0bba-503e-467e-b6aa-3ef7860d6243' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ee8998d2-8f88-4e18-b3d3-124368775c3b' class='xr-var-data-in' type='checkbox'><label for='data-ee8998d2-8f88-4e18-b3d3-124368775c3b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'></dl></div><div class='xr-var-data'><pre>array([b&#x27;23:44:51&#x27;, b&#x27;23:46:15&#x27;, b&#x27;23:47:47&#x27;, b&#x27;23:49:16&#x27;, b&#x27;23:50:49&#x27;,
+       b&#x27;23:52:18&#x27;, b&#x27;23:53:50&#x27;, b&#x27;23:55:22&#x27;, b&#x27;23:56:51&#x27;, b&#x27;23:58:23&#x27;,
+       b&#x27;23:59:52&#x27;, b&#x27;00:01:25&#x27;], dtype=&#x27;|S8&#x27;)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>ntrm</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>1</div><input id='attrs-f434c992-31f1-47d9-8481-a18e5f278f48' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f434c992-31f1-47d9-8481-a18e5f278f48' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-590b8e9b-751c-4414-993a-d48594a44abb' class='xr-var-data-in' type='checkbox'><label for='data-590b8e9b-751c-4414-993a-d48594a44abb' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>spectral truncation parameter M</dd></dl></div><div class='xr-var-data'><pre>array(1, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>ntrn</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>1</div><input id='attrs-e74241e0-73b1-490e-9305-e6d15c2c2033' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-e74241e0-73b1-490e-9305-e6d15c2c2033' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-0ff5799e-1bff-4e75-81ca-2fbd3fde5eda' class='xr-var-data-in' type='checkbox'><label for='data-0ff5799e-1bff-4e75-81ca-2fbd3fde5eda' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>spectral truncation parameter N</dd></dl></div><div class='xr-var-data'><pre>array(1, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>ntrk</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>1</div><input id='attrs-f800ae3d-be89-4adc-b7c9-b93334160cdb' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-f800ae3d-be89-4adc-b7c9-b93334160cdb' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-44f392e4-ec51-4e2d-95a0-883c94ca9ad2' class='xr-var-data-in' type='checkbox'><label for='data-44f392e4-ec51-4e2d-95a0-883c94ca9ad2' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>spectral truncation parameter K</dd></dl></div><div class='xr-var-data'><pre>array(1, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>ndbase</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>0</div><input id='attrs-de4bb8d2-8c8b-47ed-8a7c-dd99fc1dcdd7' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-de4bb8d2-8c8b-47ed-8a7c-dd99fc1dcdd7' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-04becd77-5737-4c21-9aef-ef6c56c10fb7' class='xr-var-data-in' type='checkbox'><label for='data-04becd77-5737-4c21-9aef-ef6c56c10fb7' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>base day</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>nsbase</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>0</div><input id='attrs-d0795553-438c-4ee1-85fa-f143d99b938e' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d0795553-438c-4ee1-85fa-f143d99b938e' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-89c0f5c0-8658-4a93-b70c-e0f7cb295ec1' class='xr-var-data-in' type='checkbox'><label for='data-89c0f5c0-8658-4a93-b70c-e0f7cb295ec1' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>seconds of base day</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>nbdate</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>10101</div><input id='attrs-ed700e7d-5e10-4de5-849f-3e5c0db4f59b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-ed700e7d-5e10-4de5-849f-3e5c0db4f59b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c7c650c6-27aa-4a5f-9df9-1a48b715d7ed' class='xr-var-data-in' type='checkbox'><label for='data-c7c650c6-27aa-4a5f-9df9-1a48b715d7ed' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>base date (YYYYMMDD)</dd></dl></div><div class='xr-var-data'><pre>array(10101, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>nbsec</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>0</div><input id='attrs-3ef47fdc-5b0c-4f6e-aa6f-ac71ea5cc5d3' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-3ef47fdc-5b0c-4f6e-aa6f-ac71ea5cc5d3' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7117ed58-18ff-4a1f-a1fe-27d032c349ea' class='xr-var-data-in' type='checkbox'><label for='data-7117ed58-18ff-4a1f-a1fe-27d032c349ea' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>seconds of base date</dd></dl></div><div class='xr-var-data'><pre>array(0, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>mdt</span></div><div class='xr-var-dims'>()</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>1800</div><input id='attrs-295eddf9-527a-415c-a234-f462c07458cd' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-295eddf9-527a-415c-a234-f462c07458cd' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-c953c21d-1bf0-431b-b9ce-700ac1580400' class='xr-var-data-in' type='checkbox'><label for='data-c953c21d-1bf0-431b-b9ce-700ac1580400' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>timestep</dd><dt><span>units :</span></dt><dd>s</dd></dl></div><div class='xr-var-data'><pre>array(1800, dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>ndcur</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>2737531 2737559 ... 2737834 2737865</div><input id='attrs-bd584156-7670-4b9a-b2f6-9bcd2defee8c' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-bd584156-7670-4b9a-b2f6-9bcd2defee8c' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-7cb3ee39-84a4-404d-a7da-ff6426b7d1aa' class='xr-var-data-in' type='checkbox'><label for='data-7cb3ee39-84a4-404d-a7da-ff6426b7d1aa' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>current day (from base day)</dd></dl></div><div class='xr-var-data'><pre>array([2737531, 2737559, 2737590, 2737620, 2737651, 2737681, 2737712,
+       2737743, 2737773, 2737804, 2737834, 2737865], dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>nscur</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>0 0 0 0 0 0 0 0 0 0 0 0</div><input id='attrs-458908e5-40e1-49e6-be00-f4a76b2dedbf' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-458908e5-40e1-49e6-be00-f4a76b2dedbf' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cba7c5f7-9608-4e9c-a60d-d077718f23d0' class='xr-var-data-in' type='checkbox'><label for='data-cba7c5f7-9608-4e9c-a60d-d077718f23d0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>current seconds of current day</dd></dl></div><div class='xr-var-data'><pre>array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>co2vmr</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0008541 0.0008541 ... 0.0008541</div><input id='attrs-b089d1c8-4d0b-4c19-9900-4f41838c5b64' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-b089d1c8-4d0b-4c19-9900-4f41838c5b64' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-052bf67d-dfe2-44db-be38-6a7e8f3e0d86' class='xr-var-data-in' type='checkbox'><label for='data-052bf67d-dfe2-44db-be38-6a7e8f3e0d86' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>co2 volume mixing ratio</dd></dl></div><div class='xr-var-data'><pre>array([0.0008541, 0.0008541, 0.0008541, 0.0008541, 0.0008541, 0.0008541,
+       0.0008541, 0.0008541, 0.0008541, 0.0008541, 0.0008541, 0.0008541])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>ch4vmr</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>7.916e-07 7.916e-07 ... 7.916e-07</div><input id='attrs-33f37159-3254-4b6f-9201-e53c35fe5b78' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-33f37159-3254-4b6f-9201-e53c35fe5b78' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-5c8d5df7-c057-43d7-bc0e-c0b188f90309' class='xr-var-data-in' type='checkbox'><label for='data-5c8d5df7-c057-43d7-bc0e-c0b188f90309' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>ch4 volume mixing ratio</dd></dl></div><div class='xr-var-data'><pre>array([7.916e-07, 7.916e-07, 7.916e-07, 7.916e-07, 7.916e-07, 7.916e-07,
+       7.916e-07, 7.916e-07, 7.916e-07, 7.916e-07, 7.916e-07, 7.916e-07])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>n2ovmr</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>2.757e-07 2.757e-07 ... 2.757e-07</div><input id='attrs-d454a105-1924-4b25-876b-82d4881aa0de' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-d454a105-1924-4b25-876b-82d4881aa0de' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-38832b2b-fd28-4a81-8dd1-8f72459e0fbc' class='xr-var-data-in' type='checkbox'><label for='data-38832b2b-fd28-4a81-8dd1-8f72459e0fbc' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>n2o volume mixing ratio</dd></dl></div><div class='xr-var-data'><pre>array([2.7568e-07, 2.7568e-07, 2.7568e-07, 2.7568e-07, 2.7568e-07,
+       2.7568e-07, 2.7568e-07, 2.7568e-07, 2.7568e-07, 2.7568e-07,
+       2.7568e-07, 2.7568e-07])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>f11vmr</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0</div><input id='attrs-66ff9055-cb49-47da-8747-8c706cc45e81' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-66ff9055-cb49-47da-8747-8c706cc45e81' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-81126180-3724-436d-8eca-390d515ba003' class='xr-var-data-in' type='checkbox'><label for='data-81126180-3724-436d-8eca-390d515ba003' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>f11 volume mixing ratio</dd></dl></div><div class='xr-var-data'><pre>array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>f12vmr</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>0.0 0.0 0.0 0.0 ... 0.0 0.0 0.0 0.0</div><input id='attrs-079c8e0b-5499-44dc-8deb-bedf22a5dd53' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-079c8e0b-5499-44dc-8deb-bedf22a5dd53' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-cdfe4054-fa95-4a80-a20e-812c2cea5387' class='xr-var-data-in' type='checkbox'><label for='data-cdfe4054-fa95-4a80-a20e-812c2cea5387' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>f12 volume mixing ratio</dd></dl></div><div class='xr-var-data'><pre>array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>sol_tsi</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>float64</div><div class='xr-var-preview xr-preview'>-1.0 -1.0 -1.0 ... -1.0 -1.0 -1.0</div><input id='attrs-41da1c64-a266-4c70-b090-3e007543fe03' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-41da1c64-a266-4c70-b090-3e007543fe03' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-9041fe99-306f-475a-b384-adeb2bf62d0b' class='xr-var-data-in' type='checkbox'><label for='data-9041fe99-306f-475a-b384-adeb2bf62d0b' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>total solar irradiance</dd><dt><span>units :</span></dt><dd>W/m2</dd></dl></div><div class='xr-var-data'><pre>array([-1., -1., -1., -1., -1., -1., -1., -1., -1., -1., -1., -1.])</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>nsteph</span></div><div class='xr-var-dims'>(time)</div><div class='xr-var-dtype'>int32</div><div class='xr-var-preview xr-preview'>131401488 131402832 ... 131417520</div><input id='attrs-6c9163a5-724a-44c8-83e2-d6a55c4d08dd' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-6c9163a5-724a-44c8-83e2-d6a55c4d08dd' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-e2a2b104-3d33-4759-89d0-b8e5dc5e4742' class='xr-var-data-in' type='checkbox'><label for='data-e2a2b104-3d33-4759-89d0-b8e5dc5e4742' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>long_name :</span></dt><dd>current timestep</dd></dl></div><div class='xr-var-data'><pre>array([131401488, 131402832, 131404320, 131405760, 131407248, 131408688,
+       131410176, 131411664, 131413104, 131414592, 131416032, 131417520],
+      dtype=int32)</pre></div></li><li class='xr-var-item'><div class='xr-var-name'><span>TS</span></div><div class='xr-var-dims'>(time, ncol)</div><div class='xr-var-dtype'>float32</div><div class='xr-var-preview xr-preview'>303.6 303.1 302.4 ... 292.4 293.3</div><input id='attrs-eb5ed0c3-42fe-49a1-bceb-c286c79c159b' class='xr-var-attrs-in' type='checkbox' ><label for='attrs-eb5ed0c3-42fe-49a1-bceb-c286c79c159b' title='Show/Hide attributes'><svg class='icon xr-icon-file-text2'><use xlink:href='#icon-file-text2'></use></svg></label><input id='data-ad77ec7b-f39c-4ded-8522-88e81aea7fb0' class='xr-var-data-in' type='checkbox'><label for='data-ad77ec7b-f39c-4ded-8522-88e81aea7fb0' title='Show/Hide data repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-var-attrs'><dl class='xr-attrs'><dt><span>units :</span></dt><dd>K</dd><dt><span>long_name :</span></dt><dd>Surface temperature (radiative)</dd><dt><span>cell_methods :</span></dt><dd>time: mean</dd></dl></div><div class='xr-var-data'><pre>array([[303.56992, 303.07846, 302.40677, ..., 293.71167, 291.00327,
+        291.70682],
+       [305.134  , 304.67032, 303.87808, ..., 292.52054, 290.49017,
+        291.22662],
+       [304.73544, 304.35202, 303.7073 , ..., 292.15277, 291.44006,
+        292.1198 ],
+       ...,
+       [297.93823, 296.90848, 295.77628, ..., 302.2056 , 300.0421 ,
+        300.95715],
+       [299.1052 , 298.08023, 296.97968, ..., 298.1864 , 295.89523,
+        296.68027],
+       [301.75415, 301.02145, 300.07892, ..., 294.88278, 292.3789 ,
+        293.29907]], dtype=float32)</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-2650c570-8866-475f-9a2b-85499f5f793f' class='xr-section-summary-in' type='checkbox'  ><label for='section-2650c570-8866-475f-9a2b-85499f5f793f' class='xr-section-summary' >Indexes: <span>(3)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><ul class='xr-var-list'><li class='xr-var-item'><div class='xr-index-name'><div>lev</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-3dc6dca6-83d0-4fa1-8ae9-f1dc59b814b9' class='xr-index-data-in' type='checkbox'/><label for='index-3dc6dca6-83d0-4fa1-8ae9-f1dc59b814b9' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Index([  3.64346569404006,  7.594819646328688, 14.356632251292467,
+       24.612220004200935,  38.26829977333546,  54.59547974169254,
+        72.01245054602623,  87.82123029232025, 103.31712663173676,
+       121.54724076390266, 142.99403876066208, 168.22507977485657,
+        197.9080867022276, 232.82861895859241,  273.9108167588711,
+        322.2419023513794, 379.10090386867523,   445.992574095726,
+        524.6871747076511,  609.7786948084831,  691.3894303143024,
+         763.404481112957,  820.8583686500788,  859.5347665250301,
+        887.0202489197254,   912.644546944648,  936.1983984708786,
+         957.485479535535,   976.325407391414,   992.556095123291],
+      dtype=&#x27;float64&#x27;, name=&#x27;lev&#x27;))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>ilev</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-75c9159c-dd3f-46b5-8d36-ba80bf15fb57' class='xr-index-data-in' type='checkbox'/><label for='index-75c9159c-dd3f-46b5-8d36-ba80bf15fb57' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(Index([ 2.255239523947239,  5.031691864132881,  10.15794742852449,
+        18.55531707406044,  30.66912293434143,  45.86747661232948,
+         63.3234828710556,  80.70141822099686,  94.94104236364365,
+       111.69321089982991,  131.4012706279755,  154.5868068933487,
+        181.8633526563644, 213.95282074809072, 251.70441716909409,
+       296.11721634864807,  348.3665883541107,  409.8352193832398,
+       482.14992880821234,    567.22442060709,  652.3329690098763,
+        730.4458916187286,  796.3630706071854,  845.3536666929722,
+        873.7158663570881,  900.3246314823627,  924.9644624069333,
+        947.4323345348239,  967.5386245362461,   985.112190246582,
+                   1000.0],
+      dtype=&#x27;float64&#x27;, name=&#x27;ilev&#x27;))</pre></div></li><li class='xr-var-item'><div class='xr-index-name'><div>time</div></div><div class='xr-index-preview'>PandasIndex</div><div></div><input id='index-9bdca594-e09f-426e-bfd6-503372c7442e' class='xr-index-data-in' type='checkbox'/><label for='index-9bdca594-e09f-426e-bfd6-503372c7442e' title='Show/Hide index repr'><svg class='icon xr-icon-database'><use xlink:href='#icon-database'></use></svg></label><div class='xr-index-data'><pre>PandasIndex(CFTimeIndex([7501-02-01 00:00:00, 7501-03-01 00:00:00, 7501-04-01 00:00:00,
+             7501-05-01 00:00:00, 7501-06-01 00:00:00, 7501-07-01 00:00:00,
+             7501-08-01 00:00:00, 7501-09-01 00:00:00, 7501-10-01 00:00:00,
+             7501-11-01 00:00:00, 7501-12-01 00:00:00, 7502-01-01 00:00:00],
+            dtype=&#x27;object&#x27;, length=12, calendar=&#x27;noleap&#x27;, freq=&#x27;MS&#x27;))</pre></div></li></ul></div></li><li class='xr-section-item'><input id='section-95f6bbea-021c-4c26-9e22-8bf6098216c0' class='xr-section-summary-in' type='checkbox'  ><label for='section-95f6bbea-021c-4c26-9e22-8bf6098216c0' class='xr-section-summary' >Attributes: <span>(12)</span></label><div class='xr-section-inline-details'></div><div class='xr-section-details'><dl class='xr-attrs'><dt><span>np :</span></dt><dd>4</dd><dt><span>ne :</span></dt><dd>16</dd><dt><span>Conventions :</span></dt><dd>CF-1.0</dd><dt><span>source :</span></dt><dd>CAM</dd><dt><span>case :</span></dt><dd>b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch</dd><dt><span>title :</span></dt><dd>UNSET</dd><dt><span>logname :</span></dt><dd>fengzhu</dd><dt><span>host :</span></dt><dd>derecho1</dd><dt><span>Version :</span></dt><dd>$Name$</dd><dt><span>revision_Id :</span></dt><dd>$Id$</dd><dt><span>initial_file :</span></dt><dd>/glade/campaign/cesm/cesmdata/inputdata/atm/cam/inic/homme/cami-mam3_0000-01-ne16np4_L30_c090306.nc</dd><dt><span>topography_file :</span></dt><dd>/glade/work/fengzhu/Projects/Miocene-on-Derecho/04.atm-bc-setup/cami_bnd_topo_ne16_Miocene_c231124.nc</dd></dl></div></li></ul></div></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%%time
+case.split_hist(
+    &#39;atm&#39;, timespan=(7501, 7550), nproc=16,
+    output_dirpath=&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test/atm/proc/tseries/month_1/.x4c-hist&#39;,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Spliting history files: 100%|██████████| 110400/110400 [05:37&lt;00:00, 327.29it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 2.26 s, sys: 1.44 s, total: 3.7 s
+Wall time: 7min 22s
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%%time
+case.merge_hist(&#39;atm&#39;, &#39;TS&#39;, &#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test/atm/proc/tseries/month_1&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CPU times: user 205 ms, sys: 49.8 ms, total: 255 ms
+Wall time: 899 ms
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%%time
+ds = case.get_ts(&#39;atm&#39;, &#39;TS&#39;, timespan=(7501, 7550), nproc=12)
+ds
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Loading history files: 100%|██████████| 600/600 [00:03&lt;00:00, 150.40it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/file_manager.py:211</span>, in <span class="ansi-cyan-fg">CachingFileManager._acquire_with_cache_info</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    210</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; 211</span>     file <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_cache</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_key</span><span class="ansi-yellow-bg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    212</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">KeyError</span>:
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/lru_cache.py:56</span>, in <span class="ansi-cyan-fg">LRUCache.__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">     55</span> <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_lock:
+<span class="ansi-green-fg">---&gt; 56</span>     value <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_cache</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">     57</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_cache<span style="color: rgb(98,98,98)">.</span>move_to_end(key)
+
+<span class="ansi-red-fg">KeyError</span>: [&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;, (&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch/atm/hist/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch.cam.h0.7530-06.nc&#39;,), &#39;r&#39;, ((&#39;clobber&#39;, True), (&#39;diskless&#39;, False), (&#39;format&#39;, &#39;NETCDF4&#39;), (&#39;persist&#39;, False)), &#39;800242c2-d27d-48c6-bdc1-b1c4cd6574c1&#39;]
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
+File <span class="ansi-green-fg">&lt;timed exec&gt;:1</span>
+
+File <span class="ansi-green-fg">~/Github/x4c/x4c/case.py:83</span>, in <span class="ansi-cyan-fg">History.get_ts</span><span class="ansi-blue-fg">(self, comp, vn, timespan, nproc)</span>
+<span class="ansi-green-intense-fg ansi-bold">     80</span>     arg_list <span style="color: rgb(98,98,98)">=</span> [(path, ) <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> path <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> paths]
+<span class="ansi-green-intense-fg ansi-bold">     81</span>     ds_list <span style="color: rgb(98,98,98)">=</span> p<span style="color: rgb(98,98,98)">.</span>starmap(xr<span style="color: rgb(98,98,98)">.</span>open_dataset, tqdm(arg_list, total<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(0,135,0)">len</span>(paths), desc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">Loading history files</span><span style="color: rgb(175,0,0)">&#39;</span>))
+<span class="ansi-green-fg">---&gt; 83</span> ds <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">xr</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">concat</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">ds_list</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">dim</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">time</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">data_vars</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">vn</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     85</span> da <span style="color: rgb(98,98,98)">=</span> ds[vn]
+<span class="ansi-green-intense-fg ansi-bold">     86</span> ds_out <span style="color: rgb(98,98,98)">=</span> ds<span style="color: rgb(98,98,98)">.</span>drop_vars(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>vns[comp])
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/concat.py:252</span>, in <span class="ansi-cyan-fg">concat</span><span class="ansi-blue-fg">(objs, dim, data_vars, coords, compat, positions, fill_value, join, combine_attrs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    240</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> _dataarray_concat(
+<span class="ansi-green-intense-fg ansi-bold">    241</span>         objs,
+<span class="ansi-green-intense-fg ansi-bold">    242</span>         dim<span style="color: rgb(98,98,98)">=</span>dim,
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">    249</span>         combine_attrs<span style="color: rgb(98,98,98)">=</span>combine_attrs,
+<span class="ansi-green-intense-fg ansi-bold">    250</span>     )
+<span class="ansi-green-intense-fg ansi-bold">    251</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> <span style="color: rgb(0,135,0)">isinstance</span>(first_obj, Dataset):
+<span class="ansi-green-fg">--&gt; 252</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">_dataset_concat</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    253</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">objs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    254</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">dim</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">dim</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    255</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">data_vars</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">data_vars</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    256</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">coords</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">coords</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    257</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    258</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">positions</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">positions</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    259</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">fill_value</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">fill_value</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    260</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">join</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">join</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    261</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">combine_attrs</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">combine_attrs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    262</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    263</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-intense-fg ansi-bold">    264</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">TypeError</span>(
+<span class="ansi-green-intense-fg ansi-bold">    265</span>         <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">can only concatenate xarray Dataset and DataArray </span><span style="color: rgb(175,0,0)">&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    266</span>         <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">objects, got </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span><span style="color: rgb(0,135,0)">type</span>(first_obj)<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    267</span>     )
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/concat.py:524</span>, in <span class="ansi-cyan-fg">_dataset_concat</span><span class="ansi-blue-fg">(datasets, dim, data_vars, coords, compat, positions, fill_value, join, combine_attrs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    518</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> variables_to_merge:
+<span class="ansi-green-intense-fg ansi-bold">    519</span>     grouped <span style="color: rgb(98,98,98)">=</span> {
+<span class="ansi-green-intense-fg ansi-bold">    520</span>         k: v
+<span class="ansi-green-intense-fg ansi-bold">    521</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> k, v <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> collect_variables_and_indexes(datasets)<span style="color: rgb(98,98,98)">.</span>items()
+<span class="ansi-green-intense-fg ansi-bold">    522</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> k <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> variables_to_merge
+<span class="ansi-green-intense-fg ansi-bold">    523</span>     }
+<span class="ansi-green-fg">--&gt; 524</span>     merged_vars, merged_indexes <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">merge_collected</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    525</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">grouped</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">equals</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">equals</span>
+<span class="ansi-green-intense-fg ansi-bold">    526</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    527</span>     result_vars<span style="color: rgb(98,98,98)">.</span>update(merged_vars)
+<span class="ansi-green-intense-fg ansi-bold">    528</span>     result_indexes<span style="color: rgb(98,98,98)">.</span>update(merged_indexes)
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/merge.py:291</span>, in <span class="ansi-cyan-fg">merge_collected</span><span class="ansi-blue-fg">(grouped, prioritized, compat, combine_attrs, equals)</span>
+<span class="ansi-green-intense-fg ansi-bold">    289</span> variables <span style="color: rgb(98,98,98)">=</span> [variable <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> variable, _ <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> elements_list]
+<span class="ansi-green-intense-fg ansi-bold">    290</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; 291</span>     merged_vars[name] <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">unique_variable</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    292</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">variables</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">equals</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">None</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    293</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    294</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> MergeError:
+<span class="ansi-green-intense-fg ansi-bold">    295</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> compat <span style="color: rgb(98,98,98)">!=</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">minimal</span><span style="color: rgb(175,0,0)">&#34;</span>:
+<span class="ansi-green-intense-fg ansi-bold">    296</span>         <span style="color: rgb(95,135,135)"># we need more than &#34;minimal&#34; compatibility (for which</span>
+<span class="ansi-green-intense-fg ansi-bold">    297</span>         <span style="color: rgb(95,135,135)"># we drop conflicting coordinates)</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/merge.py:140</span>, in <span class="ansi-cyan-fg">unique_variable</span><span class="ansi-blue-fg">(name, variables, compat, equals)</span>
+<span class="ansi-green-intense-fg ansi-bold">    138</span> out <span style="color: rgb(98,98,98)">=</span> out<span style="color: rgb(98,98,98)">.</span>compute()
+<span class="ansi-green-intense-fg ansi-bold">    139</span> <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> var <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> variables[<span style="color: rgb(98,98,98)">1</span>:]:
+<span class="ansi-green-fg">--&gt; 140</span>     equals <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">getattr</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">out</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">var</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    141</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> equals:
+<span class="ansi-green-intense-fg ansi-bold">    142</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">break</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/variable.py:2150</span>, in <span class="ansi-cyan-fg">Variable.equals</span><span class="ansi-blue-fg">(self, other, equiv)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2147</span> other <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">getattr</span>(other, <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">variable</span><span style="color: rgb(175,0,0)">&#34;</span>, other)
+<span class="ansi-green-intense-fg ansi-bold">   2148</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-intense-fg ansi-bold">   2149</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>dims <span style="color: rgb(98,98,98)">==</span> other<span style="color: rgb(98,98,98)">.</span>dims <span class="ansi-bold" style="color: rgb(175,0,255)">and</span> (
+<span class="ansi-green-fg">-&gt; 2150</span>         <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_data <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> other<span style="color: rgb(98,98,98)">.</span>_data <span class="ansi-bold" style="color: rgb(175,0,255)">or</span> equiv(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>data, <span class="ansi-yellow-bg">other</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">data</span>)
+<span class="ansi-green-intense-fg ansi-bold">   2151</span>     )
+<span class="ansi-green-intense-fg ansi-bold">   2152</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> (<span class="ansi-bold" style="color: rgb(215,95,95)">TypeError</span>, <span class="ansi-bold" style="color: rgb(215,95,95)">AttributeError</span>):
+<span class="ansi-green-intense-fg ansi-bold">   2153</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/variable.py:435</span>, in <span class="ansi-cyan-fg">Variable.data</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    433</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_data
+<span class="ansi-green-intense-fg ansi-bold">    434</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> <span style="color: rgb(0,135,0)">isinstance</span>(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_data, indexing<span style="color: rgb(98,98,98)">.</span>ExplicitlyIndexed):
+<span class="ansi-green-fg">--&gt; 435</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_data</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_duck_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    436</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-intense-fg ansi-bold">    437</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>values
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:696</span>, in <span class="ansi-cyan-fg">MemoryCachedArray.get_duck_array</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    695</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_duck_array</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 696</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_ensure_cached</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    697</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>array<span style="color: rgb(98,98,98)">.</span>get_duck_array()
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:690</span>, in <span class="ansi-cyan-fg">MemoryCachedArray._ensure_cached</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    689</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_ensure_cached</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 690</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>array <span style="color: rgb(98,98,98)">=</span> as_indexable(<span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">array</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_duck_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>)
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:664</span>, in <span class="ansi-cyan-fg">CopyOnWriteArray.get_duck_array</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    663</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_duck_array</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 664</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">array</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_duck_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:551</span>, in <span class="ansi-cyan-fg">LazilyIndexedArray.get_duck_array</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    550</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_duck_array</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 551</span>     array <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">array</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    552</span>     <span style="color: rgb(95,135,135)"># self.array[self.key] is now a numpy array when</span>
+<span class="ansi-green-intense-fg ansi-bold">    553</span>     <span style="color: rgb(95,135,135)"># self.array is a BackendArray subclass</span>
+<span class="ansi-green-intense-fg ansi-bold">    554</span>     <span style="color: rgb(95,135,135)"># and self.key is BasicIndexer((slice(None, None, None),))</span>
+<span class="ansi-green-intense-fg ansi-bold">    555</span>     <span style="color: rgb(95,135,135)"># so we need the explicit check for ExplicitlyIndexed</span>
+<span class="ansi-green-intense-fg ansi-bold">    556</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">isinstance</span>(array, ExplicitlyIndexed):
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:100</span>, in <span class="ansi-cyan-fg">NetCDF4ArrayWrapper.__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">     99</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">__getitem__</span>(<span style="color: rgb(0,135,0)">self</span>, key):
+<span class="ansi-green-fg">--&gt; 100</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">indexing</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">explicit_indexing_adapter</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    101</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">shape</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">indexing</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">IndexingSupport</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">OUTER</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_getitem</span>
+<span class="ansi-green-intense-fg ansi-bold">    102</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:858</span>, in <span class="ansi-cyan-fg">explicit_indexing_adapter</span><span class="ansi-blue-fg">(key, shape, indexing_support, raw_indexing_method)</span>
+<span class="ansi-green-intense-fg ansi-bold">    836</span> <span style="color: rgb(175,0,0)">&#34;&#34;&#34;Support explicit indexing by delegating to a raw indexing method.</span>
+<span class="ansi-green-intense-fg ansi-bold">    837</span>
+<span class="ansi-green-intense-fg ansi-bold">    838</span> <span style="color: rgb(175,0,0)">Outer and/or vectorized indexers are supported by indexing a second time</span>
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">    855</span> <span style="color: rgb(175,0,0)">Indexing result, in the form of a duck numpy-array.</span>
+<span class="ansi-green-intense-fg ansi-bold">    856</span> <span style="color: rgb(175,0,0)">&#34;&#34;&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    857</span> raw_key, numpy_indices <span style="color: rgb(98,98,98)">=</span> decompose_indexer(key, shape, indexing_support)
+<span class="ansi-green-fg">--&gt; 858</span> result <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">raw_indexing_method</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">raw_key</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">tuple</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    859</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> numpy_indices<span style="color: rgb(98,98,98)">.</span>tuple:
+<span class="ansi-green-intense-fg ansi-bold">    860</span>     <span style="color: rgb(95,135,135)"># index the loaded np.ndarray</span>
+<span class="ansi-green-intense-fg ansi-bold">    861</span>     result <span style="color: rgb(98,98,98)">=</span> NumpyIndexingAdapter(result)[numpy_indices]
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:112</span>, in <span class="ansi-cyan-fg">NetCDF4ArrayWrapper._getitem</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">    110</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-intense-fg ansi-bold">    111</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>datastore<span style="color: rgb(98,98,98)">.</span>lock:
+<span class="ansi-green-fg">--&gt; 112</span>         original_array <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">False</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    113</span>         array <span style="color: rgb(98,98,98)">=</span> getitem(original_array, key)
+<span class="ansi-green-intense-fg ansi-bold">    114</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">IndexError</span>:
+<span class="ansi-green-intense-fg ansi-bold">    115</span>     <span style="color: rgb(95,135,135)"># Catch IndexError in netCDF4 and return a more informative</span>
+<span class="ansi-green-intense-fg ansi-bold">    116</span>     <span style="color: rgb(95,135,135)"># error message.  This is most often called when an unsorted</span>
+<span class="ansi-green-intense-fg ansi-bold">    117</span>     <span style="color: rgb(95,135,135)"># indexer is used before the data is loaded from disk.</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:91</span>, in <span class="ansi-cyan-fg">NetCDF4ArrayWrapper.get_array</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">     90</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_array</span>(<span style="color: rgb(0,135,0)">self</span>, needs_lock<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-fg">---&gt; 91</span>     ds <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">datastore</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_acquire</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     92</span>     variable <span style="color: rgb(98,98,98)">=</span> ds<span style="color: rgb(98,98,98)">.</span>variables[<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>variable_name]
+<span class="ansi-green-intense-fg ansi-bold">     93</span>     variable<span style="color: rgb(98,98,98)">.</span>set_auto_maskandscale(<span class="ansi-bold" style="color: rgb(0,135,0)">False</span>)
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:403</span>, in <span class="ansi-cyan-fg">NetCDF4DataStore._acquire</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    402</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_acquire</span>(<span style="color: rgb(0,135,0)">self</span>, needs_lock<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-fg">--&gt; 403</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">with</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_manager</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">acquire_context</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">as</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">root</span><span class="ansi-yellow-bg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    404</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">ds</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">_nc4_require_group</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">root</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_group</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_mode</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    405</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> ds
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/contextlib.py:137</span>, in <span class="ansi-cyan-fg">_GeneratorContextManager.__enter__</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    135</span> <span class="ansi-bold" style="color: rgb(0,135,0)">del</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>args, <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>kwds, <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>func
+<span class="ansi-green-intense-fg ansi-bold">    136</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; 137</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">next</span>(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>gen)
+<span class="ansi-green-intense-fg ansi-bold">    138</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">StopIteration</span>:
+<span class="ansi-green-intense-fg ansi-bold">    139</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">RuntimeError</span>(<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">generator didn</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">t yield</span><span style="color: rgb(175,0,0)">&#34;</span>) <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/file_manager.py:199</span>, in <span class="ansi-cyan-fg">CachingFileManager.acquire_context</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    196</span> <span style="color: rgb(175,0,255)">@contextlib</span><span style="color: rgb(98,98,98)">.</span>contextmanager
+<span class="ansi-green-intense-fg ansi-bold">    197</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">acquire_context</span>(<span style="color: rgb(0,135,0)">self</span>, needs_lock<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-intense-fg ansi-bold">    198</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">&#34;&#34;&#34;Context manager for acquiring a file.&#34;&#34;&#34;</span>
+<span class="ansi-green-fg">--&gt; 199</span>     file, cached <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_acquire_with_cache_info</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    200</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-intense-fg ansi-bold">    201</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">yield</span> file
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/file_manager.py:217</span>, in <span class="ansi-cyan-fg">CachingFileManager._acquire_with_cache_info</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    215</span>     kwargs <span style="color: rgb(98,98,98)">=</span> kwargs<span style="color: rgb(98,98,98)">.</span>copy()
+<span class="ansi-green-intense-fg ansi-bold">    216</span>     kwargs[<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">mode</span><span style="color: rgb(175,0,0)">&#34;</span>] <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_mode
+<span class="ansi-green-fg">--&gt; 217</span> file <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_opener</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_args</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    218</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_mode <span style="color: rgb(98,98,98)">==</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">w</span><span style="color: rgb(175,0,0)">&#34;</span>:
+<span class="ansi-green-intense-fg ansi-bold">    219</span>     <span style="color: rgb(95,135,135)"># ensure file doesn&#39;t get overridden when opened again</span>
+<span class="ansi-green-intense-fg ansi-bold">    220</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_mode <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">a</span><span style="color: rgb(175,0,0)">&#34;</span>
+
+File <span class="ansi-green-fg">src/netCDF4/_netCDF4.pyx:2492</span>, in <span class="ansi-cyan-fg">netCDF4._netCDF4.Dataset.__init__</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">src/netCDF4/_netCDF4.pyx:2009</span>, in <span class="ansi-cyan-fg">genexpr</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">src/netCDF4/_netCDF4.pyx:2009</span>, in <span class="ansi-cyan-fg">genexpr</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/netCDF4/utils.py:32</span>, in <span class="ansi-cyan-fg">_find_dim</span><span class="ansi-blue-fg">(grp, dimname)</span>
+<span class="ansi-green-intense-fg ansi-bold">     28</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_sortbylist</span>(A,B):
+<span class="ansi-green-intense-fg ansi-bold">     29</span>     <span style="color: rgb(95,135,135)"># sort one list (A) using the values from another list (B)</span>
+<span class="ansi-green-intense-fg ansi-bold">     30</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> [A[i] <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> i <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> <span style="color: rgb(0,135,0)">sorted</span>(<span style="color: rgb(0,135,0)">range</span>(<span style="color: rgb(0,135,0)">len</span>(A)), key<span style="color: rgb(98,98,98)">=</span>B<span style="color: rgb(98,98,98)">.</span><span style="color: rgb(0,0,255)">__getitem__</span>)]
+<span class="ansi-green-fg">---&gt; 32</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_find_dim</span>(grp, dimname):
+<span class="ansi-green-intense-fg ansi-bold">     33</span>     <span style="color: rgb(95,135,135)"># find Dimension instance given group and name.</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>     <span style="color: rgb(95,135,135)"># look in current group, and parents.</span>
+<span class="ansi-green-intense-fg ansi-bold">     35</span>     group <span style="color: rgb(98,98,98)">=</span> grp
+<span class="ansi-green-intense-fg ansi-bold">     36</span>     dim <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>:
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.save_ts(
+    &#39;atm&#39;, &#39;TS&#39;, timespan=(7501, 7501),
+    casename=&#39;test&#39;,
+    output_dirpath=&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test&#39;,
+    overwrite=True,
+)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.gen_ts(
+    output_dirpath=&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test&#39;,
+    comp=&#39;atm&#39;,
+    timespan=(7501, 7502),
+    timestep=1,
+    vns = [&#39;TS&#39;],
+    overwrite=True,
+    nproc=1,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Generating timeseries for 1 variables:</span>
+[&#39;TS&#39;]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Generating timeseries files:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; output directory created at: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test/atm/proc/tseries/month_1</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Generating timeseries files: 100%|██████████| 1/1 [00:13&lt;00:00, 13.66s/it]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; 2 climo files created in: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test/atm/proc/tseries/month_1</span>
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>case.gen_ts(
+    output_dirpath=&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test&#39;,
+    comp=&#39;atm&#39;,
+    timespan=(7501, 7502),
+    timestep=1,
+    vns = [&#39;TS&#39;],
+    overwrite=True,
+    nproc=2,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Generating timeseries for 1 variables:</span>
+[&#39;TS&#39;]
+<span class="ansi-black-intense-fg ansi-bold">&gt;&gt;&gt; nproc: 2</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Generating timeseries files: 100%|██████████| 2/2 [00:00&lt;00:00, 12.24it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; 2 climo files created in: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test/atm/proc/tseries/month_1</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>%%time
+case.gen_ts(
+    output_dirpath=&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test2&#39;,
+    comp=&#39;atm&#39;,
+    timespan=(7501, 8500),
+    timestep=50,
+    overwrite=True,
+    casename=&#39;b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005&#39;,
+    vns=[&#39;TS&#39;],
+    nproc=1,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-cyan-intense-fg ansi-bold">&gt;&gt;&gt; Generating timeseries for 1 variables:</span>
+[&#39;TS&#39;]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Generating timeseries files:   0%|          | 0/1 [00:00&lt;?, ?it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-intense-fg ansi-bold">&gt;&gt;&gt; output directory created at: /glade/campaign/univ/ubrn0018/fengzhu/CESM_output/timeseries/test2/atm/proc/tseries/month_1</span>
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Generating timeseries files:   0%|          | 0/1 [04:44&lt;?, ?it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/file_manager.py:211</span>, in <span class="ansi-cyan-fg">CachingFileManager._acquire_with_cache_info</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    210</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; 211</span>     file <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_cache</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_key</span><span class="ansi-yellow-bg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    212</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">KeyError</span>:
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/lru_cache.py:56</span>, in <span class="ansi-cyan-fg">LRUCache.__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">     55</span> <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_lock:
+<span class="ansi-green-fg">---&gt; 56</span>     value <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_cache</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">     57</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_cache<span style="color: rgb(98,98,98)">.</span>move_to_end(key)
+
+<span class="ansi-red-fg">KeyError</span>: [&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;, (&#39;/glade/campaign/univ/ubrn0018/fengzhu/CESM_output/archive/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch/atm/hist/b.e13.B1850C5.ne16_g16.icesm131_d18O_fixer.Miocene.3xCO2.005.offset.d18O.branch.cam.h0.7513-03.nc&#39;,), &#39;r&#39;, ((&#39;clobber&#39;, True), (&#39;diskless&#39;, False), (&#39;format&#39;, &#39;NETCDF4&#39;), (&#39;persist&#39;, False)), &#39;0a9a6c99-5d0b-4004-b7b1-b9625553c479&#39;]
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>                         Traceback (most recent call last)
+File <span class="ansi-green-fg">&lt;timed eval&gt;:1</span>
+
+File <span class="ansi-green-fg">~/Github/x4c/x4c/case.py:133</span>, in <span class="ansi-cyan-fg">History.gen_ts</span><span class="ansi-blue-fg">(self, output_dirpath, comp, vns, timestep, timespan, dir_structure, overwrite, nproc, casename)</span>
+<span class="ansi-green-intense-fg ansi-bold">    131</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> v <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> tqdm(vns, total<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(0,135,0)">len</span>(vns), desc<span style="color: rgb(98,98,98)">=</span><span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">Generating timeseries files</span><span style="color: rgb(175,0,0)">&#39;</span>):
+<span class="ansi-green-intense-fg ansi-bold">    132</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> span <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> timespan_list:
+<span class="ansi-green-fg">--&gt; 133</span>             <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">save_ts</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">comp</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">v</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">output_dirpath</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">output_dirpath</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">timespan</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">span</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">overwrite</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">overwrite</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">casename</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">casename</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    134</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-intense-fg ansi-bold">    135</span>     utils<span style="color: rgb(98,98,98)">.</span>p_hint(<span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">&gt;&gt;&gt; nproc: </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span>nproc<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">&#39;</span>)
+
+File <span class="ansi-green-fg">~/Github/x4c/x4c/case.py:107</span>, in <span class="ansi-cyan-fg">History.save_ts</span><span class="ansi-blue-fg">(self, comp, vn, output_dirpath, timespan, overwrite, casename)</span>
+<span class="ansi-green-intense-fg ansi-bold">    104</span> out_path <span style="color: rgb(98,98,98)">=</span> os<span style="color: rgb(98,98,98)">.</span>path<span style="color: rgb(98,98,98)">.</span>join(output_dirpath, fname)
+<span class="ansi-green-intense-fg ansi-bold">    106</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> overwrite <span class="ansi-bold" style="color: rgb(175,0,255)">or</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> os<span style="color: rgb(98,98,98)">.</span>path<span style="color: rgb(98,98,98)">.</span>exists(out_path):
+<span class="ansi-green-fg">--&gt; 107</span>     ds <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_ts</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">comp</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">vn</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">timespan</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">timespan</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    108</span>     ds<span style="color: rgb(98,98,98)">.</span>to_netcdf(out_path)
+<span class="ansi-green-intense-fg ansi-bold">    109</span>     ds<span style="color: rgb(98,98,98)">.</span>close()
+
+File <span class="ansi-green-fg">~/Github/x4c/x4c/case.py:78</span>, in <span class="ansi-cyan-fg">History.get_ts</span><span class="ansi-blue-fg">(self, comp, vn, timespan)</span>
+<span class="ansi-green-intense-fg ansi-bold">     75</span>     ds_tmp <span style="color: rgb(98,98,98)">=</span> xr<span style="color: rgb(98,98,98)">.</span>open_dataset(path)
+<span class="ansi-green-intense-fg ansi-bold">     76</span>     ds_list<span style="color: rgb(98,98,98)">.</span>append(ds_tmp)
+<span class="ansi-green-fg">---&gt; 78</span> ds <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">xr</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">concat</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">ds_list</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">dim</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">time</span><span class="ansi-yellow-bg" style="color: rgb(175,0,0)">&#39;</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">data_vars</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg">vn</span><span class="ansi-yellow-bg">]</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     79</span> da <span style="color: rgb(98,98,98)">=</span> ds[vn]
+<span class="ansi-green-intense-fg ansi-bold">     80</span> ds_out <span style="color: rgb(98,98,98)">=</span> ds<span style="color: rgb(98,98,98)">.</span>drop_vars(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>vns[comp])
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/concat.py:252</span>, in <span class="ansi-cyan-fg">concat</span><span class="ansi-blue-fg">(objs, dim, data_vars, coords, compat, positions, fill_value, join, combine_attrs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    240</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> _dataarray_concat(
+<span class="ansi-green-intense-fg ansi-bold">    241</span>         objs,
+<span class="ansi-green-intense-fg ansi-bold">    242</span>         dim<span style="color: rgb(98,98,98)">=</span>dim,
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">    249</span>         combine_attrs<span style="color: rgb(98,98,98)">=</span>combine_attrs,
+<span class="ansi-green-intense-fg ansi-bold">    250</span>     )
+<span class="ansi-green-intense-fg ansi-bold">    251</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> <span style="color: rgb(0,135,0)">isinstance</span>(first_obj, Dataset):
+<span class="ansi-green-fg">--&gt; 252</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">_dataset_concat</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    253</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">objs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    254</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">dim</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">dim</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    255</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">data_vars</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">data_vars</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    256</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">coords</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">coords</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    257</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    258</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">positions</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">positions</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    259</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">fill_value</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">fill_value</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    260</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">join</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">join</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    261</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">combine_attrs</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">combine_attrs</span><span class="ansi-yellow-bg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    262</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    263</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-intense-fg ansi-bold">    264</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">TypeError</span>(
+<span class="ansi-green-intense-fg ansi-bold">    265</span>         <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">can only concatenate xarray Dataset and DataArray </span><span style="color: rgb(175,0,0)">&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    266</span>         <span style="color: rgb(175,0,0)">f</span><span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">objects, got </span><span class="ansi-bold" style="color: rgb(175,95,135)">{</span><span style="color: rgb(0,135,0)">type</span>(first_obj)<span class="ansi-bold" style="color: rgb(175,95,135)">}</span><span style="color: rgb(175,0,0)">&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    267</span>     )
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/concat.py:524</span>, in <span class="ansi-cyan-fg">_dataset_concat</span><span class="ansi-blue-fg">(datasets, dim, data_vars, coords, compat, positions, fill_value, join, combine_attrs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    518</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> variables_to_merge:
+<span class="ansi-green-intense-fg ansi-bold">    519</span>     grouped <span style="color: rgb(98,98,98)">=</span> {
+<span class="ansi-green-intense-fg ansi-bold">    520</span>         k: v
+<span class="ansi-green-intense-fg ansi-bold">    521</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> k, v <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> collect_variables_and_indexes(datasets)<span style="color: rgb(98,98,98)">.</span>items()
+<span class="ansi-green-intense-fg ansi-bold">    522</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> k <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> variables_to_merge
+<span class="ansi-green-intense-fg ansi-bold">    523</span>     }
+<span class="ansi-green-fg">--&gt; 524</span>     merged_vars, merged_indexes <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">merge_collected</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    525</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">grouped</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">equals</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg">equals</span>
+<span class="ansi-green-intense-fg ansi-bold">    526</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    527</span>     result_vars<span style="color: rgb(98,98,98)">.</span>update(merged_vars)
+<span class="ansi-green-intense-fg ansi-bold">    528</span>     result_indexes<span style="color: rgb(98,98,98)">.</span>update(merged_indexes)
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/merge.py:291</span>, in <span class="ansi-cyan-fg">merge_collected</span><span class="ansi-blue-fg">(grouped, prioritized, compat, combine_attrs, equals)</span>
+<span class="ansi-green-intense-fg ansi-bold">    289</span> variables <span style="color: rgb(98,98,98)">=</span> [variable <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> variable, _ <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> elements_list]
+<span class="ansi-green-intense-fg ansi-bold">    290</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; 291</span>     merged_vars[name] <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">unique_variable</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    292</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">variables</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">equals</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">name</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">None</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    293</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    294</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> MergeError:
+<span class="ansi-green-intense-fg ansi-bold">    295</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> compat <span style="color: rgb(98,98,98)">!=</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">minimal</span><span style="color: rgb(175,0,0)">&#34;</span>:
+<span class="ansi-green-intense-fg ansi-bold">    296</span>         <span style="color: rgb(95,135,135)"># we need more than &#34;minimal&#34; compatibility (for which</span>
+<span class="ansi-green-intense-fg ansi-bold">    297</span>         <span style="color: rgb(95,135,135)"># we drop conflicting coordinates)</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/merge.py:140</span>, in <span class="ansi-cyan-fg">unique_variable</span><span class="ansi-blue-fg">(name, variables, compat, equals)</span>
+<span class="ansi-green-intense-fg ansi-bold">    138</span> out <span style="color: rgb(98,98,98)">=</span> out<span style="color: rgb(98,98,98)">.</span>compute()
+<span class="ansi-green-intense-fg ansi-bold">    139</span> <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> var <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> variables[<span style="color: rgb(98,98,98)">1</span>:]:
+<span class="ansi-green-fg">--&gt; 140</span>     equals <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">getattr</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">out</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">compat</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">var</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    141</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span class="ansi-bold" style="color: rgb(175,0,255)">not</span> equals:
+<span class="ansi-green-intense-fg ansi-bold">    142</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">break</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/variable.py:2150</span>, in <span class="ansi-cyan-fg">Variable.equals</span><span class="ansi-blue-fg">(self, other, equiv)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2147</span> other <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">getattr</span>(other, <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">variable</span><span style="color: rgb(175,0,0)">&#34;</span>, other)
+<span class="ansi-green-intense-fg ansi-bold">   2148</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-intense-fg ansi-bold">   2149</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>dims <span style="color: rgb(98,98,98)">==</span> other<span style="color: rgb(98,98,98)">.</span>dims <span class="ansi-bold" style="color: rgb(175,0,255)">and</span> (
+<span class="ansi-green-fg">-&gt; 2150</span>         <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_data <span class="ansi-bold" style="color: rgb(175,0,255)">is</span> other<span style="color: rgb(98,98,98)">.</span>_data <span class="ansi-bold" style="color: rgb(175,0,255)">or</span> equiv(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>data, <span class="ansi-yellow-bg">other</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">data</span>)
+<span class="ansi-green-intense-fg ansi-bold">   2151</span>     )
+<span class="ansi-green-intense-fg ansi-bold">   2152</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> (<span class="ansi-bold" style="color: rgb(215,95,95)">TypeError</span>, <span class="ansi-bold" style="color: rgb(215,95,95)">AttributeError</span>):
+<span class="ansi-green-intense-fg ansi-bold">   2153</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-bold" style="color: rgb(0,135,0)">False</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/variable.py:435</span>, in <span class="ansi-cyan-fg">Variable.data</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    433</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_data
+<span class="ansi-green-intense-fg ansi-bold">    434</span> <span class="ansi-bold" style="color: rgb(0,135,0)">elif</span> <span style="color: rgb(0,135,0)">isinstance</span>(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_data, indexing<span style="color: rgb(98,98,98)">.</span>ExplicitlyIndexed):
+<span class="ansi-green-fg">--&gt; 435</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_data</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_duck_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    436</span> <span class="ansi-bold" style="color: rgb(0,135,0)">else</span>:
+<span class="ansi-green-intense-fg ansi-bold">    437</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>values
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:696</span>, in <span class="ansi-cyan-fg">MemoryCachedArray.get_duck_array</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    695</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_duck_array</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 696</span>     <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_ensure_cached</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    697</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>array<span style="color: rgb(98,98,98)">.</span>get_duck_array()
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:690</span>, in <span class="ansi-cyan-fg">MemoryCachedArray._ensure_cached</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    689</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_ensure_cached</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 690</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>array <span style="color: rgb(98,98,98)">=</span> as_indexable(<span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">array</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_duck_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>)
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:664</span>, in <span class="ansi-cyan-fg">CopyOnWriteArray.get_duck_array</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    663</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_duck_array</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 664</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">array</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_duck_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:551</span>, in <span class="ansi-cyan-fg">LazilyIndexedArray.get_duck_array</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    550</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_duck_array</span>(<span style="color: rgb(0,135,0)">self</span>):
+<span class="ansi-green-fg">--&gt; 551</span>     array <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">array</span><span class="ansi-yellow-bg">[</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">    552</span>     <span style="color: rgb(95,135,135)"># self.array[self.key] is now a numpy array when</span>
+<span class="ansi-green-intense-fg ansi-bold">    553</span>     <span style="color: rgb(95,135,135)"># self.array is a BackendArray subclass</span>
+<span class="ansi-green-intense-fg ansi-bold">    554</span>     <span style="color: rgb(95,135,135)"># and self.key is BasicIndexer((slice(None, None, None),))</span>
+<span class="ansi-green-intense-fg ansi-bold">    555</span>     <span style="color: rgb(95,135,135)"># so we need the explicit check for ExplicitlyIndexed</span>
+<span class="ansi-green-intense-fg ansi-bold">    556</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">isinstance</span>(array, ExplicitlyIndexed):
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:100</span>, in <span class="ansi-cyan-fg">NetCDF4ArrayWrapper.__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">     99</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">__getitem__</span>(<span style="color: rgb(0,135,0)">self</span>, key):
+<span class="ansi-green-fg">--&gt; 100</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span class="ansi-yellow-bg">indexing</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">explicit_indexing_adapter</span><span class="ansi-yellow-bg">(</span>
+<span class="ansi-green-intense-fg ansi-bold">    101</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">key</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">shape</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">indexing</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">IndexingSupport</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">OUTER</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_getitem</span>
+<span class="ansi-green-intense-fg ansi-bold">    102</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg">)</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/core/indexing.py:858</span>, in <span class="ansi-cyan-fg">explicit_indexing_adapter</span><span class="ansi-blue-fg">(key, shape, indexing_support, raw_indexing_method)</span>
+<span class="ansi-green-intense-fg ansi-bold">    836</span> <span style="color: rgb(175,0,0)">&#34;&#34;&#34;Support explicit indexing by delegating to a raw indexing method.</span>
+<span class="ansi-green-intense-fg ansi-bold">    837</span>
+<span class="ansi-green-intense-fg ansi-bold">    838</span> <span style="color: rgb(175,0,0)">Outer and/or vectorized indexers are supported by indexing a second time</span>
+<span class="ansi-green-fg">   (...)</span>
+<span class="ansi-green-intense-fg ansi-bold">    855</span> <span style="color: rgb(175,0,0)">Indexing result, in the form of a duck numpy-array.</span>
+<span class="ansi-green-intense-fg ansi-bold">    856</span> <span style="color: rgb(175,0,0)">&#34;&#34;&#34;</span>
+<span class="ansi-green-intense-fg ansi-bold">    857</span> raw_key, numpy_indices <span style="color: rgb(98,98,98)">=</span> decompose_indexer(key, shape, indexing_support)
+<span class="ansi-green-fg">--&gt; 858</span> result <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg">raw_indexing_method</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">raw_key</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">tuple</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    859</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> numpy_indices<span style="color: rgb(98,98,98)">.</span>tuple:
+<span class="ansi-green-intense-fg ansi-bold">    860</span>     <span style="color: rgb(95,135,135)"># index the loaded np.ndarray</span>
+<span class="ansi-green-intense-fg ansi-bold">    861</span>     result <span style="color: rgb(98,98,98)">=</span> NumpyIndexingAdapter(result)[numpy_indices]
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:112</span>, in <span class="ansi-cyan-fg">NetCDF4ArrayWrapper._getitem</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">    110</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-intense-fg ansi-bold">    111</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">with</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>datastore<span style="color: rgb(98,98,98)">.</span>lock:
+<span class="ansi-green-fg">--&gt; 112</span>         original_array <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">get_array</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">False</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    113</span>         array <span style="color: rgb(98,98,98)">=</span> getitem(original_array, key)
+<span class="ansi-green-intense-fg ansi-bold">    114</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">IndexError</span>:
+<span class="ansi-green-intense-fg ansi-bold">    115</span>     <span style="color: rgb(95,135,135)"># Catch IndexError in netCDF4 and return a more informative</span>
+<span class="ansi-green-intense-fg ansi-bold">    116</span>     <span style="color: rgb(95,135,135)"># error message.  This is most often called when an unsorted</span>
+<span class="ansi-green-intense-fg ansi-bold">    117</span>     <span style="color: rgb(95,135,135)"># indexer is used before the data is loaded from disk.</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:91</span>, in <span class="ansi-cyan-fg">NetCDF4ArrayWrapper.get_array</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">     90</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">get_array</span>(<span style="color: rgb(0,135,0)">self</span>, needs_lock<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-fg">---&gt; 91</span>     ds <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">datastore</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_acquire</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     92</span>     variable <span style="color: rgb(98,98,98)">=</span> ds<span style="color: rgb(98,98,98)">.</span>variables[<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>variable_name]
+<span class="ansi-green-intense-fg ansi-bold">     93</span>     variable<span style="color: rgb(98,98,98)">.</span>set_auto_maskandscale(<span class="ansi-bold" style="color: rgb(0,135,0)">False</span>)
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/netCDF4_.py:403</span>, in <span class="ansi-cyan-fg">NetCDF4DataStore._acquire</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    402</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_acquire</span>(<span style="color: rgb(0,135,0)">self</span>, needs_lock<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-fg">--&gt; 403</span> <span class="ansi-yellow-bg">    </span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">with</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_manager</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">acquire_context</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg">)</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg ansi-bold" style="color: rgb(0,135,0)">as</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">root</span><span class="ansi-yellow-bg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    404</span> <span class="ansi-yellow-bg">        </span><span class="ansi-yellow-bg">ds</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">=</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg">_nc4_require_group</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">root</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_group</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_mode</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    405</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> ds
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/contextlib.py:137</span>, in <span class="ansi-cyan-fg">_GeneratorContextManager.__enter__</span><span class="ansi-blue-fg">(self)</span>
+<span class="ansi-green-intense-fg ansi-bold">    135</span> <span class="ansi-bold" style="color: rgb(0,135,0)">del</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>args, <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>kwds, <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>func
+<span class="ansi-green-intense-fg ansi-bold">    136</span> <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-fg">--&gt; 137</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> <span style="color: rgb(0,135,0)">next</span>(<span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>gen)
+<span class="ansi-green-intense-fg ansi-bold">    138</span> <span class="ansi-bold" style="color: rgb(0,135,0)">except</span> <span class="ansi-bold" style="color: rgb(215,95,95)">StopIteration</span>:
+<span class="ansi-green-intense-fg ansi-bold">    139</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">raise</span> <span class="ansi-bold" style="color: rgb(215,95,95)">RuntimeError</span>(<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">generator didn</span><span style="color: rgb(175,0,0)">&#39;</span><span style="color: rgb(175,0,0)">t yield</span><span style="color: rgb(175,0,0)">&#34;</span>) <span class="ansi-bold" style="color: rgb(0,135,0)">from</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/file_manager.py:199</span>, in <span class="ansi-cyan-fg">CachingFileManager.acquire_context</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    196</span> <span style="color: rgb(175,0,255)">@contextlib</span><span style="color: rgb(98,98,98)">.</span>contextmanager
+<span class="ansi-green-intense-fg ansi-bold">    197</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">acquire_context</span>(<span style="color: rgb(0,135,0)">self</span>, needs_lock<span style="color: rgb(98,98,98)">=</span><span class="ansi-bold" style="color: rgb(0,135,0)">True</span>):
+<span class="ansi-green-intense-fg ansi-bold">    198</span> <span style="color: rgb(188,188,188)">    </span><span style="color: rgb(175,0,0)">&#34;&#34;&#34;Context manager for acquiring a file.&#34;&#34;&#34;</span>
+<span class="ansi-green-fg">--&gt; 199</span>     file, cached <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_acquire_with_cache_info</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg">needs_lock</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    200</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">try</span>:
+<span class="ansi-green-intense-fg ansi-bold">    201</span>         <span class="ansi-bold" style="color: rgb(0,135,0)">yield</span> file
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/xarray/backends/file_manager.py:217</span>, in <span class="ansi-cyan-fg">CachingFileManager._acquire_with_cache_info</span><span class="ansi-blue-fg">(self, needs_lock)</span>
+<span class="ansi-green-intense-fg ansi-bold">    215</span>     kwargs <span style="color: rgb(98,98,98)">=</span> kwargs<span style="color: rgb(98,98,98)">.</span>copy()
+<span class="ansi-green-intense-fg ansi-bold">    216</span>     kwargs[<span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">mode</span><span style="color: rgb(175,0,0)">&#34;</span>] <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_mode
+<span class="ansi-green-fg">--&gt; 217</span> file <span style="color: rgb(98,98,98)">=</span> <span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_opener</span><span class="ansi-yellow-bg">(</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg" style="color: rgb(0,135,0)">self</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">.</span><span class="ansi-yellow-bg">_args</span><span class="ansi-yellow-bg">,</span><span class="ansi-yellow-bg"> </span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg" style="color: rgb(98,98,98)">*</span><span class="ansi-yellow-bg">kwargs</span><span class="ansi-yellow-bg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    218</span> <span class="ansi-bold" style="color: rgb(0,135,0)">if</span> <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_mode <span style="color: rgb(98,98,98)">==</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">w</span><span style="color: rgb(175,0,0)">&#34;</span>:
+<span class="ansi-green-intense-fg ansi-bold">    219</span>     <span style="color: rgb(95,135,135)"># ensure file doesn&#39;t get overridden when opened again</span>
+<span class="ansi-green-intense-fg ansi-bold">    220</span>     <span style="color: rgb(0,135,0)">self</span><span style="color: rgb(98,98,98)">.</span>_mode <span style="color: rgb(98,98,98)">=</span> <span style="color: rgb(175,0,0)">&#34;</span><span style="color: rgb(175,0,0)">a</span><span style="color: rgb(175,0,0)">&#34;</span>
+
+File <span class="ansi-green-fg">src/netCDF4/_netCDF4.pyx:2492</span>, in <span class="ansi-cyan-fg">netCDF4._netCDF4.Dataset.__init__</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">src/netCDF4/_netCDF4.pyx:2009</span>, in <span class="ansi-cyan-fg">genexpr</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">src/netCDF4/_netCDF4.pyx:2009</span>, in <span class="ansi-cyan-fg">genexpr</span><span class="ansi-blue-fg">()</span>
+
+File <span class="ansi-green-fg">/glade/work/fengzhu/conda-envs/xpp-env/lib/python3.11/site-packages/netCDF4/utils.py:32</span>, in <span class="ansi-cyan-fg">_find_dim</span><span class="ansi-blue-fg">(grp, dimname)</span>
+<span class="ansi-green-intense-fg ansi-bold">     28</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_sortbylist</span>(A,B):
+<span class="ansi-green-intense-fg ansi-bold">     29</span>     <span style="color: rgb(95,135,135)"># sort one list (A) using the values from another list (B)</span>
+<span class="ansi-green-intense-fg ansi-bold">     30</span>     <span class="ansi-bold" style="color: rgb(0,135,0)">return</span> [A[i] <span class="ansi-bold" style="color: rgb(0,135,0)">for</span> i <span class="ansi-bold" style="color: rgb(175,0,255)">in</span> <span style="color: rgb(0,135,0)">sorted</span>(<span style="color: rgb(0,135,0)">range</span>(<span style="color: rgb(0,135,0)">len</span>(A)), key<span style="color: rgb(98,98,98)">=</span>B<span style="color: rgb(98,98,98)">.</span><span style="color: rgb(0,0,255)">__getitem__</span>)]
+<span class="ansi-green-fg">---&gt; 32</span> <span class="ansi-bold" style="color: rgb(0,135,0)">def</span> <span style="color: rgb(0,0,255)">_find_dim</span>(grp, dimname):
+<span class="ansi-green-intense-fg ansi-bold">     33</span>     <span style="color: rgb(95,135,135)"># find Dimension instance given group and name.</span>
+<span class="ansi-green-intense-fg ansi-bold">     34</span>     <span style="color: rgb(95,135,135)"># look in current group, and parents.</span>
+<span class="ansi-green-intense-fg ansi-bold">     35</span>     group <span style="color: rgb(98,98,98)">=</span> grp
+<span class="ansi-green-intense-fg ansi-bold">     36</span>     dim <span style="color: rgb(98,98,98)">=</span> <span class="ansi-bold" style="color: rgb(0,135,0)">None</span>
+
+<span class="ansi-red-fg">KeyboardInterrupt</span>:
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Feng Zhu, Jiang Zhu, Dan Amrhein, Sophia Macarewich, Bette Otto-Bliersner, Esther Brady.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
