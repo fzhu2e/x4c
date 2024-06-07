@@ -318,6 +318,14 @@ class DiagCalc:
         da.name = 'MLD'
         da.attrs['units'] = 'm'
         return da
+
+    def get_PRECT(case, **kws):
+        case.load('PRECC', **kws)
+        case.load('PRECL', **kws)
+        da = case.ds['PRECC'].x.da + case.ds['PRECL'].x.da
+        da.name = 'PRECT'
+        da.attrs['long_name'] = 'Total precipitation rate (convective + large-scale; liq + ice)'
+        return da
         
     def get_d18Op(case, **kws):
         case.load('PRECRC_H216Or', **kws)
@@ -338,6 +346,8 @@ class DiagCalc:
 
         d18Op = (p18O / p16O - 1)*1000
         d18Op.name = 'd18Op'
+        d18Op.attrs['long_name'] = 'Precipitation d18O'
+        d18Op.attrs['units'] = 'permil'
 
         return d18Op
 
@@ -346,6 +356,8 @@ class DiagCalc:
         R18O = case.ds['R18O'].x.da
         d18Osw = (R18O - 1)*1e3
         d18Osw.name = 'd18Osw'
+        d18Osw.attrs['long_name'] = 'Sea-water d18O'
+        d18Osw.attrs['units'] = 'permil'
         return d18Osw
 
     def get_MOC(case, **kws):

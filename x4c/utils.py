@@ -104,7 +104,10 @@ def annualize(ds, months=None):
     sds = ds.sel(time=ds['time.month'].isin(months))
     anchor = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
     idx = months[-1]-1
-    ds_ann = sds.resample(time=f'YE-{anchor[idx]}').mean()
+    try:
+        ds_ann = sds.resample(time=f'YE-{anchor[idx]}').mean()  # new version
+    except:
+        ds_ann = sds.resample(time=f'A-{anchor[idx]}').mean()   # old version
     return ds_ann
 
 def monthly2annual(ds):
@@ -119,7 +122,7 @@ def monthly2season(ds):
     ds_season = (ds * wgts).groupby('time.season').mean('time')
     return ds_season
 
-def geo_mean(da, lat_min=-90, lat_max=90, lon_min=0, lon_max=360, lat_name='lat', lon_name='lon'):
+def geo_mean(da, lat_min=-90, lat_max=90, lon_min=0, lon_max=360, lat_name='lat', lon_name='lon', **kws):
     ''' Calculate the geographical mean value of the climate field.
 
     Args:
@@ -127,20 +130,30 @@ def geo_mean(da, lat_min=-90, lat_max=90, lon_min=0, lon_max=360, lat_name='lat'
         lat_max (float): the upper bound of latitude for the calculation.
         lon_min (float): the lower bound of longitude for the calculation.
         lon_max (float): the upper bound of longitude for the calculation.
+        gw (optional): weight of each gridcell
+        lat (optional): lat of each gridcell
+        lon (optional): lon of each gridcell
     '''
-    # calculation
-    mask_lat = (da[lat_name] >= lat_min) & (da[lat_name] <= lat_max)
-    mask_lon = (da[lon_name] >= lon_min) & (da[lon_name] <= lon_max)
-
-    dac = da.sel(
-        {
-            lat_name: da[lat_name][mask_lat],
-            lon_name: da[lon_name][mask_lon],
-        }
-    )
-
-    wgts = np.cos(np.deg2rad(dac[lat_name]))
-    m = dac.weighted(wgts).mean((lon_name, lat_name))
+    if 'gw' not in da.attrs and 'gw' not in kws:
+        # calculation
+        mask_lat = (da[lat_name] >= lat_min) & (da[lat_name] <= lat_max)
+        mask_lon = (da[lon_name] >= lon_min) & (da[lon_name] <= lon_max)
+        dac = da.sel({
+                lat_name: da[lat_name][mask_lat],
+                lon_name: da[lon_name][mask_lon],
+            })
+        wgts = np.cos(np.deg2rad(dac[lat_name]))
+        m = dac.weighted(wgts).mean((lon_name, lat_name))
+    elif 'gw' in da.attrs and 'lat' in da.attrs and 'lon' in da.attrs:
+        gw = da.attrs['gw']
+        lat = da.attrs['lat']
+        lon = da.attrs['lon']
+        m = da.where((lat>lat_min) & (lat<lat_max) & (lon>lon_min) & (lon<lon_max)).weighted(gw).mean(list(gw.dims))
+    elif 'gw' in kws and 'lat' in kws and 'lon' in kws:
+        gw = kws['gw']
+        lat = kws['lat']
+        lon = kws['lon']
+        m = da.where((lat>lat_min) & (lat<lat_max) & (lon>lon_min) & (lon<lon_max)).weighted(gw).mean(list(gw.dims))
     return m
 
 def update_attrs(da, da_src):
@@ -182,9 +195,9 @@ def update_ds(ds, path, vn=None, comp=None, grid=None, adjust_month=False,
             'lnd': 'lat',
         }
 
-        gw_name = grid_weight_dict[comp] if gw_name is None else gw_name
-        lat_name = lat_dict[comp] if lat_name is None else lat_name
-        lon_name = lon_dict[comp] if lon_name is None else lon_name
+        gw_name = grid_weight_dict[ds.attrs['comp']] if gw_name is None else gw_name
+        lat_name = lat_dict[ds.attrs['comp']] if lat_name is None else lat_name
+        lon_name = lon_dict[ds.attrs['comp']] if lon_name is None else lon_name
 
     if gw_name is not None and gw_name in ds: ds['gw'] = ds[gw_name]
     if lat_name is not None and lat_name in ds: ds['lat'] = ds[lat_name]

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import BoundaryNorm, Normalize
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import geocat.comp as gc
 
 
 from . import utils, visual
@@ -124,6 +125,31 @@ class XDataset:
         if 'lon' in ds_rgd.attrs: del(ds_rgd.attrs['lon'])
         return ds_rgd
 
+    def get_plev(self, ps, vn=None, lev_mode='hybrid', **kws):
+        _kws = {'lev_dim': 'lev'}
+        _kws.update(kws)
+        if vn is None:
+            da = self.da
+            vn = self.ds.attrs['vn']
+        else:
+            da = self.ds[vn]
+
+        if isinstance(ps, xr.Dataset):
+            ps_da = ps['PS']
+        elif isinstance(ps, xr.DataArray):
+            ps_da = ps
+
+        if lev_mode == 'hybrid':
+            da_plev = gc.interpolation.interp_hybrid_to_pressure(da, ps_da, self.ds['hyam'], self.ds['hybm'], **_kws)
+        else:
+            raise ValueError('`lev_mode` unknown')
+
+        ds_plev = self.ds.copy()
+        del(ds_plev[vn])
+        ds_plev[vn] = da_plev
+        return ds_plev
+
+
     def annualize(self, months=None):
         ''' Annualize/seasonalize a `xarray.Dataset`
 
@@ -160,6 +186,7 @@ class XDataset:
         if 'grid' in self.ds.attrs:
             da.attrs['grid'] = self.ds.attrs['grid']
 
+
         return da
 
     @property
@@ -180,6 +207,12 @@ class XDataset:
         if 'month' in ds.coords:
             ds = ds.rename({'month': 'time'})
         return ds
+
+    def to_netcdf(self, path, **kws):
+        for v in ['gw', 'lat', 'lon']:
+            if v in self.ds.attrs: del(self.ds.attrs[v])
+
+        return self.ds.to_netcdf(path, **kws)
         
 
 @xr.register_dataarray_accessor('x')
@@ -206,6 +239,12 @@ class XDataArray:
         if 'lat' in da.attrs: del(da.attrs['lat'])
         if 'lon' in da.attrs: del(da.attrs['lon'])
         return da
+
+    def to_netcdf(self, path, **kws):
+        for v in ['gw', 'lat', 'lon']:
+            if v in self.da.attrs: del(self.da.attrs[v])
+
+        return self.da.to_netcdf(path, **kws)
 
     @property
     def ds(self):
@@ -270,7 +309,7 @@ class XDataArray:
             da = da.rename({'month': 'time'})
         return da
 
-    def geo_mean(self, ind=None, latlon_range=(-90, 90, 0, 360)):
+    def geo_mean(self, ind=None, latlon_range=(-90, 90, 0, 360), **kws):
         ''' The lat-weighted mean given a lat/lon range or a climate index name
 
         Args:
@@ -291,32 +330,32 @@ class XDataArray:
 
         if ind is None:
             lat_min, lat_max, lon_min, lon_max = latlon_range
-            da = utils.geo_mean(self.da, lat_min=lat_min, lat_max=lat_max, lon_min=lon_min, lon_max=lon_max)
+            da = utils.geo_mean(self.da, lat_min=lat_min, lat_max=lat_max, lon_min=lon_min, lon_max=lon_max, **kws)
         elif ind == 'nino3.4':
-            da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(-170, 360), lon_max=np.mod(-120, 360))
+            da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(-170, 360), lon_max=np.mod(-120, 360), **kws)
         elif ind == 'nino1+2':
-            da = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=np.mod(-90, 360), lon_max=np.mod(-80, 360))
+            da = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=np.mod(-90, 360), lon_max=np.mod(-80, 360), **kws)
         elif ind == 'nino3':
-            da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(-150, 360), lon_max=np.mod(-90, 360))
+            da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(-150, 360), lon_max=np.mod(-90, 360), **kws)
         elif ind == 'nino4':
-            da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(160, 360), lon_max=np.mod(-150, 360))
+            da = utils.geo_mean(self.da, lat_min=-5, lat_max=5, lon_min=np.mod(160, 360), lon_max=np.mod(-150, 360), **kws)
         elif ind == 'wpi':
             # Western Pacific Index
-            da = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=np.mod(120, 360), lon_max=np.mod(150, 360))
+            da = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=np.mod(120, 360), lon_max=np.mod(150, 360), **kws)
         elif ind == 'tpi':
             # Tri-Pole Index
-            v1 = utils.geo_mean(self.da, lat_min=25, lat_max=45, lon_min=np.mod(140, 360), lon_max=np.mod(-145, 360))
-            v2 = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=np.mod(170, 360), lon_max=np.mod(-90, 360))
-            v3 = utils.geo_mean(self.da, lat_min=-50, lat_max=-15, lon_min=np.mod(150, 360), lon_max=np.mod(-160, 360))
+            v1 = utils.geo_mean(self.da, lat_min=25, lat_max=45, lon_min=np.mod(140, 360), lon_max=np.mod(-145, 360), **kws)
+            v2 = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=np.mod(170, 360), lon_max=np.mod(-90, 360), **kws)
+            v3 = utils.geo_mean(self.da, lat_min=-50, lat_max=-15, lon_min=np.mod(150, 360), lon_max=np.mod(-160, 360), **kws)
             da = v2 - (v1 + v3)/2
         elif ind == 'dmi':
             # Indian Ocean Dipole Mode
-            dmiw = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=50 ,lon_max=70)
-            dmie = utils.geo_mean(self.da,lat_min=-10,lat_max=0,lon_min=90,lon_max=110)
+            dmiw = utils.geo_mean(self.da, lat_min=-10, lat_max=10, lon_min=50 ,lon_max=70, **kws)
+            dmie = utils.geo_mean(self.da,lat_min=-10,lat_max=0,lon_min=90,lon_max=110, **kws)
             da = dmiw - dmie
         elif ind == 'iobw':
             # Indian Ocean Basin Wide
-            da =  utils.geo_mean(self.da, lat_min=-20, lat_max=20, lon_min=40 ,lon_max=100)
+            da =  utils.geo_mean(self.da, lat_min=-20, lat_max=20, lon_min=40 ,lon_max=100, **kws)
         else:
             raise ValueError('`ind` options: {"nino3.4", "nino1+2", "nino3", "nino4", "wpi", "tpi", "dmi", "iobw"}')
 

@@ -9,6 +9,10 @@ import pathlib
 import textwrap
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
+import subprocess
 
 from . import core, utils, diags
 
@@ -81,6 +85,7 @@ class History:
         output_dirpath = pathlib.Path(output_dirpath)
         if not output_dirpath.exists():
             output_dirpath.mkdir(parents=True, exist_ok=True)
+            utils.p_success(f'>>> output directory created at: {output_dirpath}')
 
         paths = self.get_paths(comp, timespan=timespan)
 
@@ -219,13 +224,15 @@ class Timeseries:
         grid_dict (dict): the grid dictionary for different components
         timestep (int): the number of years stored in a single timeseries file
     '''
-    def __init__(self, root_dir, grid_dict=None):
+    def __init__(self, root_dir, grid_dict=None, casename=None):
         self.path_pattern='comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc'
         self.root_dir = root_dir
+        self.casename = casename
 
         self.grid_dict = {'atm': 'ne16', 'ocn': 'g16'}
         if grid_dict is not None:
             self.grid_dict.update(grid_dict)
+
         self.grid_dict['lnd'] = self.grid_dict['atm']
         self.grid_dict['rof'] = self.grid_dict['atm']
         self.grid_dict['ice'] = self.grid_dict['ocn']
@@ -233,6 +240,8 @@ class Timeseries:
         utils.p_header(f'>>> case.root_dir: {self.root_dir}')
         utils.p_header(f'>>> case.path_pattern: {self.path_pattern}')
         utils.p_header(f'>>> case.grid_dict: {self.grid_dict}')
+        if self.casename is not None:
+            utils.p_header(f'>>> case.casename: {self.casename}')
 
         self.paths = utils.find_paths(self.root_dir, self.path_pattern)
 
@@ -274,17 +283,23 @@ class Timeseries:
         
         if len(comps) == 1:
             return comps[0]
+        elif len(comps) == 0:
+            if f'get_{vn}' in diags.DiagCalc.__dict__:
+                utils.p_warning(f'>>> {vn} is an available deductible variable')
+            else:
+                raise ValueError('The input variable name is unknown.')
         else:
             utils.p_warning(f'{vn} belongs to components: {comps}')
             raise ValueError('The input variable name belongs to multiple components. Please specify via the argument `comp`.')
 
     
-    def load(self, vn, comp=None, timespan=None, load_idx=-1, adjust_month=True):
+    def load(self, vn, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True):
         if not isinstance(vn, (list, tuple)):
             vn = [vn]
 
         for v in vn:
-            if comp is None: comp = self.get_vn_comp(v)
+            if comp is None:
+                comp = self.get_vn_comp(v)
 
             if (v, comp) in self.vars_info:
                 if v not in self.ds:
@@ -305,14 +320,14 @@ class Timeseries:
 
                     self.ds[v] = ds
                     self.ds[v].attrs['vn'] = v
-                    utils.p_success(f'>>> case.ds["{v}"] created')
+                    if verbose: utils.p_success(f'>>> case.ds["{v}"] created')
                 else:
-                    utils.p_warning(f'>>> case.ds["{v}"] already loaded; to reload, run case.clear_ds("{v}") before case.load("{v}")')
+                    if verbose: utils.p_warning(f'>>> case.ds["{v}"] already loaded; to reload, run case.clear_ds("{v}") before case.load("{v}")')
 
             else:
-                utils.p_warning(f'>>> Variable {v} not existing')
+                if verbose: utils.p_warning(f'>>> Variable {v} not existing')
 
-    def calc(self, spell, comp=None, timespan=None, load_idx=-1, adjust_month=True, **kws):
+    def calc(self, spell, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True, **kws):
         ''' Calculate a diagnostic spell
         '''
         if ':' not in spell:
@@ -326,11 +341,11 @@ class Timeseries:
 
         if comp is None: comp = self.get_vn_comp(vn)
 
-        if f'get_{vn}' in diags.DiagCalc.__dict__:
-            da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month)
-        elif (vn, comp) in self.vars_info:
-            self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month)
+        if (vn, comp) in self.vars_info:
+            self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
             da = self.ds[vn].x.da
+        elif f'get_{vn}' in diags.DiagCalc.__dict__:
+            da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
         else:
             raise ValueError(f'Unknown diagnostic: {vn}')
 
@@ -339,14 +354,15 @@ class Timeseries:
 
         if 'sa_method' in locals():
             if sa_method in ['gm', 'nhm', 'shm', 'zm']:
-                da = da.x.regrid(**kws)
                 da = getattr(da.x, sa_method)
-            elif sa_method in ['yz'] and da.name == 'MOC':
-                da = da.isel(transport_reg=0, moc_comp=0)
+            elif sa_method == 'yz':
+                if da.name == 'MOC':
+                    da = da.isel(transport_reg=0, moc_comp=0)
+                else:
+                    da = da.x.zm
             else:
                 raise ValueError(f'Unknown spatial average method: {sa_method}')
 
-        self.diags[spell] = da
         if da.units == 'degC':
             da.attrs['units'] = '°C'
         elif da.units == 'K':
@@ -354,13 +370,14 @@ class Timeseries:
             da.attrs['units'] = '°C'
 
         self.diags[spell] = da
-        utils.p_success(f'>>> case.diags["{spell}"] created')
+        if verbose: utils.p_success(f'>>> case.diags["{spell}"] created')
 
     def plot(self, spell, t_idx=None, **kws):
-        if spell in self.diags:
-            da = self.diags[spell]
-        else:
-            da = self.calc(spell)
+        if spell not in self.diags:
+            utils.p_warning(f'>>> "{spell}" not calculated yet. Calculating now ...')
+            self.calc(spell)
+
+        da = self.diags[spell]
 
         if t_idx is None:
             if len(da.dims) > 1 and 'time' in da.dims:
@@ -430,19 +447,28 @@ class Timeseries:
             ylabel = ax.yaxis.get_label()
             if 'depth' in str(ylabel):
                 ax.invert_yaxis()
-                ax.set_yticks([0, 2, 4])
+                if 'z_t' in self.diags[spell]:
+                    if self.diags[spell]['z_t'].units == 'centimeters':
+                        ax.set_yticks([0, 2e5, 4e5])
+                    elif self.diags[spell]['z_t'].units == 'km':
+                        ax.set_yticks([0, 2, 4])
+                else:
+                    ax.set_yticks([0, 2e5, 4e5])
+
+                ax.set_yticklabels([0, 2, 4])
                 ax.set_ylabel('Depth [km]')
         else:
             ax.set_ylabel(kws['ylabel'])
 
         return fig_ax
 
-    def get_climo(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False, chunk_nt=None):
+    def get_climo(self, vn, comp=None, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
         ''' Generate the climatology file for the given variable
 
         Args:
             slicing (bool): could be problematic
         '''
+        if comp is None: comp = self.get_vn_comp(vn)
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
         if chunk_nt is None:
@@ -454,37 +480,37 @@ class Timeseries:
         ds_out = ds.x.climo
         ds_out.attrs['comp'] = comp
         ds_out.attrs['grid'] = grid
-        if regrid: ds_out = ds_out.x.regrid()
+        if regrid: ds_out = ds_out.x.regrid(dlat=dlat, dlon=dlon)
         return ds_out
 
-    def save_climo(self, vn, output_dirpath, comp=None, casename=None, timespan=None, adjust_month=True,
-                   slicing=False, regrid=False, overwrite=False, chunk_nt=None):
+    def save_climo(self, output_dirpath, vn, comp=None, timespan=None, adjust_month=True,
+                   slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None):
 
         output_dirpath = pathlib.Path(output_dirpath)
         if not output_dirpath.exists():
             output_dirpath.mkdir(parents=True, exist_ok=True)
             utils.p_success(f'>>> output directory created at: {output_dirpath}')
 
-        fname = f'{vn}_climo.nc' if casename is None else f'{casename}_{vn}_climo.nc'
+        fname = f'{vn}_climo.nc' if self.casename is None else f'{self.casename}_{vn}_climo.nc'
         out_path = os.path.join(output_dirpath, fname)
         if overwrite or not os.path.exists(out_path):
             if comp is None: comp = self.get_vn_comp(vn)
 
             climo = self.get_climo(
                 vn, comp=comp, timespan=timespan, adjust_month=adjust_month,
-                slicing=slicing, regrid=regrid, chunk_nt=chunk_nt,
+                slicing=slicing, regrid=regrid, dlat=dlat, dlon=dlon, chunk_nt=chunk_nt,
             )
             climo.to_netcdf(out_path)
             climo.close()
 
-    def gen_climo(self, output_dirpath, comp=None, casename=None, timespan=None, vns=None, adjust_month=True,
-                  nproc=1, slicing=False, regrid=False, overwrite=False, chunk_nt=None):
+    def gen_climo(self, output_dirpath, comp=None, timespan=None, vns=None, adjust_month=True,
+                  nproc=1, slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None):
 
         if comp is None:
             raise ValueError('Please specify component via the argument `comp`.')
 
         if vns is None:
-            vns = [k[0] for k, v in self.vars_info.items() if comp==v[0]]
+            vns = [k[0] for k, v in self.vars_info.items() if v[0]==comp]
 
         utils.p_header(f'>>> Generating climo for {len(vns)} variables:')
         for i in range(len(vns)//10+1):
@@ -492,18 +518,144 @@ class Timeseries:
 
         if nproc == 1:
             for v in tqdm(vns, total=len(vns), desc=f'Generating climo files'):
-                self.save_climo(v, output_dirpath=output_dirpath, comp=comp, casename=casename, timespan=timespan,
-                                adjust_month=adjust_month, slicing=slicing, regrid=regrid, overwrite=overwrite, chunk_nt=chunk_nt)
+                self.save_climo(
+                    output_dirpath, v, comp=comp, timespan=timespan,
+                    adjust_month=adjust_month, slicing=slicing, regrid=regrid, dlat=dlat, dlon=dlon,
+                    overwrite=overwrite, chunk_nt=chunk_nt,
+                )
         else:
             utils.p_hint(f'>>> nproc: {nproc}')
             with mp.Pool(processes=nproc) as p:
-                arg_list = [(v, output_dirpath, comp, casename, timespan, adjust_month, slicing, regrid, overwrite, chunk_nt) for v in vns]
+                arg_list = [(output_dirpath, v, comp, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite, chunk_nt) for v in vns]
                 p.starmap(self.save_climo, tqdm(arg_list, total=len(vns), desc=f'Generating climo files'))
 
         utils.p_success(f'>>> {len(vns)} climo files created in: {output_dirpath}')
 
-    def check_timespan(self, vn, timespan=None, ncol=10):
-        paths = self.get_paths(vn, timespan=timespan)
+    # def save_combined_ts(self, output_dirpath, comp, vns=None, timespan=None, adjust_month=True, overwrite=False, chunk_nt=None):
+    #     output_dirpath = pathlib.Path(output_dirpath)
+    #     if not output_dirpath.exists():
+    #         output_dirpath.mkdir(parents=True, exist_ok=True)
+    #         utils.p_success(f'>>> output directory created at: {output_dirpath}')
+
+    #     if vns is None:
+    #         vns = [k[0] for k, v in self.vars_info.items() if v[0]==comp]
+
+    #     utils.p_header(f'>>> Combining timeseries files for {len(vns)} variables:')
+    #     for i in range(len(vns)//10+1):
+    #         print(vns[10*i:10*i+10])
+
+    #     fname = f'{timespan[0]}_{timespan[1]}_ts.nc' if self.casename is None else f'{self.casename}_{timespan[0]}_{timespan[1]}_ts.nc'
+    #     out_path = os.path.join(output_dirpath, fname)
+    #     if overwrite or not os.path.exists(out_path):
+    #         paths_list = []
+    #         for vn in vns:
+    #             paths = self.get_paths(vn, comp=comp, timespan=timespan)
+    #             paths_list.append(*paths)
+
+    #         if chunk_nt is None:
+    #             ds = core.open_mfdataset(paths_list, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+    #         else:
+    #             ds = core.open_mfdataset(paths_list, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+
+    #         # ds.attrs['comp'] = comp
+    #         # ds.attrs['grid'] = self.grid_dict[comp]
+    #         # ds.to_netcdf(out_path)
+    #         # ds.close()
+    #         # utils.p_success(f'>>> Combined timeseries file created at: {out_path}')
+
+    def get_mean(self, vn, comp, months=list(range(1, 13)), timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
+        grid = self.grid_dict[comp]
+        paths = self.get_paths(vn, comp=comp, timespan=timespan)
+        if chunk_nt is None:
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+        else:
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+
+        if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
+        ds_out = ds.x.annualize(months=months)
+        ds_out.attrs['comp'] = comp
+        ds_out.attrs['grid'] = grid
+        if regrid: ds_out = ds_out.x.regrid(dlat=dlat, dlon=dlon)
+        return ds_out
+
+    def get_ts(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
+        grid = self.grid_dict[comp]
+        paths = self.get_paths(vn, comp=comp, timespan=timespan)
+        if chunk_nt is None:
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+        else:
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+
+        if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
+
+        ds_out = ds
+        ds_out.attrs['comp'] = comp
+        ds_out.attrs['grid'] = grid
+        if regrid: ds_out = ds_out.x.regrid(dlat=dlat, dlon=dlon)
+        return ds_out
+
+    def save_means(self, vn, comp, output_dirpath, timespan, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None):
+        output_dirpath = pathlib.Path(output_dirpath)
+        if not output_dirpath.exists():
+            output_dirpath.mkdir(parents=True, exist_ok=True)
+            utils.p_success(f'>>> output directory created at: {output_dirpath}')
+
+        ds = self.get_ts(vn, comp, timespan=timespan, adjust_month=adjust_month, slicing=slicing, regrid=False, chunk_nt=chunk_nt)
+
+        sn_dict = {
+            'ANN': list(range(1, 13)),
+            'DJF': [12, 1, 2],
+            'MAM': [1, 2, 3],
+            'JJA': [6, 7, 8],
+            'SON': [9, 10, 11],
+        }
+
+        for sn, months in sn_dict.items():
+            output_subdirpath = pathlib.Path(os.path.join(output_dirpath, sn))
+            if not output_subdirpath.exists():
+                output_subdirpath.mkdir(parents=True, exist_ok=True)
+
+            fname = f'{timespan[0]}_{timespan[1]}_{vn}_{sn}_means.nc'
+            if self.casename is not None: fname = f'{self.casename}_{fname}'
+
+            out_path = os.path.join(output_subdirpath, fname)
+            if overwrite or not os.path.exists(out_path):
+                # ds_ann = self.get_mean(
+                #     vn, comp, months=months, timespan=timespan, adjust_month=adjust_month, slicing=slicing,
+                #     regrid=regrid, dlat=dlat, dlon=dlon, chunk_nt=chunk_nt,
+                # )
+                ds_ann = ds.x.annualize(months=months)
+                if regrid: ds_ann = ds_ann.x.regrid(dlat=dlat, dlon=dlon)
+                ds_ann.to_netcdf(out_path)
+                ds_ann.close()
+
+    def gen_means(self, output_dirpath, comp=None, vns=None, timespan=None, adjust_month=True, slicing=False,
+                  regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None, nproc=1):
+
+        if comp is None:
+            raise ValueError('Please specify component via the argument `comp`.')
+
+        if vns is None:
+            vns = [k[0] for k, v in self.vars_info.items() if v[0]==comp]
+
+        utils.p_header(f'>>> Generating seaonal means for {len(vns)} variables:')
+        for i in range(len(vns)//10+1):
+            print(vns[10*i:10*i+10])
+
+        if nproc == 1:
+            for vn in vns:
+                self.save_means(
+                    vn, comp, output_dirpath, timespan, adjust_month=adjust_month, slicing=slicing,
+                    regrid=regrid, dlat=dlat, dlon=dlon, overwrite=overwrite, chunk_nt=chunk_nt,
+                )
+        else:
+            utils.p_hint(f'>>> nproc: {nproc}')
+            with mp.Pool(processes=nproc) as p:
+                arg_list = [(vn, comp, output_dirpath, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite, chunk_nt) for vn in vns]
+                p.starmap(self.save_means, tqdm(arg_list, total=len(vns), desc=f'Generating seasonal mean files'))
+
+    def check_timespan(self, vn, comp, timespan=None, ncol=10):
+        paths = self.get_paths(vn, comp=comp, timespan=timespan)
         if timespan is None:
             syr = int(paths[0].split('.')[-2].split('-')[0][:4])
             eyr = int(paths[-1].split('.')[-2].split('-')[1][:4])
@@ -555,6 +707,115 @@ class Timeseries:
             self.ds.pop(vn)
         else:
             self.ds = {}
+
+class Climo:
+    def __init__(self, root_dir, casename):
+        self.root_dir = root_dir
+        self.casename = casename
+        utils.p_header(f'>>> case.root_dir: {self.root_dir}')
+        utils.p_header(f'>>> case.casename: {self.casename}')
+
+    def gen_MONS_climo(self, output_dirpath, climo_period=None):
+        output_dirpath = pathlib.Path(output_dirpath)
+        if not output_dirpath.exists():
+            output_dirpath.mkdir(parents=True, exist_ok=True)
+            utils.p_header(f'>>> output directory created at: {output_dirpath}')
+
+        paths = sorted(glob.glob(os.path.join(self.root_dir, '*_climo.nc')))
+        ds = xr.open_mfdataset(paths, coords='minimal', data_vars='minimal')
+        if climo_period is None:
+            try:
+                climo_period = ds.attrs['climo_period']
+            except:
+                pass
+
+        if climo_period is not None:
+            fname = f'{self.casename}_{climo_period[0]}_{climo_period[1]}_MONS_climo.nc'
+        else:
+            fname = f'{self.casename}_MONS_climo.nc'
+
+        output_fpath = os.path.join(output_dirpath, fname)
+        ds.to_netcdf(output_fpath)
+        utils.p_header(f'>>> MONS_climo generated at: {output_fpath}')
+        self.MONS_climo_path = output_fpath
+        utils.p_success(f'>>> case.MONS_climo_path created')
+
+    def gen_seasons_climo(self, MONS_climo_path=None):
+        if MONS_climo_path is None:
+            MONS_climo_path = self.MONS_climo_path
+
+        ds = xr.open_dataset(MONS_climo_path)
+
+        sn_dict = {
+            'ANN': list(range(1, 13)),
+            'DJF': [12, 1, 2],
+            'MAM': [1, 2, 3],
+            'JJA': [6, 7, 8],
+            'SON': [9, 10, 11],
+        }
+
+        for sn, months in sn_dict.items():
+            output_fpath = MONS_climo_path.replace('MONS', sn)
+            if os.path.exists(output_fpath):
+                os.remove(output_fpath)
+
+            ds_mean = ds.sel(time=months).mean('time').expand_dims('time')
+            ds_mean = ds_mean.assign_coords(time=[ds.coords['time'][0]])
+            ds_mean.to_netcdf(output_fpath, unlimited_dims={'time':True})
+            utils.p_header(f'>>> {sn}_climo generated at: {output_fpath}')
+
+class Means:
+    def __init__(self, root_dir):
+        self.root_dir = root_dir
+        utils.p_header(f'>>> case.root_dir: {self.root_dir}')
+
+    def merge_means(self, sn, output_dirpath, overwrite=False, casetag=None):
+        utils.p_header(f'>>> Processing season {sn}')
+        paths = glob.glob(os.path.join(self.root_dir, sn, f'*_{sn}_means.nc'))
+        if casetag is None:
+            fname = f'{sn}_means.nc'
+        else:
+            fname = f'{casetag}_{sn}_means.nc'
+        out_path = os.path.join(output_dirpath, fname)
+        if overwrite or not os.path.exists(out_path):
+            # if chunk_nt is not None:
+            #     ds = xr.open_mfdataset(paths, compat='override', coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+            # else:
+            #     ds = xr.open_mfdataset(paths, compat='override', coords='minimal', data_vars='minimal')
+
+            ds_list = []
+            for path in paths:
+                ds_tmp = core.open_dataset(path)
+                for k, v in ds_tmp.coords.items():
+                    try:
+                        if any(np.isnan(v.values)):
+                            ds_tmp = ds_tmp.drop_vars(k)
+                    except:
+                        pass
+                ds_list.append(ds_tmp)
+
+            # ds = xr.open_dataset(paths[0])
+            # for path in tqdm(paths[1:]):
+            #     ds_tmp = core.open_dataset(path)
+            #     ds = xr.merge([ds, ds_tmp])
+            
+            utils.p_header(f'>>> Merging files')
+            ds = xr.merge(ds_list)
+            ds.to_netcdf(out_path)
+            utils.p_header(f'>>> Merged mean file saved at: {out_path}')
+        else:
+            utils.p_warning(f'>>> The result already exists. Skipping ...')
+
+    def merge_means_nproc(self, output_dirpath, sns=['ANN', 'DJF', 'MAM', 'JJA', 'SON'], overwrite=False, casetag=None, chunk_nt=None, nproc=1):
+        if nproc == 1:
+            for sn in sns:
+                self.merge_means(sn, output_dirpath, overwrite=overwrite, chunk_nt=chunk_nt)
+        else:
+            utils.p_hint(f'>>> nproc: {nproc}')
+            with mp.Pool(processes=nproc) as p:
+                arg_list = [(sn, output_dirpath, overwrite, casetag, chunk_nt) for sn in sns]
+                p.starmap(self.merge_means, tqdm(arg_list, total=len(sns), desc=f'Merging mean files'))
+
 
     # def load(self, vn, adjust_month=True, load_idx=-1, regrid=False):
     #     ''' Load a specific variable
@@ -805,3 +1066,106 @@ class Logs:
         self.df = df
         self.df_ann = self.df.groupby(self.df.Year).mean()
         self.vn = vn
+
+    def plot_vars(self, vn=None, annualize=True, xlim=None, ylim_dict=None, unit_dict=None, clr_dict=None,
+                  figsize=[20, 5], ncol=4, nrow=None, wspace=0.3, hspace=0.5, kws=None, title=None):
+
+        kws = {} if kws is None else kws
+        unit_dict = {} if unit_dict is None else unit_dict
+        clr_dict = {} if clr_dict is None else clr_dict
+
+        _unit_dict = {
+            'TEMP': 'degC',
+            'SALT': 'kg/kg',
+            'QFLUX': 'W/m^2',
+            'NINO_3_POINT_4': 'degC',
+        }
+        _unit_dict.update(unit_dict)
+
+        _clr_dict = {
+            'TEMP': 'tab:red',
+            'SALT': 'tab:green',
+            'QFLUX': 'tab:blue',
+            'NINO_3_POINT_4': 'tab:orange',
+        }
+        _clr_dict.update(clr_dict)
+
+        if vn is None:
+            vn = self.vn
+
+        if not isinstance(vn, (list, tuple)):
+            vn = [vn]
+
+        if nrow is None:
+            nrow = int(np.ceil(len(vn)/ncol))
+
+        if annualize:
+            df_plot = self.df_ann
+        else:
+            df_plot = self.df
+            
+        fig = plt.figure(figsize=figsize)
+        ax = {}
+        gs = gridspec.GridSpec(nrow, ncol)
+        gs.update(wspace=wspace, hspace=hspace)
+
+        for i, v in enumerate(vn):
+            if v in self.df.columns:
+                if v not in kws:
+                    kws[v] = {}
+
+                ax[v] = fig.add_subplot(gs[i])
+
+                if v in _clr_dict:
+                    kws[v]['color'] = _clr_dict[v]
+
+                if v == 'SALT':
+                    ax[v].plot(df_plot.index, df_plot[v].values*1e3, **kws[v])
+                else:
+                    df_plot[v].plot(ax=ax[v], **kws[v])
+
+                if v in _unit_dict:
+                    ax[v].set_ylabel(f'{v} [{_unit_dict[v]}]')
+                else:
+                    ax[v].set_ylabel(v)
+
+                ax[v].ticklabel_format(useOffset=False)
+                if xlim is not None:
+                    ax[v].set_xlim(xlim)
+                if ylim_dict is not None and v in ylim_dict:
+                    ax[v].set_ylim(ylim_dict[v])
+
+        if title is not None:
+            fig.suptitle(title)
+
+        return fig, ax
+
+    
+    def compare_vars(self, L_ref, vn=None, annualize=True, xlim=None, unit_dict=None, clr_dict=None,
+                  figsize=[20, 5], ncol=4, nrow=None, wspace=0.3, hspace=0.5, kws=None, title=None):
+
+        if vn is None:
+            vn = self.vn
+
+        fig, ax = self.plot_vars(vn=vn, annualize=annualize, xlim=xlim, unit_dict=unit_dict, clr_dict=clr_dict,
+                                 figsize=figsize, ncol=ncol, nrow=nrow, wspace=wspace, hspace=hspace, kws=kws, title=title)
+
+        kws = {} if kws is None else kws
+        unit_dict = {} if unit_dict is None else unit_dict
+        clr_dict = {} if clr_dict is None else clr_dict
+
+        if annualize:
+            df_plot = L_ref.df_ann
+        else:
+            df_plot = L_ref.df
+
+        for v in vn:
+            if v not in kws:
+                kws[v] = {}
+
+            if v == 'SALT':
+                ax[v].plot(df_plot.index, df_plot[v].values*1e3, color='k', **kws[v])
+            else:
+                df_plot[v].plot(ax=ax[v], color='k', **kws[v])
+        
+        return fig, ax
