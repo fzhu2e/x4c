@@ -294,7 +294,11 @@ class XDataArray:
     def zm(self):
         ''' the zonal mean
         '''
-        da = self.da.mean('lon')
+        if 'lon' not in self.da.dims:
+            da = self.da.x.regrid().mean('lon')
+        else:
+            da = self.da.mean('lon')
+
         da = utils.update_attrs(da, self.da)
         if 'long_name' in da.attrs: da.attrs['long_name'] = f'Zonal Mean {da.attrs["long_name"]}'
         return da

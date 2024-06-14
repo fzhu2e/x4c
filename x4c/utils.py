@@ -168,7 +168,7 @@ def update_ds(ds, path, vn=None, comp=None, grid=None, adjust_month=False,
     if adjust_month:
         ds['time'] = ds['time'].get_index('time') - datetime.timedelta(days=1)
 
-    ds.attrs['path'] = path
+    ds.attrs['path'] = os.path.abspath(path)
     if vn is not None: ds.attrs['vn'] = vn
     if comp is not None: ds.attrs['comp'] = comp
     if grid is not None: ds.attrs['grid'] = grid

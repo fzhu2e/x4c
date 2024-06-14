@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import subprocess
+import copy
 
 from . import core, utils, diags
 
@@ -400,8 +401,8 @@ class Timeseries:
         else:
             raise ValueError('Unkown plot type.')
 
-        kws_dict = diags.DiagPlot.__dict__[f'kws_{plot_type}']
-        _kws = kws_dict[da.name].copy() if da.name in kws_dict else {}
+        kws_dict = copy.deepcopy(diags.DiagPlot.__dict__[f'kws_{plot_type}'])
+        _kws = kws_dict[da.name] if da.name in kws_dict else {}
         _kws = utils.update_dict(_kws, kws)
 
         if plot_type == 'map':
@@ -704,7 +705,10 @@ class Timeseries:
         ''' Clear the existing `.ds` property
         '''
         if vn is not None:
-            self.ds.pop(vn)
+            try:
+                self.ds.pop(vn)
+            except:
+                pass
         else:
             self.ds = {}
 

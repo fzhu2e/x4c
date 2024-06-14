@@ -6,5 +6,5 @@ This section illustrates the diagnostics of CESM output using `x4c`.
     :maxdepth: 1
 
     notebooks/diag-case
-    notebooks/diag-climo
     notebooks/diag-spell
+    notebooks/diag-climo

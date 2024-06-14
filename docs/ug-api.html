@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'ug-api';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="A “spell” system" href="notebooks/diag-spell.html" />
+    <link rel="prev" title="Climatology (climo) files generation" href="notebooks/diag-climo.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -170,8 +170,8 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="ug-diags.html">CESM Diagnostics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/diag-case.html">A “Timeseries Case” system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/diag-climo.html">Climatology (climo) files generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/diag-spell.html">A “spell” system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/diag-climo.html">Climatology (climo) files generation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">API Reference</a></li>
@@ -515,7 +515,7 @@ e.g., [7,8,9] means JJA annualization, and [-12,1,2] means DJF annualization</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="x4c.core.XDataArray.geo_mean">
-<span class="sig-name descname"><span class="pre">geo_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-90,</span> <span class="pre">90,</span> <span class="pre">0,</span> <span class="pre">360)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.core.XDataArray.geo_mean" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">geo_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latlon_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-90,</span> <span class="pre">90,</span> <span class="pre">0,</span> <span class="pre">360)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.core.XDataArray.geo_mean" title="Link to this definition">#</a></dt>
 <dd><p>The lat-weighted mean given a lat/lon range or a climate index name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -598,7 +598,7 @@ in format of (lat_min, lat_max, lon_min, lon_max)</p></li>
 <h2>CESM Diagnostics<a class="headerlink" href="#cesm-diagnostics" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="x4c.case.Timeseries">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">x4c.case.</span></span><span class="sig-name descname"><span class="pre">Timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.case.Timeseries" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">x4c.case.</span></span><span class="sig-name descname"><span class="pre">Timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.case.Timeseries" title="Link to this definition">#</a></dt>
 <dd><p>Initialize a CESM Timeseries case generated by CESM Postprocessing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -611,7 +611,7 @@ in format of (lat_min, lat_max, lon_min, lon_max)</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="x4c.case.Timeseries.calc">
-<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timespan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.case.Timeseries.calc" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">calc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timespan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.case.Timeseries.calc" title="Link to this definition">#</a></dt>
 <dd><p>Calculate a diagnostic spell</p>
 </dd></dl>
 
@@ -623,7 +623,7 @@ in format of (lat_min, lat_max, lon_min, lon_max)</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="x4c.case.Timeseries.get_climo">
-<span class="sig-name descname"><span class="pre">get_climo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timespan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slicing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_nt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.case.Timeseries.get_climo" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_climo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timespan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_month</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slicing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dlat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dlon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_nt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#x4c.case.Timeseries.get_climo" title="Link to this definition">#</a></dt>
 <dd><p>Generate the climatology file for the given variable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -649,12 +649,12 @@ in format of (lat_min, lat_max, lon_min, lon_max)</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="notebooks/diag-spell.html"
+       href="notebooks/diag-climo.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">A “spell” system</p>
+        <p class="prev-next-title">Climatology (climo) files generation</p>
       </div>
     </a>
 </div>

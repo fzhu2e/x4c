@@ -360,6 +360,56 @@ class DiagCalc:
         d18Osw.attrs['units'] = 'permil'
         return d18Osw
 
+    def get_d18Oc(case, **kws):
+        ''' Calculate d18Oc = f(TEMP, d18Osw)
+
+        Reference: Marchitoo et al. (2014)
+        '''
+        case.load('R18O', **kws)
+        case.load('TEMP', **kws)
+        R18O = case.ds['R18O'].x.da
+        d18Osw = (R18O - 1)*1e3
+        T = case.ds['TEMP'].x.da
+
+        d18Osw_PDB = d18Osw - 0.27         #VSMOW to VPDB conversion
+        d18Oc = (-0.245*T + 0.0011*T*T + 3.58) + d18Osw_PDB
+        d18Oc.name = 'd18Oc'
+        d18Oc.attrs['long_name'] = 'Calcite d18O'
+        d18Oc.attrs['units'] = 'permil'
+        return d18Oc
+
+
+
+    # def get_d18Oc(case, **kws):
+    #     ''' Calculate d18Oc = f(TEMP, d18Osw) based on the Eq (1) of the Ref.:
+    #     T = 16.1 - 4.64 (d18Oc - d18Osw) + 0.09 (d18Oc - d18Osw)^2
+
+    #     Reference: Hollis, C.J., Dunkley Jones, T., Anagnostou, E., Bijl, P.K., Cramwinckel, M.J., Cui, Y., Dickens, G.R., Edgar, K.M., Eley, Y., Evans, D., Foster, G.L., Frieling, J., Inglis, G.N., Kennedy, E.M., Kozdon, R., Lauretano, V., Lear, C.H., Littler, K., Lourens, L., Meckler, A.N., Naafs, B.D.A., Pälike, H., Pancost, R.D., Pearson, P.N., Röhl, U., Royer, D.L., Salzmann, U., Schubert, B.A., Seebeck, H., Sluijs, A., Speijer, R.P., Stassen, P., Tierney, J., Tripati, A., Wade, B., Westerhold, T., Witkowski, C., Zachos, J.C., Zhang, Y.G., Huber, M., Lunt, D.J., 2019. The DeepMIP contribution to PMIP4: methodologies for selection, compilation and analysis of latest Paleocene and early Eocene climate proxy data, incorporating version 0.1 of the DeepMIP database. Geoscientific Model Development 12, 3149–3206. https://doi.org/10.5194/gmd-12-3149-2019
+    #     '''
+    #     case.load('R18O', **kws)
+    #     case.load('TEMP', **kws)
+    #     R18O = case.ds['R18O'].x.da
+    #     d18Osw = (R18O - 1)*1e3
+    #     T = case.ds['TEMP'].x.da
+    #     D = 4.64**2 - 4*0.09*(16.1 - T)
+
+    #     ds = xr.Dataset()
+
+    #     d18Oc = d18Osw + (4.64 + np.sqrt(D))/0.18
+    #     d18Oc.name = 'd18Oc'
+    #     d18Oc.attrs['long_name'] = 'Calcite d18O (solution 1)'
+    #     d18Oc.attrs['units'] = 'permil'
+    #     ds['d18Oc_s1'] = d18Oc
+
+    #     d18Oc = d18Osw + (4.64 - np.sqrt(D))/0.18
+    #     d18Oc.name = 'd18Oc'
+    #     d18Oc.attrs['long_name'] = 'Calcite d18O (solution 2)'
+    #     d18Oc.attrs['units'] = 'permil'
+    #     ds['d18Oc_s2'] = d18Oc
+
+    #     utils.p_warning('>>> There are two solutions: "d18Oc_s1" and "d18Oc_s2".')
+    #     return ds
+
     def get_MOC(case, **kws):
         vn = 'MOC'
         case.load(vn, **kws)
@@ -412,7 +462,7 @@ class DiagPlot:
     #  kws_zm
     # ----------
     kws_zm['LST'] = {'ylim': (-35, 40)}
-    kws_zm['SST'] = {'ylim': (-35, 40)}
+    kws_zm['SST'] = {'ylim': (-5, 40)}
 
     # ==========
     #  kws_yz
