@@ -39,7 +39,10 @@ class History:
         self.paths = {}
         for comp in comps:
             mdl, h_str = _mdl_hstr_dict[comp]
-            self.paths[comp] = utils.find_paths(self.root_dir, self.path_pattern, comp=comp, mdl=mdl, h_str=h_str)
+            self.paths[comp] = utils.find_paths(
+                self.root_dir, self.path_pattern, comp=comp, mdl=mdl, h_str=h_str,
+                avoid_list=['nday1', 'once'],
+            )
             utils.p_success(f'>>> case.paths["{comp}"] created')
 
         self.vns = {}
@@ -51,8 +54,14 @@ class History:
         vns_real = []
         ds0 = xr.open_dataset(self.paths[comp][0])
         vns = list(ds0.variables)
+        dim_vars = [
+            'ULONG', 'ULAT', 'TLONG', 'TLAT', 'KMT', 'KMU',
+            'REGION_MASK', 'UAREA', 'TAREA', 'HU', 'HT', 'DXU', 'DYU', 'DXT', 'DYT',
+            'HTN', 'HTE', 'HUS', 'HUW', 'ANGLE', 'ANGLET',
+        ]
+
         for v in vns:
-            if len(ds0[v].dims) >= 2 and v != 'time_bnds':
+            if len(ds0[v].dims) >= 2 and 'time' not in v and v not in dim_vars:
                 vns_real.append(v)
 
         ds0.close()
@@ -373,10 +382,10 @@ class Timeseries:
         self.diags[spell] = da
         if verbose: utils.p_success(f'>>> case.diags["{spell}"] created')
 
-    def plot(self, spell, t_idx=None, **kws):
+    def plot(self, spell, t_idx=None, timespan=None, **kws):
         if spell not in self.diags:
             utils.p_warning(f'>>> "{spell}" not calculated yet. Calculating now ...')
-            self.calc(spell)
+            self.calc(spell, timespan=timespan)
 
         da = self.diags[spell]
 

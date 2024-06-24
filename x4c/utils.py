@@ -168,7 +168,11 @@ def update_ds(ds, path, vn=None, comp=None, grid=None, adjust_month=False,
     if adjust_month:
         ds['time'] = ds['time'].get_index('time') - datetime.timedelta(days=1)
 
-    ds.attrs['path'] = os.path.abspath(path)
+    if type(path) in (list, tuple):
+        ds.attrs['path'] = [os.path.abspath(p) for p in path]
+    else:
+        ds.attrs['path'] = os.path.abspath(path)
+
     if vn is not None: ds.attrs['vn'] = vn
     if comp is not None: ds.attrs['comp'] = comp
     if grid is not None: ds.attrs['grid'] = grid
@@ -267,7 +271,8 @@ def convert_units(da, units=None):
 
     return da
 
-def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc', delimiters=['/', '.'], **kws):
+def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc', delimiters=['/', '.'],
+               avoid_list=None, verbose=False, **kws):
     s = path_pattern
     for d in delimiters:
         s = ' '.join(s.split(d))
@@ -278,10 +283,22 @@ def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_
             path_pattern = path_pattern.replace(e, kws[e])
         elif e in ['proc', 'tseries', 'month_1', 'nc']:
             pass
-        elif e in ['timespan']:
+        elif e in ['timespan', 'date']:
             path_pattern = path_pattern.replace(e, '*[0-9]')
         else:
             path_pattern = path_pattern.replace(e, '*')
 
+    if verbose: p_header(f'path_pattern: {path_pattern}')
     paths = sorted(glob.glob(os.path.join(root_dir, path_pattern)))
+    if avoid_list is not None:
+        paths_new = [] 
+        for path in paths:
+            add_path = True
+            for avoid_str in avoid_list:
+                if avoid_str in path:
+                    add_path = False
+                    break
+                    
+            if add_path: paths_new.append(path)
+        paths = paths_new
     return paths
