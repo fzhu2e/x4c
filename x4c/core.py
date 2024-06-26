@@ -421,6 +421,8 @@ class XDataArray:
                 },
             }
             _plt_kws = utils.update_dict(_plt_kws, kws)
+            if 'add_colorbar' in kws and kws['add_colorbar'] is False:
+                del(_plt_kws['cbar_kwargs'])
 
             if latlon_range is not None:
                 lat_min, lat_max, lon_min, lon_max = latlon_range
@@ -450,7 +452,7 @@ class XDataArray:
                 site_lons = df_sites[_colname_dict['lon']] if _colname_dict['lon'] in df_sites else None
                 site_lats = df_sites[_colname_dict['lat']] if _colname_dict['lat'] in df_sites else None
                 site_vals = df_sites[_colname_dict['value']] if _colname_dict['value'] in df_sites else None
-                site_types = df_sites[_colname_dict['types']] if _colname_dict['type'] in df_sites else None
+                site_types = df_sites[_colname_dict['type']] if _colname_dict['type'] in df_sites else None
 
                 if site_types is None:
                     site_markers = 'o'
