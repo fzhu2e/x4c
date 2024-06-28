@@ -243,7 +243,7 @@ def infer_cmap(da):
             cmap = 'RdBu_r'
         elif 'depth' in ln_lower:
             cmap = 'GnBu'
-        else:
-            cmap = 'viridis'
+    else:
+        cmap = 'viridis'
     
     return cmap

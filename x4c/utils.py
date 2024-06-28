@@ -4,6 +4,8 @@ import numpy as np
 import xarray as xr
 import xesmf as xe
 import colorama as ca
+import requests
+from tqdm import tqdm
 import datetime
 import collections.abc
 import cartopy.util
@@ -302,3 +304,22 @@ def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_
             if add_path: paths_new.append(path)
         paths = paths_new
     return paths
+
+def download(url: str, fname: str, chunk_size=1024, show_bar=True):
+    resp = requests.get(url, stream=True)
+    total = int(resp.headers.get('content-length', 0))
+    if show_bar:
+        with open(fname, 'wb') as file, tqdm(
+            desc='Fetching data',
+            total=total,
+            unit='iB',
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as bar:
+            for data in resp.iter_content(chunk_size=chunk_size):
+                size = file.write(data)
+                bar.update(size)
+    else:
+        with open(fname, 'wb') as file:
+            for data in resp.iter_content(chunk_size=chunk_size):
+                size = file.write(data)

@@ -239,7 +239,7 @@ class Timeseries:
         self.root_dir = root_dir
         self.casename = casename
 
-        self.grid_dict = {'atm': 'ne16', 'ocn': 'g16'}
+        self.grid_dict = {'atm': 'ne30pg3', 'ocn': 'g16'}
         if grid_dict is not None:
             self.grid_dict.update(grid_dict)
 

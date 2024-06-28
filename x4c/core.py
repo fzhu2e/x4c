@@ -68,56 +68,70 @@ class XDataset:
     def regrid(self, dlon=1, dlat=1, weight_file=None, gs='T', method='bilinear', periodic=True):
         ''' Regrid the CESM output to a normal lat/lon grid
 
+        Supported atmosphere regridding: ne16np4, ne16pg3, ne30np4, ne30pg3, ne120np4, ne120pg4 TO 1x1d / 2x2d.
+        Supported ocean regridding: any grid similar to g16 TO 1x1d / 2x2d.
+        For any other regridding, `weight_file` must be provided by the user.
+
+        For the atmosphere grid regridding, the default method is area-weighted;
+        while for the ocean grid, the default is bilinear.
+
         Args:
             dlon (float): longitude spacing
             dlat (float): latitude spacing
             weight_file (str): the path to an ESMF-generated weighting file for regridding
-            gs (str): grid style in 'T' or 'U' for ocean grid
-            method (str): regridding method for ocean grid
+            gs (str): grid style in 'T' or 'U' for the ocean grid
+            method (str): regridding method for the ocean grid
             periodic (bool): the assumption of the periodicity of the data when perform the regrid method
 
         '''
         comp = self.ds.attrs['comp']
         grid = self.ds.attrs['grid']
 
-        if grid in ['ne16', 'ne30', 'ne120']:
-            # SE grid
-            ds = self.ds.copy()
-            if comp == 'lnd':
-                ds = ds.rename_dims({'lndgrid': 'ncol'})
-                
-            if weight_file is not None:
-                ds_rgd = utils.regrid_cam_se(ds, weight_file=weight_file)
-            else:
-                ds_rgd = utils.regrid_cam_se(ds, weight_file=os.path.join(dirpath, f'./regrid_wgts/map_{grid}np4_TO_{dlon}x{dlat}d_aave.nc'))
-
-        elif grid[0] == 'g':
-            # ocn grid
-            ds = xr.Dataset()
-            if gs == 'T':
-                ds['lat'] = self.ds.TLAT
-                if comp == 'ice':
-                    ds['lon'] = self.ds.TLON
-                else:
-                    ds['lon'] = self.ds.TLONG
-            elif gs == 'U':
-                ds['lat'] = self.ds.ULAT
-                if comp == 'ice':
-                    ds['lon'] = self.ds.ULON
-                else:
-                    ds['lon'] = self.ds.ULONG
-            else:
-                raise ValueError('`gs` options: {"T", "U"}.')
-
-            regridder = xe.Regridder(
-                ds, xe.util.grid_global(dlon, dlat, cf=True, lon1=360),
-                method=method, periodic=periodic,
-            )
-
-            ds_rgd = regridder(self.ds, keep_attrs=True)
-
+        if weight_file is not None:
+            # using a user-provided weight file for any unsupported regridding
+            ds_rgd = utils.regrid_cam_se(ds, weight_file=weight_file)
         else:
-            raise ValueError(f'grid [{grid}] is not supported; please submit an issue on Github to make a request.')
+            if grid in ['ne16np4', 'ne16pg3', 'ne30np4', 'ne30pg3', 'ne120np4', 'ne120pg3']:
+                # SE grid
+                ds = self.ds.copy()
+                if comp == 'lnd':
+                    ds = ds.rename_dims({'lndgrid': 'ncol'})
+
+                wgt_fpath = os.path.join(dirpath, f'./regrid_wgts/map_{grid}_TO_{dlon}x{dlat}d_aave.nc.gz')
+                if not os.path.exists(wgt_fpath):
+                    url = f'https://github.com/fzhu2e/x4c-regrid-wgts/raw/main/data/map_{grid}_TO_{dlon}x{dlat}d_aave.nc.gz'
+                    utils.p_header(f'Downloading the weight file from: {url}')
+                    utils.download(url, wgt_fpath)
+
+                ds_rgd = utils.regrid_cam_se(ds, weight_file=wgt_fpath)
+
+            elif comp in ['ocn', 'ice']:
+                # ocn grid
+                ds = xr.Dataset()
+                if gs == 'T':
+                    ds['lat'] = self.ds.TLAT
+                    if comp == 'ice':
+                        ds['lon'] = self.ds.TLON
+                    else:
+                        ds['lon'] = self.ds.TLONG
+                elif gs == 'U':
+                    ds['lat'] = self.ds.ULAT
+                    if comp == 'ice':
+                        ds['lon'] = self.ds.ULON
+                    else:
+                        ds['lon'] = self.ds.ULONG
+                else:
+                    raise ValueError('`gs` options: {"T", "U"}.')
+
+                regridder = xe.Regridder(
+                    ds, xe.util.grid_global(dlon, dlat, cf=True, lon1=360),
+                    method=method, periodic=periodic,
+                )
+
+                ds_rgd = regridder(self.ds, keep_attrs=True)
+
+            else:
+                raise ValueError(f'grid [{grid}] is not supported; please provide a corresponding `weight_file`.')
 
         ds_rgd.attrs = dict(self.ds.attrs)
         # utils.p_success(f'Dataset regridded to regular grid: [dlon: {dlon} x dlat: {dlat}]')
@@ -127,6 +141,9 @@ class XDataset:
 
     def get_plev(self, ps, vn=None, lev_mode='hybrid', **kws):
         _kws = {'lev_dim': 'lev'}
+        if 'hyam' in self.ds: _kws['hyam'] = self.ds['hyam']
+        if 'hybm' in self.ds: _kws['hybm'] = self.ds['hybm']
+
         _kws.update(kws)
         if vn is None:
             da = self.da
@@ -140,7 +157,7 @@ class XDataset:
             ps_da = ps
 
         if lev_mode == 'hybrid':
-            da_plev = gc.interpolation.interp_hybrid_to_pressure(da, ps_da, self.ds['hyam'], self.ds['hybm'], **_kws)
+            da_plev = gc.interpolation.interp_hybrid_to_pressure(da, ps_da, **_kws)
         else:
             raise ValueError('`lev_mode` unknown')
 
@@ -491,7 +508,13 @@ class XDataArray:
             _plt_kws = {}
             _plt_kws = utils.update_dict(_plt_kws, kws)
             self.da.plot(ax=ax, **_plt_kws)
-            ax.set_ylabel(f'{self.da.name} [{self.da.units}]')
+
+            if 'units' in self.da.attrs:
+                ylabel = f'{self.da.name} [{self.da.units}]'
+            else:
+                ylabel = self.da.name
+
+            ax.set_ylabel(ylabel)
 
         if title is None and 'long_name' in self.da.attrs:
             title = self.da.attrs['long_name']
