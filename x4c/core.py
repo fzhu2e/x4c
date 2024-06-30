@@ -1,7 +1,6 @@
 import xarray as xr
 xr.set_options(keep_attrs=True)
 
-import copy
 import xesmf as xe
 import numpy as np
 import matplotlib.pyplot as plt
@@ -257,6 +256,16 @@ class XDataArray:
         if 'lon' in da.attrs: del(da.attrs['lon'])
         return da
 
+    def get_plev(self, **kws):
+        '''
+        See: https://geocat-comp.readthedocs.io/en/v2024.04.0/user_api/generated/geocat.comp.interpolation.interp_hybrid_to_pressure.html
+        '''
+        _kws = {'lev_dim': 'lev'}
+        _kws.update(kws)
+        da = gc.interpolation.interp_hybrid_to_pressure(self.da, **_kws)
+        da.name = self.da.name
+        return da
+
     def to_netcdf(self, path, **kws):
         for v in ['gw', 'lat', 'lon']:
             if v in self.da.attrs: del(self.da.attrs[v])
@@ -410,8 +419,9 @@ class XDataArray:
             colname_dict (dict): a dictionary of column names for `df_sites` in the "key:value" format "assumed name:real name"
 
         '''
-        ndim = len(self.da.dims)
-        if ndim == 2 and 'lat' in self.da.coords and 'lon' in self.da.coords:
+        da = self.da.squeeze()
+        ndim = len(da.dims)
+        if ndim == 2 and 'lat' in da.coords and 'lon' in da.coords:
             # map
             if ax is None:
                 if figsize is None: figsize = (10, 3)

@@ -16,6 +16,7 @@ import subprocess
 import copy
 
 from . import core, utils, diags
+from .spell import Spell
 
 class History:
     def __init__(self, root_dir, comps=['atm', 'ocn', 'lnd', 'ice', 'rof'], mdl_hstr_dict=None):
@@ -337,17 +338,15 @@ class Timeseries:
             else:
                 if verbose: utils.p_warning(f'>>> Variable {v} not existing')
 
-    def calc(self, spell, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True, **kws):
+    def calc(self, spell:str, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True):
         ''' Calculate a diagnostic spell
         '''
-        if ':' not in spell:
-            vn = spell
+        S = Spell(spell)
+
+        if S.slicing is None:
+            vn = S.vn
         else:
-            spell_elements = spell.split(':')
-            if len(spell_elements) == 2:
-                vn, ann_method = spell_elements
-            elif len(spell_elements) == 3:
-                vn, ann_method, sa_method = spell_elements
+            vn = S.vn.split('.')[0]
 
         if comp is None: comp = self.get_vn_comp(vn)
 
@@ -357,21 +356,42 @@ class Timeseries:
         elif f'get_{vn}' in diags.DiagCalc.__dict__:
             da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
         else:
-            raise ValueError(f'Unknown diagnostic: {vn}')
+            raise ValueError(f'Unknown diagnostic variable: {vn}')
 
-        if 'ann_method' in locals():
-            da = utils.ann_modifier(da, ann_method=ann_method, long_name=da.long_name)
+        if S.slicing is not None:
+            da = eval(f'da.{S.slicing}')
 
-        if 'sa_method' in locals():
-            if sa_method in ['gm', 'nhm', 'shm', 'zm']:
-                da = getattr(da.x, sa_method)
-            elif sa_method == 'yz':
+        if S.plev is not None:
+            self.load('PS')
+            PS = self.ds['PS']['PS']
+            hyam = self.ds[vn]['hyam']
+            hybm = self.ds[vn]['hybm']
+            _kws = {'lev_dim': 'lev'}
+            if '(' in S.plev and ')' in S.plev:
+                new_levels = eval(S.plev.split('plev')[-1])
+                if type(new_levels) not in (list, tuple):
+                    new_levels = [new_levels]
+
+                _kws.update({'new_levels': np.array(new_levels)})
+
+            da = da.x.get_plev(ps=PS, hyam=hyam, hybm=hybm, **_kws)
+
+        if S.ann_method is not None:
+            da = utils.ann_modifier(da, ann_method=S.ann_method, long_name=da.long_name)
+
+        if S.sa_method is not None:
+            if S.sa_method in ['gm', 'nhm', 'shm', 'zm']:
+                da = getattr(da.x, S.sa_method)
+            elif S.sa_method == 'yz':
                 if da.name == 'MOC':
                     da = da.isel(transport_reg=0, moc_comp=0)
                 else:
                     da = da.x.zm
             else:
-                raise ValueError(f'Unknown spatial average method: {sa_method}')
+                raise ValueError(f'Unknown spatial average method: {S.sa_method}')
+
+        if S.regrid is not None:
+            da = eval(f'da.x.{S.regrid}')
 
         if da.units == 'degC':
             da.attrs['units'] = '°C'
@@ -379,7 +399,7 @@ class Timeseries:
             da -= 273.15
             da.attrs['units'] = '°C'
 
-        self.diags[spell] = da
+        # self.diags[spell] = da.squeeze()
         if verbose: utils.p_success(f'>>> case.diags["{spell}"] created')
 
     def plot(self, spell, t_idx=None, timespan=None, **kws):
