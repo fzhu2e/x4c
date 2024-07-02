@@ -342,7 +342,6 @@ class Timeseries:
         ''' Calculate a diagnostic spell
         '''
         S = Spell(spell)
-
         if S.slicing is None:
             vn = S.vn
         else:
@@ -350,7 +349,10 @@ class Timeseries:
 
         if comp is None: comp = self.get_vn_comp(vn)
 
-        if (vn, comp) in self.vars_info:
+        if vn in self.diags:
+            da = self.diags[vn]
+            utils.p_warning(f'>>> Variable `{vn}` is already calculated and the calculation is skipped.')
+        elif (vn, comp) in self.vars_info:
             self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
             da = self.ds[vn].x.da
         elif f'get_{vn}' in diags.DiagCalc.__dict__:
@@ -359,7 +361,8 @@ class Timeseries:
             raise ValueError(f'Unknown diagnostic variable: {vn}')
 
         if S.slicing is not None:
-            da = eval(f'da.{S.slicing}')
+            cmd = f'da.{S.slicing}'
+            da = eval(cmd)
 
         if S.plev is not None:
             self.load('PS')
@@ -399,7 +402,11 @@ class Timeseries:
             da -= 273.15
             da.attrs['units'] = '°C'
 
-        # self.diags[spell] = da.squeeze()
+        if S.alias is not None:
+            spell = S.alias
+            da.name = S.alias
+
+        self.diags[spell] = da.squeeze()
         if verbose: utils.p_success(f'>>> case.diags["{spell}"] created')
 
     def plot(self, spell, t_idx=None, timespan=None, **kws):
@@ -684,7 +691,8 @@ class Timeseries:
                 arg_list = [(vn, comp, output_dirpath, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite, chunk_nt) for vn in vns]
                 p.starmap(self.save_means, tqdm(arg_list, total=len(vns), desc=f'Generating seasonal mean files'))
 
-    def check_timespan(self, vn, comp, timespan=None, ncol=10):
+    def check_timespan(self, vn, comp=None, timespan=None, ncol=10):
+        if comp is None: comp = self.get_vn_comp(vn)
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
         if timespan is None:
             syr = int(paths[0].split('.')[-2].split('-')[0][:4])

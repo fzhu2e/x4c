@@ -229,10 +229,9 @@ def update_dict(d, u):
 
 def add_cyclic_point(da):
     data_wrap, lon_wrap = cartopy.util.add_cyclic_point(da.values, coord=da.lon)
-    da_new_coords = da.coords.copy()
+    da_new_coords = {k: v.copy(deep=True) for k, v in da.coords.items()}
     da_new_coords['lon'] = lon_wrap
-    da_new_coords
-    da_wrap = xr.DataArray(data_wrap, coords=da_new_coords)
+    da_wrap = xr.DataArray(data_wrap, dims=da.dims, coords=da_new_coords)
     da_wrap.attrs = da.attrs.copy()
     return da_wrap
 

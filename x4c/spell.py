@@ -19,6 +19,7 @@ class Spell:
     def __init__(self, sentence:str):
         self.sentence = sentence
 
+        self.alias = None
         self.vn = None
         self.ann_method = None
         self.sa_method = None
@@ -27,10 +28,16 @@ class Spell:
         self.regrid = None
         self.plev = None
 
+        self.parse_alias()
         self.parse_sentence()
         self.parse_slicing()
         self.parse_regrid()
         self.parse_plev()
+
+    def parse_alias(self):
+        if '~' in self.sentence:
+            self.alias = self.sentence.split('~')[0].strip()
+            self.sentence = self.sentence.split('~')[-1].strip()
 
     def parse_sentence(self):
         ''' A sentence should be
@@ -43,6 +50,7 @@ class Spell:
                 self.vn, self.ann_method = basic_elements
             elif len(basic_elements) == 3:
                 self.vn, self.ann_method, self.sa_method = basic_elements
+                if len(self.ann_method) == 0: self.ann_method = None
 
         if '|' in self.vn:
             self.vn = self.vn.split('|')[0]
