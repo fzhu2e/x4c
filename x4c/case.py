@@ -296,7 +296,7 @@ class Timeseries:
             return comps[0]
         elif len(comps) == 0:
             if f'get_{vn}' in diags.DiagCalc.__dict__:
-                utils.p_warning(f'>>> {vn} is an available deductible variable')
+                utils.p_warning(f'>>> {vn} is an available deduced variable')
             else:
                 raise ValueError('The input variable name is unknown.')
         else:
@@ -347,13 +347,12 @@ class Timeseries:
         else:
             vn = S.vn.split('.')[0]
 
-
         if vn in self.diags:
             da = self.diags[vn]
             utils.p_warning(f'>>> Variable `{vn}` is already calculated and the calculation is skipped.')
         else:
             if comp is None: comp = self.get_vn_comp(vn)
-            elif (vn, comp) in self.vars_info:
+            if (vn, comp) in self.vars_info:
                 self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
                 da = self.ds[vn].x.da
             elif f'get_{vn}' in diags.DiagCalc.__dict__:
