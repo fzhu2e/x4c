@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name='x4c',  # required
-    version='2024.7.2',
+    version='2024.7.2.18',
     description='x4c: Xarray for CESM',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -21,6 +21,7 @@ setup(
     classifiers=[
         'Natural Language :: English',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
     install_requires=[
         'netCDF4',

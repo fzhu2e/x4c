@@ -347,18 +347,19 @@ class Timeseries:
         else:
             vn = S.vn.split('.')[0]
 
-        if comp is None: comp = self.get_vn_comp(vn)
 
         if vn in self.diags:
             da = self.diags[vn]
             utils.p_warning(f'>>> Variable `{vn}` is already calculated and the calculation is skipped.')
-        elif (vn, comp) in self.vars_info:
-            self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
-            da = self.ds[vn].x.da
-        elif f'get_{vn}' in diags.DiagCalc.__dict__:
-            da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
         else:
-            raise ValueError(f'Unknown diagnostic variable: {vn}')
+            if comp is None: comp = self.get_vn_comp(vn)
+            elif (vn, comp) in self.vars_info:
+                self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
+                da = self.ds[vn].x.da
+            elif f'get_{vn}' in diags.DiagCalc.__dict__:
+                da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
+            else:
+                raise ValueError(f'Unknown diagnostic variable: {vn}')
 
         if S.slicing is not None:
             cmd = f'da.{S.slicing}'
