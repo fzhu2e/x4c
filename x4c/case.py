@@ -237,7 +237,7 @@ class Timeseries:
     '''
     def __init__(self, root_dir, grid_dict=None, casename=None):
         self.path_pattern='comp/proc/tseries/month_1/casename.mdl.h_str.vn.timespan.nc'
-        self.root_dir = root_dir
+        self.root_dir = os.path.abspath(root_dir)
         self.casename = casename
 
         self.grid_dict = {'atm': 'ne30pg3', 'ocn': 'g16'}
@@ -296,7 +296,7 @@ class Timeseries:
             return comps[0]
         elif len(comps) == 0:
             if f'get_{vn}' in diags.DiagCalc.__dict__:
-                utils.p_warning(f'>>> {vn} is an available deduced variable')
+                utils.p_warning(f'>>> {vn} is an supported deduced variable.')
             else:
                 raise ValueError('The input variable name is unknown.')
         else:
@@ -305,38 +305,36 @@ class Timeseries:
 
     
     def load(self, vn, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True):
-        if not isinstance(vn, (list, tuple)):
-            vn = [vn]
+        if comp is None:
+            comp = self.get_vn_comp(vn)
 
-        for v in vn:
-            if comp is None:
-                comp = self.get_vn_comp(v)
-
-            if (v, comp) in self.vars_info:
-                if v not in self.ds:
-                    comp, mdl, h_str = self.vars_info[(v, comp)]
-                    if timespan is None:
-                        # paths = utils.find_paths(self.root_dir, self.path_pattern, vn=v, comp=comp)[load_idx]
-                        paths = self.get_paths(v, comp=comp)[load_idx]
-                        if not isinstance(paths, (list, tuple)):
-                            ds =  core.open_dataset(paths, vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
-                        else:
-                            ds =  core.open_mfdataset(paths, vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal')
-                    else:
-                        paths = self.get_paths(v, comp=comp, timespan=timespan)
-                        if len(paths) == 1:
-                            ds =  core.open_dataset(paths[0], vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
-                        else:
-                            ds =  core.open_mfdataset(paths, vn=v, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal')
-
-                    self.ds[v] = ds
-                    self.ds[v].attrs['vn'] = v
-                    if verbose: utils.p_success(f'>>> case.ds["{v}"] created')
-                else:
-                    if verbose: utils.p_warning(f'>>> case.ds["{v}"] already loaded; to reload, run case.clear_ds("{v}") before case.load("{v}")')
-
+        if (vn, comp) in self.vars_info:
+            if timespan is None:
+                paths = self.get_paths(vn, comp=comp)[load_idx]
             else:
-                if verbose: utils.p_warning(f'>>> Variable {v} not existing')
+                paths = self.get_paths(vn, comp=comp, timespan=timespan)
+
+            if vn in self.ds:
+                if self.ds[vn].path != paths:
+                    if verbose: utils.p_warning(f'>>> case.ds["{vn}"] will be reloaded due to different paths.')
+                    self.clear_ds(vn)
+
+            if vn not in self.ds:
+                comp, mdl, h_str = self.vars_info[(vn, comp)]
+
+                if not isinstance(paths, (list, tuple)):
+                    ds =  core.open_dataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+                else:
+                    ds =  core.open_mfdataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal')
+
+                self.ds[vn] = ds
+                self.ds[vn].attrs['vn'] = vn
+                if verbose: utils.p_success(f'>>> case.ds["{vn}"] created')
+            # else:
+            #     if verbose: utils.p_warning(f'>>> case.ds["{vn}"] already loaded; to reload, run case.clear_ds("{vn}") before case.load("{vn}")')
+
+        else:
+            if verbose: utils.p_warning(f'>>> Variable {vn} not existing')
 
     def calc(self, spell:str, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True):
         ''' Calculate a diagnostic spell
@@ -408,6 +406,7 @@ class Timeseries:
 
         self.diags[spell] = da.squeeze()
         if verbose: utils.p_success(f'>>> case.diags["{spell}"] created')
+        return self.diags[spell]
 
     def plot(self, spell, t_idx=None, timespan=None, **kws):
         if spell not in self.diags:
