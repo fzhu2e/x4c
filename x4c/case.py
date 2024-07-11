@@ -296,7 +296,7 @@ class Timeseries:
             return comps[0]
         elif len(comps) == 0:
             if f'get_{vn}' in diags.DiagCalc.__dict__:
-                utils.p_warning(f'>>> {vn} is an supported deduced variable.')
+                utils.p_warning(f'>>> {vn} is a supported derived variable.')
             else:
                 raise ValueError('The input variable name is unknown.')
         else:

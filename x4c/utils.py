@@ -305,6 +305,7 @@ def find_paths(root_dir, path_pattern='comp/proc/tseries/month_1/casename.mdl.h_
     return paths
 
 def download(url: str, fname: str, chunk_size=1024, show_bar=True):
+    os.makedirs(os.path.dirname(fname), exist_ok=True)
     resp = requests.get(url, stream=True)
     total = int(resp.headers.get('content-length', 0))
     if show_bar:
