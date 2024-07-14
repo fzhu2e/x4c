@@ -173,7 +173,7 @@ class History:
                     arg_list.append((vn, input_dirpath, output_dirpath, timespan, overwrite, compression))
                 p.starmap(self.merge_vn, tqdm(arg_list, total=len(arg_list), desc=desc))
 
-    def gen_ts(self, output_dirpath, vns=None, comps=['atm', 'ocn', 'lnd', 'ice', 'rof'], timestep=50, timespan=None,
+    def gen_ts(self, output_dirpath, comps=['atm', 'ocn', 'lnd', 'ice', 'rof'], timestep=50, timespan=None,
                dir_structure='comp/proc/tseries/month_1' , overwrite=True, nproc=1, compression=1):
 
         syr = timespan[0]
@@ -183,7 +183,10 @@ class History:
             timespan_list.append((syr, syr+timestep-1))
             syr += timestep 
 
-        for comp in comps:
+        if type(comps) is not dict:
+            comps = {comp: None for comp in comps}
+
+        for comp, vns in comps.items():
             # generate timeseries files for each component and each sub-timespan
             utils.p_header(f'>>> Processing component: {comp}')
             for timespan_tmp in timespan_list:
@@ -195,7 +198,7 @@ class History:
                 bigcrunch_dir = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
                 self.bigcrunch(comp=comp, input_dirpath=bigbang_dir, output_dirpath=bigcrunch_dir, timespan=timespan_tmp, overwrite=overwrite, nproc=nproc, compression=compression, vns=vns)
 
-        for comp in comps:
+        for comp, vns in comps.items():
             # delete the temporary files
             for timespan_tmp in timespan_list:
                 bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
