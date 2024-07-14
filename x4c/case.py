@@ -184,19 +184,22 @@ class History:
             syr += timestep 
 
         for comp in comps:
+            # generate timeseries files for each component and each sub-timespan
             utils.p_header(f'>>> Processing component: {comp}')
+            for timespan_tmp in timespan_list:
+                utils.p_header(f'>>> Processing timespan: {timespan_tmp}')
+                bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
+                if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
+                self.bigbang(comp=comp, output_dirpath=bigbang_dir, timespan=timespan_tmp, overwrite=overwrite, nproc=nproc, vns=vns)
 
-            bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}')
-            if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
-            self.bigbang(comp=comp, output_dirpath=bigbang_dir, timespan=timespan, overwrite=overwrite, nproc=nproc, vns=vns)
-
-            bigcrunch_dir = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
-            self.bigcrunch(comp=comp, input_dirpath=bigbang_dir, output_dirpath=bigcrunch_dir, timespan=timespan, overwrite=overwrite, nproc=nproc, compression=compression, vns=vns)
+                bigcrunch_dir = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
+                self.bigcrunch(comp=comp, input_dirpath=bigbang_dir, output_dirpath=bigcrunch_dir, timespan=timespan_tmp, overwrite=overwrite, nproc=nproc, compression=compression, vns=vns)
 
         for comp in comps:
-            utils.p_header(f'>>> Removing temporary files at: {bigbang_dir}')
-            bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}')
-            if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
+            # delete the temporary files
+            for timespan_tmp in timespan_list:
+                bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
+                if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
 
 
     # def split_ds(self, comp, in_path, output_dirpath, overwrite=False, nco=True):
