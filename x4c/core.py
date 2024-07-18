@@ -509,6 +509,9 @@ class XDataArray:
                 },
             }
             _plt_kws = utils.update_dict(_plt_kws, kws)
+            if 'add_colorbar' in kws and kws['add_colorbar'] is False:
+                del(_plt_kws['cbar_kwargs'])
+
             self.da.plot.contourf(ax=ax, **_plt_kws)
 
         else:

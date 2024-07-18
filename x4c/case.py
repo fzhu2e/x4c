@@ -576,9 +576,9 @@ class Timeseries:
                 comp, mdl, h_str = self.vars_info[(vn, comp)]
 
                 if not isinstance(paths, (list, tuple)):
-                    ds =  core.open_dataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+                    ds =  core.open_dataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], parallel=True)
                 else:
-                    ds =  core.open_mfdataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal')
+                    ds =  core.open_mfdataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal', parallel=True)
 
                 self.ds[vn] = ds
                 self.ds[vn].attrs['vn'] = vn
@@ -761,9 +761,9 @@ class Timeseries:
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
         if chunk_nt is None:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', parallel=True)
         else:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt}, parallel=True)
 
         if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
         ds_out = ds.x.climo
@@ -857,9 +857,9 @@ class Timeseries:
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
         if chunk_nt is None:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', parallel=True)
         else:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt}, parallel=True)
 
         if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
         ds_out = ds.x.annualize(months=months)
@@ -872,9 +872,9 @@ class Timeseries:
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
         if chunk_nt is None:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal')
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', parallel=True)
         else:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt})
+            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt}, parallel=True)
 
         if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
 
@@ -1016,7 +1016,7 @@ class Climo:
             utils.p_header(f'>>> output directory created at: {output_dirpath}')
 
         paths = sorted(glob.glob(os.path.join(self.root_dir, '*_climo.nc')))
-        ds = xr.open_mfdataset(paths, coords='minimal', data_vars='minimal')
+        ds = xr.open_mfdataset(paths, coords='minimal', data_vars='minimal', parallel=True)
         if climo_period is None:
             try:
                 climo_period = ds.attrs['climo_period']
