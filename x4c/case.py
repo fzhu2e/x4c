@@ -576,7 +576,7 @@ class Timeseries:
                 comp, mdl, h_str = self.vars_info[(vn, comp)]
 
                 if not isinstance(paths, (list, tuple)):
-                    ds =  core.open_dataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], parallel=True)
+                    ds =  core.open_dataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
                 else:
                     ds =  core.open_mfdataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal', parallel=True)
 
