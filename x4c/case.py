@@ -944,9 +944,13 @@ class Timeseries:
                 arg_list = [(vn, comp, output_dirpath, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite, chunk_nt) for vn in vns]
                 p.starmap(self.save_means, tqdm(arg_list, total=len(vns), desc=f'Generating seasonal mean files'))
 
-    def check_timespan(self, vn, comp=None, timespan=None, ncol=10):
-        if comp is None: comp = self.get_vn_comp(vn)
-        paths = self.get_paths(vn, comp=comp, timespan=timespan)
+    def check_timespan(self, comp, vns=None, timespan=None):
+        if vns is None:
+            vns = [k[0] for k, v in self.vars_info.items() if v[0]==comp]
+        elif type(vns) is str:
+            vns = [vns]
+
+        paths = self.get_paths(vns[0], comp=comp, timespan=timespan)
         if timespan is None:
             syr = int(paths[0].split('.')[-2].split('-')[0][:4])
             eyr = int(paths[-1].split('.')[-2].split('-')[1][:4])
@@ -961,22 +965,22 @@ class Timeseries:
         for y in range(syr, eyr, step):
             full_list.append(f'{y:04d}01-{y+step-1:04d}12')
 
-        df = pd.DataFrame(columns=range(1, ncol+1))
-        irow = 1
-        icol = 0
-        for timestamp in tqdm(full_list, desc='Checking dates'):
-            icol += 1
-            path_elements = paths[0].split('.')
-            path_elements[-2] = timestamp
-            path = '.'.join(path_elements)
-            if os.path.exists(path):
-                df.loc[irow, icol] = timestamp
-            else:
-                df.loc[irow, icol] = f'{timestamp}!'
+        df = pd.DataFrame(index=vns, columns=range(1, len(full_list)+1))
 
-            if icol == ncol:
-                irow += 1
-                icol = 0
+        for irow, vn in enumerate(vns):
+            paths = self.get_paths(vn, comp=comp, timespan=timespan)
+
+            icol = 0
+            for timestamp in full_list:
+                path_elements = paths[0].split('.')
+                path_elements[-2] = timestamp
+                path = '.'.join(path_elements)
+                if os.path.exists(path):
+                    df.iloc[irow, icol] = timestamp
+                else:
+                    df.iloc[irow, icol] = f'{timestamp}!'
+
+                icol += 1
 
         df = df.fillna('!')
         

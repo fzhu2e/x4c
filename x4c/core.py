@@ -90,19 +90,34 @@ class XDataset:
             # using a user-provided weight file for any unsupported regridding
             ds_rgd = utils.regrid_cam_se(ds, weight_file=weight_file)
         else:
-            if grid in ['ne16np4', 'ne16pg3', 'ne30np4', 'ne30pg3', 'ne120np4', 'ne120pg3']:
+            if grid[:2] == 'ne':
                 # SE grid
-                ds = self.ds.copy()
-                if comp == 'lnd':
-                    ds = ds.rename_dims({'lndgrid': 'ncol'})
+                if grid in ['ne16np4', 'ne16pg3', 'ne30np4', 'ne30pg3', 'ne120np4', 'ne120pg3']:
+                    ds = self.ds.copy()
+                    if comp == 'lnd':
+                        ds = ds.rename_dims({'lndgrid': 'ncol'})
 
-                wgt_fpath = os.path.join(dirpath, f'./regrid_wgts/map_{grid}_TO_{dlon}x{dlat}d_aave.nc.gz')
-                if not os.path.exists(wgt_fpath):
-                    url = f'https://github.com/fzhu2e/x4c-regrid-wgts/raw/main/data/map_{grid}_TO_{dlon}x{dlat}d_aave.nc.gz'
-                    utils.p_header(f'Downloading the weight file from: {url}')
-                    utils.download(url, wgt_fpath)
+                    wgt_fpath = os.path.join(dirpath, f'./regrid_wgts/map_{grid}_TO_{dlon}x{dlat}d_aave.nc.gz')
+                    if not os.path.exists(wgt_fpath):
+                        url = f'https://github.com/fzhu2e/x4c-regrid-wgts/raw/main/data/map_{grid}_TO_{dlon}x{dlat}d_aave.nc.gz'
+                        utils.p_header(f'Downloading the weight file from: {url}')
+                        utils.download(url, wgt_fpath)
 
-                ds_rgd = utils.regrid_cam_se(ds, weight_file=wgt_fpath)
+                    ds_rgd = utils.regrid_cam_se(ds, weight_file=wgt_fpath)
+                else:
+                    raise ValueError('The specified `grid` is not supported. Please specify a `weight_file`.')
+
+            elif grid[:2] == 'fv':
+                # FV grid
+                ds = xr.Dataset()
+                ds['lat'] = self.ds.lat
+                ds['lon'] = self.ds.lon
+
+                regridder = xe.Regridder(
+                    ds, xe.util.grid_global(dlon, dlat, cf=True, lon1=360),
+                    method=method, periodic=periodic,
+                )
+                ds_rgd = regridder(self.ds, keep_attrs=True)
 
             elif comp in ['ocn', 'ice']:
                 # ocn grid
@@ -131,6 +146,11 @@ class XDataset:
 
             else:
                 raise ValueError(f'grid [{grid}] is not supported; please provide a corresponding `weight_file`.')
+
+        try:
+            ds_rgd = ds_rgd.drop_vars('latitude_longitude')
+        except:
+            pass
 
         ds_rgd.attrs = dict(self.ds.attrs)
         # utils.p_success(f'Dataset regridded to regular grid: [dlon: {dlon} x dlat: {dlat}]')
