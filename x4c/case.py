@@ -105,9 +105,7 @@ class History:
 
     def bigbang(self, comp, output_dirpath, timespan=None, overwrite=True, nproc=1, vns=None):
         output_dirpath = pathlib.Path(output_dirpath)
-        if not output_dirpath.exists():
-            output_dirpath.mkdir(parents=True, exist_ok=True)
-            # utils.p_success(f'>>> output directory created at: {output_dirpath}')
+        output_dirpath.mkdir(parents=True, exist_ok=True)
 
         paths = self.get_paths(comp, timespan=timespan)
         if vns is None: vns = self.vns[comp]
@@ -156,9 +154,7 @@ class History:
 
     def bigcrunch(self, comp, input_dirpath, output_dirpath, timespan=None, overwrite=True, nproc=1, compression=1, vns=None):
         output_dirpath = pathlib.Path(output_dirpath)
-        if not output_dirpath.exists():
-            output_dirpath.mkdir(parents=True, exist_ok=True)
-            utils.p_success(f'>>> output directory created at: {output_dirpath}')
+        output_dirpath.mkdir(parents=True, exist_ok=True)
 
         if vns is None: vns = self.vns[comp]
         desc = 'Merging variables'
@@ -173,8 +169,10 @@ class History:
                     arg_list.append((vn, input_dirpath, output_dirpath, timespan, overwrite, compression))
                 p.starmap(self.merge_vn, tqdm(arg_list, total=len(arg_list), desc=desc))
 
-    def gen_ts(self, output_dirpath, comps=['atm', 'ocn', 'lnd', 'ice', 'rof'], timestep=50, timespan=None,
+    def gen_ts(self, output_dirpath, scratch_dirpath=None, comps=['atm', 'ocn', 'lnd', 'ice', 'rof'], timestep=50, timespan=None,
                dir_structure='comp/proc/tseries/month_1' , overwrite=True, nproc=1, compression=1):
+
+        if scratch_dirpath is None: scratch_dirpath = output_dirpath
 
         syr = timespan[0]
         nt = (timespan[-1] - timespan[0] + 1) // timestep
@@ -191,18 +189,23 @@ class History:
             utils.p_header(f'>>> Processing component: {comp}')
             for timespan_tmp in timespan_list:
                 utils.p_header(f'>>> Processing timespan: {timespan_tmp}')
-                bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
+                bigbang_dir = os.path.join(scratch_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
                 if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
                 self.bigbang(comp=comp, output_dirpath=bigbang_dir, timespan=timespan_tmp, overwrite=overwrite, nproc=nproc, vns=vns)
 
-                bigcrunch_dir = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
+                bigcrunch_dir = os.path.join(scratch_dirpath, dir_structure.replace('comp', comp))
                 self.bigcrunch(comp=comp, input_dirpath=bigbang_dir, output_dirpath=bigcrunch_dir, timespan=timespan_tmp, overwrite=overwrite, nproc=nproc, compression=compression, vns=vns)
 
         for comp, vns in comps.items():
             # delete the temporary files
             for timespan_tmp in timespan_list:
-                bigbang_dir = os.path.join(output_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
+                bigbang_dir = os.path.join(scratch_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
                 if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
+                if scratch_dirpath != output_dirpath:
+                    dest_dir = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
+                    dest_dirpath = pathlib.Path(dest_dirpath)
+                    dest_dir.mkdir(parents=True, exist_ok=True)
+                    shutil.move(f'{bigcrunch_dir}/*.{timespan_tmp[0]}-{timespan_tmp[1]}.nc', dest_dir)
 
 
     # def split_ds(self, comp, in_path, output_dirpath, overwrite=False, nco=True):
