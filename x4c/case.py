@@ -202,10 +202,10 @@ class History:
                 bigbang_dir = os.path.join(scratch_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
                 if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
                 if scratch_dirpath != output_dirpath:
-                    dest_dir = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
+                    dest_dirpath = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
                     dest_dirpath = pathlib.Path(dest_dirpath)
-                    dest_dir.mkdir(parents=True, exist_ok=True)
-                    shutil.move(f'{bigcrunch_dir}/*.{timespan_tmp[0]}-{timespan_tmp[1]}.nc', dest_dir)
+                    dest_dirpath.mkdir(parents=True, exist_ok=True)
+                    shutil.move(f'{bigcrunch_dir}/*.{timespan_tmp[0]}-{timespan_tmp[1]}.nc', dest_dirpath)
 
 
     # def split_ds(self, comp, in_path, output_dirpath, overwrite=False, nco=True):
@@ -1369,7 +1369,7 @@ class Logs:
         self.vn = vn
 
     def plot_vars(self, vn=None, annualize=True, xlim=None, ylim_dict=None, unit_dict=None, clr_dict=None,
-                  figsize=[20, 5], ncol=4, nrow=None, wspace=0.3, hspace=0.5, kws=None, title=None):
+                  figsize=[20, 5], ncol=4, nrow=None, wspace=0.5, hspace=0.5, kws=None, title=None):
 
         kws = {} if kws is None else kws
         unit_dict = {} if unit_dict is None else unit_dict
