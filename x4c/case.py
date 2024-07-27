@@ -824,10 +824,10 @@ class Timeseries:
                 self.calc(v, timespan=timespan)
 
         for k, v in spells.items():
-            if len(self.diags[v].dims) == 1 and self.diags[v].dims[0] == 'time' and 'climo_period' not in self.diags[v].attrs:
+            if len(self.diags[v].dims) == 1 and self.diags[v].dims[0] == 'time':
                 # timeseries
                 self.plot(v, ax=ax[k], title=title_dict[k], color=clr_dict[k])
-                if timespan is not None:
+                if timespan is not None and 'climo_period' not in self.diags[v].attrs:
                     start_date = cftime.DatetimeNoLeap(timespan[0], 1, 1)
                     end_date = cftime.DatetimeNoLeap(timespan[1], 1, 1)
                     ax[k].set_xlim(start_date, end_date)
