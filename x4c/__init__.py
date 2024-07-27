@@ -11,4 +11,5 @@ from .visual import (
     showfig,
     closefig,
     savefig,
+    subplots,
 )

@@ -1,6 +1,8 @@
-import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
+import matplotlib as mpl
 import pathlib
+import string
 
 def showfig(fig, close=True):
     '''Show the figure
@@ -251,3 +253,42 @@ def infer_cmap(da):
         cmap = 'viridis'
     
     return cmap
+
+def subplots(nrow:int, ncol:int, ax_loc:dict, projs=None, figsize=None, wspace=None, hspace=None, annotation=False, annotation_kws=None):
+    annotation_kws = {} if annotation_kws is None else annotation_kws
+    _annotation_kws = {'style': ')'}
+    _annotation_kws.update(annotation_kws)
+
+    fig = plt.figure(figsize=figsize)
+    gs = GridSpec(nrow, ncol)
+    gs.update(wspace=wspace, hspace=hspace)
+    ax = {}
+    for k, i in ax_loc.items():
+        if projs is not None and k in projs:
+            ax[k] = plt.subplot(gs[i], projection=projs[k])
+        else:
+            ax[k] = plt.subplot(gs[i])
+
+    if annotation: add_annotation(ax, **_annotation_kws)
+    return fig, ax
+
+def add_annotation(ax, fs=20, loc_x=-0.15, loc_y=1.03, start=0, style=None):
+    if type(ax) is dict:
+        ax = ax.values()
+
+    if type(fs) is not list:
+        fs = [fs] * len(ax)
+
+    for i, v in enumerate(ax):
+        letter_str = string.ascii_lowercase[i+start]
+
+        if style == ')':
+            letter_str = f'{letter_str})'
+        elif style == '()':
+            letter_str = f'({letter_str})'
+
+        v.text(
+            loc_x, loc_y, letter_str,
+            transform=v.transAxes, 
+            size=fs[i], weight='bold',
+        )

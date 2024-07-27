@@ -206,7 +206,7 @@ class XDataset:
             da.attrs['path'] = self.ds.attrs['path']
 
         if 'gw' in self.ds:
-            da.attrs['gw'] = self.ds['gw']
+            da.attrs['gw'] = self.ds['gw'].fillna(0)
 
         if 'lat' in self.ds:
             da.attrs['lat'] = self.ds['lat']
@@ -337,6 +337,43 @@ class XDataArray:
         return da
 
     @property
+    def gs(self):
+        ''' the global area-weighted sum '''
+        gw = self.da.attrs['gw']
+        da = self.da.weighted(gw).sum(list(gw.dims))
+        da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'Global Sum {da.attrs["long_name"]}'
+        return da
+
+    @property
+    def nhs(self):
+        ''' the NH area-weighted sum '''
+        gw = self.da.attrs['gw']
+        lat = self.da.attrs['lat']
+        da = self.da.where(lat>0).weighted(gw).sum(list(gw.dims))
+        da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'NH Sum {da.attrs["long_name"]}'
+        return da
+
+    @property
+    def shs(self):
+        ''' the SH area-weighted sum '''
+        gw = self.da.attrs['gw']
+        lat = self.da.attrs['lat']
+        da = self.da.where(lat<0).weighted(gw).sum(list(gw.dims))
+        da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'SH Sum {da.attrs["long_name"]}'
+        return da
+
+    @property
+    def somin(self):
+        ''' the Southern Ocean min'''
+        da = self.da.sel(lat=slice(-90, -28)).min(('z_t', 'lat'))
+        da = utils.update_attrs(da, self.da)
+        if 'long_name' in da.attrs: da.attrs['long_name'] = f'Southern Ocean (90°S-28°S) {da.attrs["long_name"]}'
+        return da
+
+    @property
     def zm(self):
         ''' the zonal mean
         '''
@@ -450,7 +487,6 @@ class XDataArray:
                 proj_args_default = {'central_longitude': central_longitude}
                 proj_args_default.update(proj_args)
                 _projection = ccrs.__dict__[projection](**proj_args_default)
-                _transform = ccrs.__dict__[transform]()
                 ax = plt.subplot(projection=_projection)
 
             if 'units' in self.da.attrs:
@@ -458,6 +494,7 @@ class XDataArray:
             else:
                 cbar_lb = self.da.name
 
+            _transform = ccrs.__dict__[transform]()
             _plt_kws = {
                 'transform': _transform,
                 'extend': 'both',

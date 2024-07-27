@@ -13,8 +13,11 @@ import threading
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
+import cftime
+from . import visual
 import subprocess
 import copy
+import cartopy.crs as ccrs
 
 from . import core, utils, diags
 from .spell import Spell
@@ -202,10 +205,15 @@ class History:
                 bigbang_dir = os.path.join(scratch_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
                 if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
                 if scratch_dirpath != output_dirpath:
+                    # move files from scratch to destination
                     dest_dirpath = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
                     dest_dirpath = pathlib.Path(dest_dirpath)
                     dest_dirpath.mkdir(parents=True, exist_ok=True)
-                    shutil.move(f'{bigcrunch_dir}/*.{timespan_tmp[0]}-{timespan_tmp[1]}.nc', dest_dirpath)
+                    src_paths = glob.glob(os.path.join(bigcrunch_dir, f'*.{timespan_tmp[0]}-{timespan_tmp[1]}.nc'))
+                    # [shutil.move(src_path, dest_dirpath) for src_path in src_paths]
+                    with mp.Pool(processes=nproc) as p:
+                        arg_list = [(src_path, dest_dirpath) for src_path in src_paths]
+                        p.starmap(shutil.move, arg_list)
 
 
     # def split_ds(self, comp, in_path, output_dirpath, overwrite=False, nco=True):
@@ -606,11 +614,11 @@ class Timeseries:
             utils.p_warning(f'>>> Variable `{vn}` is already calculated and the calculation is skipped.')
         else:
             if comp is None: comp = self.get_vn_comp(vn)
-            if (vn, comp) in self.vars_info:
+            if f'get_{vn}' in diags.DiagCalc.__dict__:
+                da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
+            elif (vn, comp) in self.vars_info:
                 self.load(vn, comp=comp, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
                 da = self.ds[vn].x.da
-            elif f'get_{vn}' in diags.DiagCalc.__dict__:
-                da = diags.DiagCalc.__dict__[f'get_{vn}'](self, timespan=timespan, load_idx=load_idx, adjust_month=adjust_month, verbose=verbose)
             else:
                 raise ValueError(f'Unknown diagnostic variable: {vn}')
 
@@ -637,11 +645,11 @@ class Timeseries:
             da = utils.ann_modifier(da, ann_method=S.ann_method, long_name=da.long_name)
 
         if S.sa_method is not None:
-            if S.sa_method in ['gm', 'nhm', 'shm', 'zm']:
+            if S.sa_method in ['gm', 'nhm', 'shm', 'zm', 'gs', 'nhs', 'shs', 'somin']:
                 da = getattr(da.x, S.sa_method)
             elif S.sa_method == 'yz':
                 if da.name == 'MOC':
-                    da = da.isel(transport_reg=0, moc_comp=0)
+                    da = da
                 else:
                     da = da.x.zm
             else:
@@ -739,7 +747,7 @@ class Timeseries:
             ylabel = ax.yaxis.get_label()
             if 'depth' in str(ylabel):
                 ax.invert_yaxis()
-                if 'z_t' in self.diags[spell]:
+                if 'z_t' in self.diags[spell].coords:
                     if self.diags[spell]['z_t'].units == 'centimeters':
                         ax.set_yticks([0, 2e5, 4e5])
                     elif self.diags[spell]['z_t'].units == 'km':
@@ -753,6 +761,97 @@ class Timeseries:
             ax.set_ylabel(kws['ylabel'])
 
         return fig_ax
+
+    def quickview(self, timespan=None, stat_period=-50, ylim_dict=None):
+        fig, ax = visual.subplots(
+            nrow=2, ncol=4,
+            ax_loc={
+                'GMST': (0, 0),
+                'GMRESTOM': (0, 1),
+                'GMLWCF': (0, 2),
+                'GMSWCF': (0, 3),
+                'NHICEFRAC': (1, 0),
+                'NHICEFRAC_clim': (1, 1),
+                # 'SST': (1, 2),
+                'SOMOC': (1, 2),
+                # 'MOC': (1, slice(2, 4)),
+                # 'TS': (1, 2),
+                'MOC': (1, 3),
+            },
+            projs={'TS': ccrs.Robinson(central_longitude=180)},
+            figsize=(20, 8),
+            wspace=0.3,
+            hspace=0.5,
+        )
+        spells = {
+            'GMST': 'TS:ann:gm',
+            'GMRESTOM': 'RESTOM:ann:gm',
+            'GMLWCF': 'LWCF:ann:gm',
+            'GMSWCF': 'SWCF:ann:gm',
+            'NHICEFRAC': 'ICEFRAC:ann:nhs',
+            'NHICEFRAC_clim': 'ICEFRAC:climo:nhs',
+            # 'SST': 'SST:ann:zm',
+            # 'TS': 'TS:ann',
+            'SOMOC': 'MOC:ann:somin',
+            'MOC': 'MOC:ann:yz',
+        }
+
+        clr_dict = {
+            'GMST': 'tab:red',
+            'GMRESTOM': 'tab:blue',
+            'GMLWCF': 'tab:green',
+            'GMSWCF': 'tab:orange',
+            'NHICEFRAC': 'tab:cyan',
+            'NHICEFRAC_clim': 'tab:cyan',
+            'SOMOC': 'tab:blue',
+            # 'SST': 'tab:red',
+        }
+        title_dict = {
+            'GMST': 'Global Mean Surface Temperature',
+            'GMRESTOM': 'Global Mean Net Radiative Flux',
+            'GMLWCF': 'Global Mean Longwave Cloud Forcing',
+            'GMSWCF': 'Global Mean Shortwave Cloud Forcing',
+            'NHICEFRAC': 'NH Mean Icea Area',
+            'NHICEFRAC_clim': 'Annual Cycle of NH Icea Area',
+            'SOMOC': 'Southern Ocean (90°S-28°S) MOC',
+            'MOC': 'Meriodional Ocean Circulation',
+        }
+
+        for k, v in spells.items():
+            if 'zm' in v:
+                self.calc(v, timespan=None)
+            else:
+                self.calc(v, timespan=timespan)
+
+        for k, v in spells.items():
+            if len(self.diags[v].dims) == 1 and self.diags[v].dims[0] == 'time' and 'climo_period' not in self.diags[v].attrs:
+                # timeseries
+                self.plot(v, ax=ax[k], title=title_dict[k], color=clr_dict[k])
+                if timespan is not None:
+                    start_date = cftime.DatetimeNoLeap(timespan[0], 1, 1)
+                    end_date = cftime.DatetimeNoLeap(timespan[1], 1, 1)
+                    ax[k].set_xlim(start_date, end_date)
+            elif k in ['TS']:
+                self.plot(v, ax=ax[k], title=title_dict[k], cbar_kwargs={'orientation': 'horizontal', 'aspect': 20, 'pad': 0.05})
+            else:
+                self.plot(v, ax=ax[k], title=title_dict[k])
+
+            if ylim_dict is not None and k in ylim_dict:
+                ax[k].set_ylim(ylim_dict[k])
+
+        for k, v in spells.items():
+            if len(self.diags[v].dims) == 1 and self.diags[v].dims[0] == 'time' and 'climo_period' not in self.diags[v].attrs:
+                ax[k].text(
+                    0.95, 0.9,
+                    f'last {np.abs(stat_period)}-yr mean: {self.diags[v].isel(time=slice(stat_period,)).mean().values:.2f}',
+                    verticalalignment='bottom',
+                    horizontalalignment='right',
+                    transform=ax[k].transAxes,
+                    color=clr_dict[k],
+                    fontsize=15,
+                )
+
+        return fig, ax
 
     def get_climo(self, vn, comp=None, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
         ''' Generate the climatology file for the given variable

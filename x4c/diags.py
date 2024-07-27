@@ -288,9 +288,14 @@ class DiagCalc:
 
     # Get specific diagnostic variables
     def get_SST(case, **kws):
-        vn = 'TEMP'
-        case.load(vn, **kws)
-        sst = case.ds[vn].x.da.isel(z_t=0)
+        if ('SST', 'ocn') not in case.vars_info:
+            vn = 'TEMP'
+            case.load(vn, **kws)
+            sst = case.ds[vn].x.da.isel(z_t=0)
+        else:
+            case.load('SST', **kws)
+            sst = case.ds['SST']
+
         sst.attrs['units'] = '°C'
         sst.attrs['long_name'] = 'Sea Surface Temperature'
         sst.name = 'SST'
@@ -379,6 +384,20 @@ class DiagCalc:
         return d18Oc
 
 
+    def get_RESTOM(case, **kws):
+        ''' Calculate RESTOM = FSNT - FLNT
+        '''
+        case.load('FSNT', **kws)
+        case.load('FLNT', **kws)
+
+        RESTOM = case.ds['FSNT'].x.da - case.ds['FLNT'].x.da
+        RESTOM.name = 'RESTOM'
+        RESTOM.attrs['long_name'] = 'Net Radiation Flux'
+        RESTOM.attrs['units'] = 'W/m$^2$'
+        return RESTOM
+    
+
+
 
     # def get_d18Oc(case, **kws):
     #     ''' Calculate d18Oc = f(TEMP, d18Osw) based on the Eq (1) of the Ref.:
@@ -413,10 +432,32 @@ class DiagCalc:
     def get_MOC(case, **kws):
         vn = 'MOC'
         case.load(vn, **kws)
-        da = case.ds[vn].x.da
+        da = case.ds[vn].x.da.isel(transport_reg=0, moc_comp=0)
         da['moc_z'] = da['moc_z'] / 1e5  # unit: cm -> km
         da['moc_z'].attrs['units'] = 'km'
+        da = da.rename({'moc_z': 'z_t', 'lat_aux_grid': 'lat'})
         da.name = 'MOC'
+        da.attrs['lon_name'] = 'Meridional Ocean Circulation'
+        return da
+
+    # def get_SOMOC(case, **kws):
+    #     vn = 'MOC'
+    #     case.load(vn, **kws)
+    #     da = case.ds[vn].x.da.isel(transport_reg=0, moc_comp=0)
+    #     da['moc_z'] = da['moc_z'] / 1e5  # unit: cm -> km
+    #     da['moc_z'].attrs['units'] = 'km'
+    #     da = da.sel(moc_z=slice(0.5, None), lat_aux_grid=slice(-90, -28)).min(('moc_z', 'lat_aux_grid'))
+    #     da.name = 'MOC'
+    #     da.attrs['lon_name'] = 'Southern Ocean (90°S-28°S) MOC'
+    #     return da
+
+    def get_ICEFRAC(case, **kws):
+        vn = 'aice'
+        case.load(vn, **kws)
+        convert_factor = 4*np.pi*6.37122**2 / case.ds[vn].gw.sum().values / 100  # 1e6 km^2
+        da = case.ds[vn].x.da * convert_factor
+        da.attrs['units'] = '10$^6$ km$^2$'
+        da.attrs['long_name'] = 'Sea Ice Area'
         return da
 
 
