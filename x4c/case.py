@@ -811,10 +811,10 @@ class Timeseries:
             'GMRESTOM': 'Global Mean Net Radiative Flux',
             'GMLWCF': 'Global Mean Longwave Cloud Forcing',
             'GMSWCF': 'Global Mean Shortwave Cloud Forcing',
-            'NHICEFRAC': 'NH Mean Icea Area',
-            'NHICEFRAC_clim': 'Annual Cycle of NH Icea Area',
+            'NHICEFRAC': 'NH Mean Ice Area',
+            'NHICEFRAC_clim': 'NH Mean Ice Area Annual Cycle',
             'SOMOC': 'Southern Ocean (90°S-28°S) MOC',
-            'MOC': 'Meriodional Ocean Circulation',
+            'MOC': 'Meridional Ocean Circulation',
         }
 
         for k, v in spells.items():
