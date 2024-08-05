@@ -17,7 +17,6 @@ import cftime
 from . import visual
 import subprocess
 import copy
-import cartopy.crs as ccrs
 
 from . import core, utils, diags
 from .spell import Spell
@@ -209,11 +208,15 @@ class History:
                     dest_dirpath = os.path.join(output_dirpath, dir_structure.replace('comp', comp))
                     dest_dirpath = pathlib.Path(dest_dirpath)
                     dest_dirpath.mkdir(parents=True, exist_ok=True)
-                    src_paths = glob.glob(os.path.join(bigcrunch_dir, f'*.{timespan_tmp[0]}-{timespan_tmp[1]}.nc'))
+                    src_paths = glob.glob(os.path.join(bigcrunch_dir, f'*.{timespan_tmp[0]}01-{timespan_tmp[1]}12.nc'))
+                    print(f'{timespan_tmp=}')
+                    print(f'{bigcrunch_dir=}')
+                    print(f'{src_paths=}')
+                    print(f'{dest_dirpath=}')
                     # [shutil.move(src_path, dest_dirpath) for src_path in src_paths]
                     with mp.Pool(processes=nproc) as p:
                         arg_list = [(src_path, dest_dirpath) for src_path in src_paths]
-                        p.starmap(shutil.move, arg_list)
+                        p.starmap(shutil.move, tqdm(arg_list, total=len(arg_list), desc=f'Moving generated files\nfrom: {scratch_dirpath}\nto: {output_dirpath}'))
 
 
     # def split_ds(self, comp, in_path, output_dirpath, overwrite=False, nco=True):
@@ -778,7 +781,9 @@ class Timeseries:
                 # 'TS': (1, 2),
                 'MOC': (1, 3),
             },
-            projs={'TS': ccrs.Robinson(central_longitude=180)},
+            # projs={'TS': ccrs.Robinson(central_longitude=180)},
+            projs={'TS': 'Robinson'},
+            projs_kws={'TS': {'central_longitude': 180}},
             figsize=(20, 8),
             wspace=0.3,
             hspace=0.5,

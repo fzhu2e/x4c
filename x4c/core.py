@@ -4,7 +4,7 @@ xr.set_options(keep_attrs=True)
 import xesmf as xe
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import BoundaryNorm, Normalize
+from matplotlib.colors import BoundaryNorm, Normalize, LogNorm
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import geocat.comp as gc
@@ -453,7 +453,7 @@ class XDataArray:
 
     def plot(self, title=None, figsize=None, ax=None, latlon_range=None,
              projection='Robinson', transform='PlateCarree', central_longitude=180, proj_args=None,
-             add_gridlines=False, gridline_labels=True, gridline_style='--', ssv=None,
+             add_gridlines=False, gridline_labels=True, gridline_style='--', ssv=None, log=False, vmin=None, vmax=None,
              coastline_zorder=99, coastline_width=1, site_markersizes=100, df_sites=None, colname_dict=None, **kws):
         ''' The plotting functionality
 
@@ -527,6 +527,7 @@ class XDataArray:
             else:
                 ax.coastlines(zorder=coastline_zorder, linewidth=coastline_width)
 
+            if log: _plt_kws.update({'norm': LogNorm(vmin=vmin, vmax=vmax)})
             im = self.da.plot.contourf(ax=ax, **_plt_kws)
 
             if df_sites is not None:
@@ -548,10 +549,14 @@ class XDataArray:
                 else:
                     site_markers = [visual.marker_dict[t] for t in site_types]
 
-                cmap_obj = plt.get_cmap(_plt_kws['cmap'])
-                norm = BoundaryNorm(im.levels, ncolors=cmap_obj.N, clip=True)
-                ax.scatter(site_lons, site_lats, s=site_markersizes, marker=site_markers, edgecolors='k', c=site_colors,
-                           zorder=99, transform=_transform, cmap=cmap_obj, norm=norm)
+                if type(site_colors) is not list:
+                    ax.scatter(site_lons, site_lats, s=site_markersizes, marker=site_markers, edgecolors='k', c=site_colors,
+                               zorder=99, transform=_transform)
+                else:
+                    cmap_obj = plt.get_cmap(_plt_kws['cmap'])
+                    norm = BoundaryNorm(im.levels, ncolors=cmap_obj.N, clip=True)
+                    ax.scatter(site_lons, site_lats, s=site_markersizes, marker=site_markers, edgecolors='k', cmap=cmap_obj, norm=norm,
+                               zorder=99, transform=_transform)
 
         elif ndim == 2:
             # vertical

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import matplotlib as mpl
+import cartopy.crs as ccrs
 import pathlib
 import string
 
@@ -254,10 +255,8 @@ def infer_cmap(da):
     
     return cmap
 
-def subplots(nrow:int, ncol:int, ax_loc:dict, projs=None, figsize=None, wspace=None, hspace=None, annotation=False, annotation_kws=None):
-    annotation_kws = {} if annotation_kws is None else annotation_kws
-    _annotation_kws = {'style': ')'}
-    _annotation_kws.update(annotation_kws)
+def subplots(nrow:int, ncol:int, ax_loc:dict, projs=None, projs_kws=None, figsize=None, wspace=None, hspace=None,
+             annotation=False, annotation_kws=None, annotation_separate=False,):
 
     fig = plt.figure(figsize=figsize)
     gs = GridSpec(nrow, ncol)
@@ -265,16 +264,32 @@ def subplots(nrow:int, ncol:int, ax_loc:dict, projs=None, figsize=None, wspace=N
     ax = {}
     for k, i in ax_loc.items():
         if projs is not None and k in projs:
-            ax[k] = plt.subplot(gs[i], projection=projs[k])
+            projs_kws = {} if projs_kws is None else projs_kws
+            if k not in projs_kws: projs_kws[k] = {}
+            ax[k] = plt.subplot(gs[i], projection=ccrs.__dict__[projs[k]](**projs_kws[k]))
         else:
             ax[k] = plt.subplot(gs[i])
 
-    if annotation: add_annotation(ax, **_annotation_kws)
+    if annotation:
+        if annotation_separate:
+            for i, k in enumerate(list(ax_loc)):
+                annotation_kws = {} if annotation_kws is None else annotation_kws
+                _annotation_kws = {'style': ')'}
+                _annotation_kws.update(annotation_kws[k])
+                add_annotation(ax[k], start=i, **_annotation_kws)
+        else:
+            annotation_kws = {} if annotation_kws is None else annotation_kws
+            _annotation_kws = {'style': ')'}
+            _annotation_kws.update(annotation_kws)
+            add_annotation(ax, **_annotation_kws)
+
     return fig, ax
 
 def add_annotation(ax, fs=20, loc_x=-0.15, loc_y=1.03, start=0, style=None):
     if type(ax) is dict:
         ax = ax.values()
+    else:
+        ax = [ax]
 
     if type(fs) is not list:
         fs = [fs] * len(ax)

@@ -294,7 +294,7 @@ class DiagCalc:
             sst = case.ds[vn].x.da.isel(z_t=0)
         else:
             case.load('SST', **kws)
-            sst = case.ds['SST']
+            sst = case.ds['SST'].x.da
 
         sst.attrs['units'] = '°C'
         sst.attrs['long_name'] = 'Sea Surface Temperature'
@@ -480,11 +480,18 @@ class DiagPlot:
     kws_map['SST'] = {'levels': np.linspace(0, 40, 21), 'cbar_kwargs': {'ticks': np.linspace(0, 40, 5)}}
 
     kws_map['MLD'] = {
-        'levels': np.linspace(0, 500, 21),
-        'cbar_kwargs': {'ticks': np.linspace(0, 500, 11)},
+        'levels': np.linspace(0, 800, 17),
+        'cbar_kwargs': {'ticks': np.linspace(0, 800, 9)},
         'extend': 'max',
-        'central_longitude': -30,
+        # 'central_longitude': -30,
+        'central_longitude': 180,
         'cyclic': True,
+        # 'log': True,
+        # 'levels': np.logspace(0, 3, 28),
+        # 'cbar_kwargs': {'ticks': np.logspace(0, 3, 4)},
+        # 'vmin': 1,
+        # 'vmax': 1000,
+        # 'cmap': 'GnBu',
     }
 
     kws_map['d18Osw'] = {
