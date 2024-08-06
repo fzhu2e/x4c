@@ -175,6 +175,7 @@ class History:
                dir_structure='comp/proc/tseries/month_1' , overwrite=True, nproc=1, compression=1):
 
         if scratch_dirpath is None: scratch_dirpath = output_dirpath
+        if timespan is None: raise ValueError('Please specify `timespan`.')
 
         syr = timespan[0]
         nt = (timespan[-1] - timespan[0] + 1) // timestep
@@ -1125,6 +1126,57 @@ class Timeseries:
                 pass
         else:
             self.ds = {}
+
+    def save_spell(self, spell:str, vn:str, output_path:str, timespan=None, overwrite=True, long_name=None, **kws):
+        self.calc(spell, timespan=timespan)
+        self.diags[spell].name = vn
+        if overwrite or not os.path.exists(output_path):
+            da = self.diags[spell]
+            if long_name is not None: da.attrs['long_name'] = long_name
+            if os.path.exists(output_path): os.remove(output_path)
+            da.x.to_netcdf(output_path, **kws)
+    
+    def gen_ts_spell(self, spell:str, vn:str, comp:str, output_dirpath:str, long_name=None, timespan=None, timestep=50, overwrite=True, nproc=1):
+        ''' Generate timeseries based on a spell
+        '''
+        _mdl_hstr_dict = {
+            'atm': ('cam', 'h0'),
+            'ocn': ('pop', 'h'),
+            'lnd': ('clm2', 'h0'),
+            'ice': ('cice', 'h'),
+            'rof': ('rtm', 'h0'),
+        }
+        mdl, hstr = _mdl_hstr_dict[comp]
+        path_tmp = 'comp/proc/tseries/month_1/'.replace('comp', comp)
+        output_path = os.path.join(output_dirpath, path_tmp)
+        output_dir = pathlib.Path(os.path.dirname(output_path))
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        if timespan is None: raise ValueError('Please specify `timespan`.')
+
+        syr = timespan[0]
+        nt = (timespan[-1] - timespan[0] + 1) // timestep
+        timespan_list = []
+        for i in range(nt):
+            timespan_list.append((syr, syr+timestep-1))
+            syr += timestep 
+
+        # generate timeseries files for each sub-timespan
+        if nproc == 1:
+            for timespan_tmp in timespan_list:
+                utils.p_header(f'>>> Processing timespan: {timespan_tmp}')
+                filename = 'casename.mdl.h_str.vn.timespan.nc'.replace('casename', self.casename).replace('mdl', mdl).replace('h_str', hstr).replace('vn', vn).replace('timespan', f'{timespan_tmp[0]:04d}01-{timespan_tmp[1]:04d}12')
+                output_path = os.path.join(output_dir, filename)
+                self.save_spell(spell, vn, timespan=timespan_tmp, long_name=long_name, output_path=output_path, overwrite=overwrite)
+        else:
+            utils.p_hint(f'>>> nproc: {nproc}')
+            with mp.Pool(processes=nproc) as p:
+                arg_list = []
+                for timespan_tmp in timespan_list:
+                    filename = 'casename.mdl.h_str.vn.timespan.nc'.replace('casename', self.casename).replace('mdl', mdl).replace('h_str', hstr).replace('vn', vn).replace('timespan', f'{timespan_tmp[0]:04d}01-{timespan_tmp[1]:04d}12')
+                    output_path = os.path.join(output_dir, filename)
+                    arg_list.append((spell, vn, output_path, timespan_tmp,  overwrite, long_name))
+                p.starmap(self.save_spell, tqdm(arg_list, total=len(arg_list), desc=f'Saving "{spell}" to files'))
 
 class Climo:
     def __init__(self, root_dir, casename):

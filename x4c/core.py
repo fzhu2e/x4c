@@ -308,7 +308,7 @@ class XDataArray:
         return da_zavg
 
     def to_netcdf(self, path, **kws):
-        for v in ['gw', 'lat', 'lon']:
+        for v in ['gw', 'lat', 'lon', 'dz']:
             if v in self.da.attrs: del(self.da.attrs[v])
 
         return self.da.to_netcdf(path, **kws)
