@@ -200,8 +200,10 @@ class History:
 
         for comp, vns in comps.items():
             # delete the temporary files
+            utils.p_header(f'>>> Postprocessing component: {comp}')
             for timespan_tmp in timespan_list:
                 bigbang_dir = os.path.join(scratch_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
+                bigcrunch_dir = os.path.join(scratch_dirpath, dir_structure.replace('comp', comp))
                 if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
                 if scratch_dirpath != output_dirpath:
                     # move files from scratch to destination
@@ -210,6 +212,13 @@ class History:
                     dest_dirpath.mkdir(parents=True, exist_ok=True)
                     src_paths = glob.glob(os.path.join(bigcrunch_dir, f'*.{timespan_tmp[0]}01-{timespan_tmp[1]}12.nc'))
                     # [shutil.move(src_path, dest_dirpath) for src_path in src_paths]
+                    # print(f'{src_paths =}')
+                    # print(f'{dest_dirpath =}')
+                    for src_path in src_paths:
+                        dst_path = os.path.join(dest_dirpath, os.path.basename(src_path))
+                        if os.path.exists(dst_path):
+                            os.remove(dst_path)
+                            
                     with mp.Pool(processes=nproc) as p:
                         arg_list = [(src_path, dest_dirpath) for src_path in src_paths]
                         p.starmap(shutil.move, tqdm(arg_list, total=len(arg_list), desc=f'Moving generated files\nfrom: {scratch_dirpath}\nto: {output_dirpath}\n'))
