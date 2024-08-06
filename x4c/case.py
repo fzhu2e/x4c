@@ -671,6 +671,9 @@ class Timeseries:
         if S.regrid is not None:
             da = eval(f'da.x.{S.regrid}')
 
+        if S.zavg is not None:
+            da = eval(f'da.x.{S.zavg}')
+
         if da.units == 'degC':
             da.attrs['units'] = '°C'
         elif da.units == 'K':

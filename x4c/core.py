@@ -185,6 +185,20 @@ class XDataset:
         ds_plev[vn] = da_plev
         return ds_plev
 
+    def zavg(self, depth_top, depth_bot, vn=None):
+        if vn is None:
+            da = self.da
+            vn = self.ds.attrs['vn']
+        else:
+            da = self.ds[vn]
+
+        da_zavg = da.sel(z_t=slice(depth_top, depth_bot)).weighted(self.ds['dz']).mean('z_t')
+
+        ds_zavg = self.ds.copy()
+        ds_zavg[vn] = da_zavg
+        return ds_zavg
+        
+
 
     def annualize(self, months=None):
         ''' Annualize/seasonalize a `xarray.Dataset`
@@ -213,6 +227,9 @@ class XDataset:
 
         if 'lon' in self.ds:
             da.attrs['lon'] = self.ds['lon']
+
+        if 'dz' in self.ds:
+            da.attrs['dz'] = self.ds['dz']
 
         if 'comp' in self.ds.attrs:
             da.attrs['comp'] = self.ds.attrs['comp']
@@ -245,7 +262,7 @@ class XDataset:
         return ds
 
     def to_netcdf(self, path, **kws):
-        for v in ['gw', 'lat', 'lon']:
+        for v in ['gw', 'lat', 'lon', 'dz']:
             if v in self.ds.attrs: del(self.ds.attrs[v])
 
         return self.ds.to_netcdf(path, **kws)
@@ -285,6 +302,10 @@ class XDataArray:
         da = gc.interpolation.interp_hybrid_to_pressure(self.da, **_kws)
         da.name = self.da.name
         return da
+
+    def zavg(self, depth_top, depth_bot):
+        da_zavg = self.da.sel(z_t=slice(depth_top, depth_bot)).weighted(self.da.attrs['dz']).mean('z_t')
+        return da_zavg
 
     def to_netcdf(self, path, **kws):
         for v in ['gw', 'lat', 'lon']:
@@ -452,7 +473,7 @@ class XDataArray:
         return da
 
     def plot(self, title=None, figsize=None, ax=None, latlon_range=None,
-             projection='Robinson', transform='PlateCarree', central_longitude=180, proj_args=None,
+             projection='Robinson', transform='PlateCarree', central_longitude=180, proj_args=None, bad_color='dimgray',
              add_gridlines=False, gridline_labels=True, gridline_style='--', ssv=None, log=False, vmin=None, vmax=None,
              coastline_zorder=99, coastline_width=1, site_markersizes=100, df_sites=None, colname_dict=None, **kws):
         ''' The plotting functionality
@@ -571,6 +592,10 @@ class XDataArray:
                 },
             }
             _plt_kws = utils.update_dict(_plt_kws, kws)
+            # add color for missing data
+            if bad_color is not None:
+                plt.gca().set_facecolor(bad_color)
+
             if 'add_colorbar' in kws and kws['add_colorbar'] is False:
                 del(_plt_kws['cbar_kwargs'])
 

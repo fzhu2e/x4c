@@ -27,12 +27,14 @@ class Spell:
         self.slicing = None
         self.regrid = None
         self.plev = None
+        self.zavg = None
 
         self.parse_alias()
         self.parse_sentence()
         self.parse_slicing()
         self.parse_regrid()
         self.parse_plev()
+        self.parse_zavg()
 
     def parse_alias(self):
         if '~' in self.sentence:
@@ -67,7 +69,6 @@ class Spell:
             else:
                 self.regrid = 'regrid()'
             
-
     def parse_plev(self):
         if '|plev' in self.sentence:
             match = re.search(r'plev\([^)]+\)', self.sentence)
@@ -75,3 +76,11 @@ class Spell:
                 self.plev = match.group(0)
             else:
                 self.plev = 'plev'
+
+    def parse_zavg(self):
+        if '|zavg' in self.sentence:
+            match = re.search(r'zavg\([^)]+\)', self.sentence)
+            if match:
+                self.zavg = match.group(0)
+            else:
+                self.zavg = 'zavg()'
