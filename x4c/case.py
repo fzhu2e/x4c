@@ -202,6 +202,7 @@ class History:
             # delete the temporary files
             utils.p_header(f'>>> Postprocessing component: {comp}')
             for timespan_tmp in timespan_list:
+                utils.p_header(f'>>> Postprocessing timespan: {timespan_tmp}')
                 bigbang_dir = os.path.join(scratch_dirpath, f'.bigbang_{comp}.{timespan_tmp[0]}-{timespan_tmp[1]}')
                 bigcrunch_dir = os.path.join(scratch_dirpath, dir_structure.replace('comp', comp))
                 if os.path.exists(bigbang_dir): shutil.rmtree(bigbang_dir)
