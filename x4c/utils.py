@@ -9,6 +9,7 @@ from tqdm import tqdm
 import datetime
 import collections.abc
 import cartopy.util
+import shutil
 
 def p_header(text):
     print(ca.Fore.CYAN + ca.Style.BRIGHT + text + ca.Style.RESET_ALL)
@@ -323,3 +324,13 @@ def download(url: str, fname: str, chunk_size=1024, show_bar=True):
         with open(fname, 'wb') as file:
             for data in resp.iter_content(chunk_size=chunk_size):
                 size = file.write(data)
+
+
+def move_with_overwrite(src, dst_dir):
+    # Construct the full destination path
+    dst = os.path.join(dst_dir, os.path.basename(src))
+    
+    if os.path.exists(dst):
+        os.remove(dst)
+
+    shutil.move(src, dst)

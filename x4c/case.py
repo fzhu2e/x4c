@@ -214,14 +214,18 @@ class History:
                     # [shutil.move(src_path, dest_dirpath) for src_path in src_paths]
                     # print(f'{src_paths =}')
                     # print(f'{dest_dirpath =}')
-                    for src_path in src_paths:
-                        dst_path = os.path.join(dest_dirpath, os.path.basename(src_path))
-                        if os.path.exists(dst_path):
-                            os.remove(dst_path)
+                    # for src_path in src_paths:
+                    #     dst_path = os.path.join(dest_dirpath, os.path.basename(src_path))
+                    #     if os.path.exists(dst_path):
+                    #         os.remove(dst_path)
                             
+                    # with mp.Pool(processes=nproc) as p:
+                    #     arg_list = [(src_path, dest_dirpath) for src_path in src_paths]
+                    #     p.starmap(shutil.move, tqdm(arg_list, total=len(arg_list), desc=f'Moving generated files\nfrom: {scratch_dirpath}\nto: {output_dirpath}\n'))
+
                     with mp.Pool(processes=nproc) as p:
                         arg_list = [(src_path, dest_dirpath) for src_path in src_paths]
-                        p.starmap(shutil.move, tqdm(arg_list, total=len(arg_list), desc=f'Moving generated files\nfrom: {scratch_dirpath}\nto: {output_dirpath}\n'))
+                        p.starmap(utils.move_with_overwrite, tqdm(arg_list, total=len(arg_list), desc=f'Moving generated files\nfrom: {scratch_dirpath}\nto: {output_dirpath}\n'))
 
 
     # def split_ds(self, comp, in_path, output_dirpath, overwrite=False, nco=True):
