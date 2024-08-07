@@ -55,7 +55,24 @@ def open_mfdataset(paths, adjust_month=False, comp=None, grid=None, vn=None, **k
         vn (str): variable name
 
     '''
-    ds = xr.open_mfdataset(paths, **kws)
+    ds0 = xr.open_dataset(paths[0], decode_cf=False)
+    dims_other_than_time = list(ds0.dims)
+    try:
+        dims_other_than_time.remove('time')
+    except:
+        pass
+
+    chunk_dict = {k: -1 for k in dims_other_than_time}
+
+    _kws = {
+        'data_vars': 'minimal',
+        'coords': 'minimal',
+        'compat': 'override',
+        'chunks': chunk_dict,
+        'parallel': True,
+    }
+    _kws.update(kws)
+    ds = xr.open_mfdataset(paths, **_kws)
     ds = utils.update_ds(ds, vn=vn, path=paths, comp=comp, grid=grid, adjust_month=adjust_month)
     return ds
 

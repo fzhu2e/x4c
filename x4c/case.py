@@ -16,7 +16,7 @@ from matplotlib import gridspec
 import cftime
 from . import visual
 import subprocess
-import copy
+from copy import deepcopy
 
 from . import core, utils, diags
 from .spell import Spell
@@ -582,7 +582,7 @@ class Timeseries:
             raise ValueError('The input variable name belongs to multiple components. Please specify via the argument `comp`.')
 
     
-    def load(self, vn, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True):
+    def load(self, vn, comp=None, timespan=None, load_idx=-1, adjust_month=True, verbose=True, **kws):
         if comp is None:
             comp = self.get_vn_comp(vn)
 
@@ -600,10 +600,17 @@ class Timeseries:
             if vn not in self.ds:
                 comp, mdl, h_str = self.vars_info[(vn, comp)]
 
+                _kws = {
+                   'vn': vn,
+                   'adjust_month': adjust_month, 
+                   'comp': comp,
+                   'grid': self.grid_dict[comp],
+                }
+                _kws.update(kws)
                 if not isinstance(paths, (list, tuple)):
-                    ds =  core.open_dataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp])
+                    ds =  core.open_dataset(paths, **_kws)
                 else:
-                    ds =  core.open_mfdataset(paths, vn=vn, adjust_month=adjust_month, comp=comp, grid=self.grid_dict[comp], coords='minimal', data_vars='minimal', parallel=True)
+                    ds =  core.open_mfdataset(paths, **_kws)
 
                 self.ds[vn] = ds
                 self.ds[vn].attrs['vn'] = vn
@@ -717,7 +724,7 @@ class Timeseries:
         else:
             raise ValueError('Unkown plot type.')
 
-        kws_dict = copy.deepcopy(diags.DiagPlot.__dict__[f'kws_{plot_type}'])
+        kws_dict = deepcopy(diags.DiagPlot.__dict__[f'kws_{plot_type}'])
         _kws = kws_dict[da.name] if da.name in kws_dict else {}
         _kws = utils.update_dict(_kws, kws)
 
@@ -872,7 +879,7 @@ class Timeseries:
 
         return fig, ax
 
-    def get_climo(self, vn, comp=None, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
+    def get_climo(self, vn, comp=None, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1):
         ''' Generate the climatology file for the given variable
 
         Args:
@@ -881,10 +888,7 @@ class Timeseries:
         if comp is None: comp = self.get_vn_comp(vn)
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
-        if chunk_nt is None:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', parallel=True)
-        else:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt}, parallel=True)
+        ds = core.open_mfdataset(paths, adjust_month=adjust_month)
 
         if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
         ds_out = ds.x.climo
@@ -894,7 +898,7 @@ class Timeseries:
         return ds_out
 
     def save_climo(self, output_dirpath, vn, comp=None, timespan=None, adjust_month=True,
-                   slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None):
+                   slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False):
 
         output_dirpath = pathlib.Path(output_dirpath)
         if not output_dirpath.exists():
@@ -909,13 +913,13 @@ class Timeseries:
 
             climo = self.get_climo(
                 vn, comp=comp, timespan=timespan, adjust_month=adjust_month,
-                slicing=slicing, regrid=regrid, dlat=dlat, dlon=dlon, chunk_nt=chunk_nt,
+                slicing=slicing, regrid=regrid, dlat=dlat, dlon=dlon,
             )
             climo.to_netcdf(out_path)
             climo.close()
 
     def gen_climo(self, output_dirpath, comp=None, timespan=None, vns=None, adjust_month=True,
-                  nproc=1, slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None):
+                  nproc=1, slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False):
 
         if comp is None:
             raise ValueError('Please specify component via the argument `comp`.')
@@ -931,13 +935,14 @@ class Timeseries:
             for v in tqdm(vns, total=len(vns), desc=f'Generating climo files'):
                 self.save_climo(
                     output_dirpath, v, comp=comp, timespan=timespan,
-                    adjust_month=adjust_month, slicing=slicing, regrid=regrid, dlat=dlat, dlon=dlon,
-                    overwrite=overwrite, chunk_nt=chunk_nt,
+                    adjust_month=adjust_month, slicing=slicing,
+                    regrid=regrid, dlat=dlat, dlon=dlon,
+                    overwrite=overwrite,
                 )
         else:
             utils.p_hint(f'>>> nproc: {nproc}')
             with mp.Pool(processes=nproc) as p:
-                arg_list = [(output_dirpath, v, comp, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite, chunk_nt) for v in vns]
+                arg_list = [(output_dirpath, v, comp, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite) for v in vns]
                 p.starmap(self.save_climo, tqdm(arg_list, total=len(vns), desc=f'Generating climo files'))
 
         utils.p_success(f'>>> {len(vns)} climo files created in: {output_dirpath}')
@@ -974,13 +979,10 @@ class Timeseries:
     #         # ds.close()
     #         # utils.p_success(f'>>> Combined timeseries file created at: {out_path}')
 
-    def get_mean(self, vn, comp, months=list(range(1, 13)), timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
+    def get_mean(self, vn, comp, months=list(range(1, 13)), timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1):
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
-        if chunk_nt is None:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', parallel=True)
-        else:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt}, parallel=True)
+        ds = core.open_mfdataset(paths, adjust_month=adjust_month)
 
         if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
         ds_out = ds.x.annualize(months=months)
@@ -989,13 +991,10 @@ class Timeseries:
         if regrid: ds_out = ds_out.x.regrid(dlat=dlat, dlon=dlon)
         return ds_out
 
-    def get_ts(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, chunk_nt=None):
+    def get_ts(self, vn, comp, timespan=None, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1):
         grid = self.grid_dict[comp]
         paths = self.get_paths(vn, comp=comp, timespan=timespan)
-        if chunk_nt is None:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', parallel=True)
-        else:
-            ds = core.open_mfdataset(paths, adjust_month=adjust_month, coords='minimal', data_vars='minimal', chunks={'time': chunk_nt}, parallel=True)
+        ds = core.open_mfdataset(paths, adjust_month=adjust_month)
 
         if slicing: ds = ds.sel(time=slice(timespan[0], timespan[1]))
 
@@ -1005,13 +1004,13 @@ class Timeseries:
         if regrid: ds_out = ds_out.x.regrid(dlat=dlat, dlon=dlon)
         return ds_out
 
-    def save_means(self, vn, comp, output_dirpath, timespan, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None):
+    def save_means(self, vn, comp, output_dirpath, timespan, adjust_month=True, slicing=False, regrid=False, dlat=1, dlon=1, overwrite=False):
         output_dirpath = pathlib.Path(output_dirpath)
         if not output_dirpath.exists():
             output_dirpath.mkdir(parents=True, exist_ok=True)
             utils.p_success(f'>>> output directory created at: {output_dirpath}')
 
-        ds = self.get_ts(vn, comp, timespan=timespan, adjust_month=adjust_month, slicing=slicing, regrid=False, chunk_nt=chunk_nt)
+        ds = self.get_ts(vn, comp, timespan=timespan, adjust_month=adjust_month, slicing=slicing, regrid=False)
 
         sn_dict = {
             'ANN': list(range(1, 13)),
@@ -1041,7 +1040,7 @@ class Timeseries:
                 ds_ann.close()
 
     def gen_means(self, output_dirpath, comp=None, vns=None, timespan=None, adjust_month=True, slicing=False,
-                  regrid=False, dlat=1, dlon=1, overwrite=False, chunk_nt=None, nproc=1):
+                  regrid=False, dlat=1, dlon=1, overwrite=False, nproc=1):
 
         if comp is None:
             raise ValueError('Please specify component via the argument `comp`.')
@@ -1057,12 +1056,12 @@ class Timeseries:
             for vn in vns:
                 self.save_means(
                     vn, comp, output_dirpath, timespan, adjust_month=adjust_month, slicing=slicing,
-                    regrid=regrid, dlat=dlat, dlon=dlon, overwrite=overwrite, chunk_nt=chunk_nt,
+                    regrid=regrid, dlat=dlat, dlon=dlon, overwrite=overwrite, 
                 )
         else:
             utils.p_hint(f'>>> nproc: {nproc}')
             with mp.Pool(processes=nproc) as p:
-                arg_list = [(vn, comp, output_dirpath, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite, chunk_nt) for vn in vns]
+                arg_list = [(vn, comp, output_dirpath, timespan, adjust_month, slicing, regrid, dlat, dlon, overwrite) for vn in vns]
                 p.starmap(self.save_means, tqdm(arg_list, total=len(vns), desc=f'Generating seasonal mean files'))
 
     def check_timespan(self, comp, vns=None, timespan=None):
@@ -1126,12 +1125,16 @@ class Timeseries:
                 pass
         else:
             self.ds = {}
+        
+    def copy(self):
+        return deepcopy(self)
 
     def save_spell(self, spell:str, vn:str, output_path:str, timespan=None, overwrite=True, long_name=None, **kws):
-        self.calc(spell, timespan=timespan)
-        self.diags[spell].name = vn
+        case = self.copy()
+        case.calc(spell, timespan=timespan)
+        case.diags[spell].name = vn
         if overwrite or not os.path.exists(output_path):
-            da = self.diags[spell]
+            da = case.diags[spell]
             if long_name is not None: da.attrs['long_name'] = long_name
             if os.path.exists(output_path): os.remove(output_path)
             da.x.to_netcdf(output_path, **kws)
@@ -1192,7 +1195,7 @@ class Climo:
             utils.p_header(f'>>> output directory created at: {output_dirpath}')
 
         paths = sorted(glob.glob(os.path.join(self.root_dir, '*_climo.nc')))
-        ds = xr.open_mfdataset(paths, coords='minimal', data_vars='minimal', parallel=True)
+        ds = core.open_mfdataset(paths)
         if climo_period is None:
             try:
                 climo_period = ds.attrs['climo_period']
@@ -1276,14 +1279,14 @@ class Means:
         else:
             utils.p_warning(f'>>> The result already exists. Skipping ...')
 
-    def merge_means_nproc(self, output_dirpath, sns=['ANN', 'DJF', 'MAM', 'JJA', 'SON'], overwrite=False, casetag=None, chunk_nt=None, nproc=1):
+    def merge_means_nproc(self, output_dirpath, sns=['ANN', 'DJF', 'MAM', 'JJA', 'SON'], overwrite=False, casetag=None, nproc=1):
         if nproc == 1:
             for sn in sns:
-                self.merge_means(sn, output_dirpath, overwrite=overwrite, chunk_nt=chunk_nt)
+                self.merge_means(sn, output_dirpath, overwrite=overwrite)
         else:
             utils.p_hint(f'>>> nproc: {nproc}')
             with mp.Pool(processes=nproc) as p:
-                arg_list = [(sn, output_dirpath, overwrite, casetag, chunk_nt) for sn in sns]
+                arg_list = [(sn, output_dirpath, overwrite, casetag) for sn in sns]
                 p.starmap(self.merge_means, tqdm(arg_list, total=len(sns), desc=f'Merging mean files'))
 
 
